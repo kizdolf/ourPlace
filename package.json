@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/kizdolf/ourPlace/issues"
   },
-  "homepage": "https://github.com/kizdolf/ourPlace#readme"
+  "homepage": "https://github.com/kizdolf/ourPlace#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "multer": "^1.1.0"
+  }
 }
