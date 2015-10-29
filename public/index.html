@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html ng-app="ourPlace">
+    <head>
+        <meta charset="utf-8">
+        <title>Our Place</title>
+    </head>
+    <body>
+        Hey! this is the index file. The layout.
+        <div ng-view></div>
+    </body>
+    <!-- Load scripts -->
+    <!-- Conf -->
+    <script src="scripts/config.js"></script>
+    <!-- End conf -->
+    <!-- dependencies -->
+    <script src="scripts/dependencies/angular.min.js"></script>
+    <script src="scripts/dependencies/angular-route.min.js"></script>
+    <script src="scripts/dependencies/angular-animate.min.js"></script>
+    <script src="scripts/dependencies/angular-touch.min.js"></script>
+    <script src="scripts/dependencies/socket.io.js"></script>
+    <script src="scripts/dependencies/angular-local-storage.min.js"></script>
+    <script src="scripts/dependencies/sha256.js"></script>
+    <!-- end dependencies -->
+    <!-- app one -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/routing.js"></script>
+    <script src="scripts/factorys/socket.js"></script>
+    <!-- end app -->
+    <!-- Load views controllers-->
+    <script src="scripts/controllers/homepage.js"></script>
+    <!-- end views -->
+    <!--End Load -->
+</html>

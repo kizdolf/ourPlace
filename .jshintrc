@@ -1,0 +1,27 @@
+{
+    "globals": {
+        "jasmine": false,
+        "spyOn": false,
+        "it": false,
+        "console": false,
+        "describe": false,
+        "expect": false,
+        "beforeEach": false,
+        "waits": false,
+        "waitsFor": false,
+        "runs": false,
+        "angular": true,
+        "io" : true,
+        "jsSHA" : true,
+        "Promise": true
+    },
+    "node" : true,
+    "es6" : true,
+    "browser" : true,
+    "debug": false,
+    "devel": false,
+    "regexp": false,
+    "undef": true,
+    "strict": false,
+    "unused": true
+}
