@@ -32,6 +32,7 @@
     <div class="up" ng-repeat="up in uploading">
         {{up.name}} :  upload is at {{up.pct}}%<br>
         {{up.error}}
+        <span ng-if="up.ok"> Title uploaded.</span>
     </div>
 </div>
 
