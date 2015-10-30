@@ -4,12 +4,14 @@
 */
 angular.module('ourPlace.homepage', ['ngRoute'])
 
-.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload',
-function(socket, localStorage, $scope, $http, Upload) {
+.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout',
+function(socket, localStorage, $scope, $http, Upload,$timeout) {
 
+    $scope.index = 0;
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
     console.log(player);
+
 
     socket.on('files', function(data){
         $scope.streams = data;
@@ -50,11 +52,12 @@ function(socket, localStorage, $scope, $http, Upload) {
                 Upload.upload({
                     url: '/api/upload',
                     data: {file: file}
-                }).then(function (resp) {
-                    console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
+                }).then(function () {
                     $scope.uploading[file.name].ok = true;
+                    $timeout(function(){
+                        delete $scope.uploading[file.name];
+                    }, 3000);
                 }, function (resp) { //jshint ignore:line
-                    console.log('Error status: ' + resp.status);
                     $scope.uploading[file.name].error = resp.status;
                 }, function (evt) { //jshint ignore:line
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
@@ -65,7 +68,9 @@ function(socket, localStorage, $scope, $http, Upload) {
     };
 
     $scope.play = function(index){
-        var run = $scope.streams[index];
+        $scope.index = index;
+        console.log('play num ' + index);
+        var run = $scope.streams[$scope.index] || $scope.streams[0];
         audioSource.attr('src', run.path);
         audioSource.attr('type', run.type);
         player.pause();
@@ -77,5 +82,11 @@ function(socket, localStorage, $scope, $http, Upload) {
     $scope.get_all = function(){
         socket.emit('get_all');
     };
+
+    player.onended = function(){
+        if($scope.index !== 0)
+            $scope.play($scope.index + 1);
+    };
+
 
 }]);
