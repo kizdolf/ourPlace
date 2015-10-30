@@ -19,6 +19,7 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
+    "lowdb": "^0.10.2",
     "multer": "^1.1.0",
     "socket.io": "^1.3.7"
   }

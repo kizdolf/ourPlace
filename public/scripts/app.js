@@ -4,7 +4,8 @@ angular.module('ourPlace', [
     'LocalStorageModule',
     'ourPlace.routing',
     'ourPlace.homepage',
-    'ourPlace.socket'
+    'ourPlace.socket',
+    'ngFileUpload'
 ])
 .config(function(localStorageServiceProvider){
     localStorageServiceProvider

@@ -3,6 +3,8 @@
 exports.conf = {
     mainPort: 9090, //  this is 80 in production
     webDir: 'public', //   which directory should we serve?
+    mediaDir: 'medias', //   which directory should we serve?
+    mediaPath: '/medias', //    on which path?
     webPath: '/', //    on which path?
     apiPrefix: '/api',//API prefix (useless comment right?)
 

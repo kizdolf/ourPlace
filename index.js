@@ -14,6 +14,8 @@ var
     .use(bodyParser.json())
     //serve webApp
     .use(conf.webPath, express.static(conf.webDir))
+
+    .use(conf.mediaPath, express.static(conf.mediaDir))
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong http request. 404 (should send a true 404 page instead.)
