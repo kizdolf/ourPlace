@@ -4,10 +4,11 @@ var
 conf        = require('./config').socket,
 io          = require('socket.io')(conf.socketPort),
 low             = require('lowdb'),
-dbFile          = low('databases/files.json');
+dbFile          = low('databases/files.json'),
+user;
 
 io.on('connection', function(socket){
-    var user = {
+    user = {
         id: socket.id,
         socket: socket
     };
@@ -19,5 +20,5 @@ io.on('connection', function(socket){
 });
 
 exports.files = function(){
-    io.emit('files', dbFile('files').cloneDeep());
+    user.socket.broadcast.emit('files', dbFile('files').cloneDeep());
 };
