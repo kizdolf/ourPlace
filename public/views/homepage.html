@@ -1,33 +1,71 @@
 <style>
     .listMusic{
         list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    .btn-upload{
+        background: grey;
+        height:50px;
+        line-height:50px;
+        text-align: center;
+        cursor: pointer;
     }
 
-    .itemMusic{
+    .drop-box{
         width: 100%;
-        height: 50px;
-        cursor: pointer;
-        line-height:50px;
+        height: 150px;
+        border: 1px solid black;
+        line-height: 150px;
         text-align: center;
     }
 
-    .itemMusic:hover{
-        background: #FFEFC7;
-    }
-</style>
-<h3>Home Page! welcome :)</h3>
+    @media (min-width: 640px){
+        .itemMusic{
+            width: 100%;
+            height: 55px;
+            margin: 1px;
+            cursor: pointer;
+            line-height: 50px;
+            text-align: center;
+            background: #EAEAEA;
+        }
 
+        .itemMusic:hover{
+            background: #FFEFC7;
+        }
+
+    }
+
+    @media (max-width: 770px){
+        .drop-box{
+            display: none;
+        }
+        .itemMusic{
+            width: 46vw;
+            height: 20vh;
+            margin: 1px;
+            cursor: pointer;
+            line-height: 50px;
+            text-align: center;
+            background: #EAEAEA;
+            float: left;
+            word-wrap: break-word;
+        }
+    }
+
+
+</style>
 <div class="player">
     <audio controls id="audioPlayer">
         <source src="null" type="null" id="audioSource">
         Your browser does not support the audio element.
     </audio>
 </div>
-<button type="button" name="button" ng-click="get_all()">get all</button>
 <div ngf-drop="uploadFiles($files)" class="drop-box"
-  ngf-drag-over-class="dragover" ngf-multiple="true" style="width:150px; height:150px; border:1px solid black;"
-  >Drop files here</div>
+  ngf-drag-over-class="dragover" ngf-multiple="true">Drag and Drop files here to upload</div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+<div class="btn-upload" ngf-select="upload($file)">choose something to upload</div>
 <div class="uploading">
     <div class="up" ng-repeat="up in uploading">
         {{up.name}} :  upload is at {{up.pct}}%<br>
