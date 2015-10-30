@@ -28,6 +28,12 @@
   ngf-drag-over-class="dragover" ngf-multiple="true" style="width:150px; height:150px; border:1px solid black;"
   >Drop files here</div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
+<div class="uploading">
+    <div class="up" ng-repeat="up in uploading">
+        {{up.name}} :  upload is at {{up.pct}}%<br>
+        {{up.error}}
+    </div>
+</div>
 
 <div class="player">
     <ul class="listMusic">
