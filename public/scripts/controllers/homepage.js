@@ -37,23 +37,31 @@ function(socket, localStorage, $scope, $http, Upload) {
         });
     };
     // for multiple files:
+    $scope.uploading = {};
     $scope.uploadFiles = function (files) {
         if (files && files.length) {
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                console.log(file);
+            files.forEach(function(file){
+                $scope.uploading[file.name]= {
+                    name: file.name,
+                    pct: 0,
+                    ok: false,
+                    error: null
+                };
                 Upload.upload({
                     url: '/api/upload',
                     data: {file: file}
                 }).then(function (resp) {
                     console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-                }, function (resp) {
+                    $scope.uploading[file.name].ok = true;
+                }, function (resp) { //jshint ignore:line
                     console.log('Error status: ' + resp.status);
-                }, function (evt) {
+                    $scope.uploading[file.name].error = resp.status;
+                }, function (evt) { //jshint ignore:line
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.uploading[evt.config.data.file.name].pct = progressPercentage;
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                });
-            }
+                }); //jshint ignore:line
+            });
         }
     };
 
