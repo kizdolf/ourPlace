@@ -18,8 +18,11 @@ exports.main = (function(){
 
     router.post('/upload', upload.single('file'), function(req, res){
         var file = req.file;
-        lib.handle(file, function(done){
-                res.json({done: done});
+        lib.handle(file, function(err, response){
+            if(err)
+                res.json({err: err});
+            else
+                res.json({done: response});
         });
     });
 

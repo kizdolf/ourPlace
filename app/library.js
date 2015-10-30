@@ -15,7 +15,7 @@ var
         'audio/mp3'
     ];
 
-exports.handle = function(file){
+exports.handle = function(file, cb){
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         return false;
     }else{
@@ -27,14 +27,19 @@ exports.handle = function(file){
             type : file.mimetype,
         };
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-            if(err) console.log(err);
+            if(err){
+                console.log(err);
+                cb(err, null);
+            }
         });
         Bucket.insert(obj.name, obj, function(err, res) {
-            if (err) console.log(err);
-            else{
+            if (err){
+                console.log(err);
+                cb(err, null);
+            }else{
                 console.log(res);
                 exports.all();
-                return true;
+                cb(null, true);
             }
         });
     }

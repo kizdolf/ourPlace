@@ -59,7 +59,6 @@ function(socket, localStorage, $scope, $http, Upload) {
                 }, function (evt) { //jshint ignore:line
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                     $scope.uploading[evt.config.data.file.name].pct = progressPercentage;
-                    console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 }); //jshint ignore:line
             });
         }
