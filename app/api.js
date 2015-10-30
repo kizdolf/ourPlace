@@ -8,13 +8,17 @@
 */
 
 var
-express     = require('express');
+express     = require('express'),
+multer      = require('multer'),
+upload      = multer({dest: 'medias/'}),
+lib         = require('./library');
 
 exports.main = (function(){
     var router      = express.Router();
 
-    router.post('/upload', function(req, res){
-        console.log('request post on upload.');
+    router.post('/upload', upload.single('file'), function(req, res){
+        var file = req.file;
+        lib.handle(file);
     });
 
     return router;
