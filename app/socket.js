@@ -20,5 +20,5 @@ io.on('connection', function(socket){
 });
 
 exports.files = function(){
-    user.socket.broadcast.emit('files', dbFile('files').cloneDeep());
+    io.sockets.broadcast.emit('files', dbFile('files').cloneDeep());
 };
