@@ -3,8 +3,7 @@
 var
 conf        = require('./config').socket,
 io          = require('socket.io')(conf.socketPort),
-low             = require('lowdb'),
-dbFile          = low('databases/files.json'),
+lib         = require('./library'),
 user;
 
 io.on('connection', function(socket){
@@ -12,13 +11,18 @@ io.on('connection', function(socket){
         id: socket.id,
         socket: socket
     };
-    socket.emit('files', dbFile('files').cloneDeep());
-    socket.on('hi', function(data){
-        console.log('someone saying hi..');
-        console.log(data);
+    socket.emit('files', lib.all());
+
+    socket.on('play', function(file){
+        var meta = lib.play(file);
+        socket.emit('meta', meta);
+    });
+
+    socket.on('get_all', function(){
+        lib.all();
     });
 });
 
-exports.files = function(){
-    io.sockets.broadcast.emit('files', dbFile('files').cloneDeep());
+exports.files = function(data){
+    user.socket.emit('files', data);
 };

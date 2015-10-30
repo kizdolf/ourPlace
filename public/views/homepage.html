@@ -1,18 +1,38 @@
+<style>
+    .listMusic{
+        list-style-type: none;
+    }
+
+    .itemMusic{
+        width: 100%;
+        height: 50px;
+        cursor: pointer;
+        line-height:50px;
+        text-align: center;
+    }
+
+    .itemMusic:hover{
+        background: #FFEFC7;
+    }
+</style>
 <h3>Home Page! welcome :)</h3>
 
+<div class="player">
+    <audio controls id="audioPlayer">
+        <source src="null" type="null" id="audioSource">
+        Your browser does not support the audio element.
+    </audio>
+</div>
+<button type="button" name="button" ng-click="get_all()">get all</button>
 <div ngf-drop="uploadFiles($files)" class="drop-box"
   ngf-drag-over-class="dragover" ngf-multiple="true" style="width:150px; height:150px; border:1px solid black;"
   >Drop files here</div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 
 <div class="player">
-    <ul>
-        <li ng-repeat="stream in streams">
+    <ul class="listMusic">
+        <li ng-repeat="stream in streams track by $index" ng-click="play($index)" class="itemMusic">
             {{stream.name}}
-            <audio controls>
-                <source src="{{stream.path}}" type="{{stream.type}}">
-                Your browser does not support the audio element.
-            </audio>
         </li>
     </ul>
 </div>

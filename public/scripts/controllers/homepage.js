@@ -7,16 +7,19 @@ angular.module('ourPlace.homepage', ['ngRoute'])
 .controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload',
 function(socket, localStorage, $scope, $http, Upload) {
 
-    socket.on('msg', function(data){
-
-    });
+    var player = $('#audioPlayer')[0];
+    var audioSource = $('#audioSource');
+    console.log(player);
 
     socket.on('files', function(data){
         $scope.streams = data;
-        console.log($scope.streams);
     });
 
-    socket.emit('hi', {data: 'none?'});
+    socket.on('meta', function(data){
+        $scope.playing = true;
+        console.log(data);
+        $scope.run = data;
+    });
 
     // upload on file select or drop
     $scope.upload = function (file) {
@@ -51,9 +54,21 @@ function(socket, localStorage, $scope, $http, Upload) {
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
                 });
             }
-            // or send them all together for HTML5 browsers:
-            // Upload.upload({..., data: {file: files}, ...})...;
         }
+    };
+
+    $scope.play = function(index){
+        var run = $scope.streams[index];
+        audioSource.attr('src', run.path);
+        audioSource.attr('type', run.type);
+        player.pause();
+        player.load();
+        player.play();
+        player.oncanplaythrough = player.play();
+    };
+
+    $scope.get_all = function(){
+        socket.emit('get_all');
     };
 
 }]);
