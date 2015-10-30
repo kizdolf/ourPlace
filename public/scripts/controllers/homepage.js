@@ -69,7 +69,6 @@ function(socket, localStorage, $scope, $http, Upload,$timeout) {
 
     $scope.play = function(index){
         $scope.index = index;
-        console.log('play num ' + index);
         var run = $scope.streams[$scope.index] || $scope.streams[0];
         audioSource.attr('src', run.path);
         audioSource.attr('type', run.type);
@@ -84,9 +83,12 @@ function(socket, localStorage, $scope, $http, Upload,$timeout) {
     };
 
     player.onended = function(){
-        if($scope.index !== 0)
+        if($scope.streams)
             $scope.play($scope.index + 1);
     };
 
+    $timeout(function(){
+        $scope.get_all();
+    }, 15000);
 
 }]);
