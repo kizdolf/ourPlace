@@ -3,13 +3,40 @@
 
 
 var
+    mainConf        = require('./config').conf,
     conf            = require('./config').couch,
     couchbase       = require('couchbase'),
     Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
+    fs              = require('fs'),
+    mm              = require('musicmetadata'),
     accepted_mimes  = [
         'audio/mp3'
     ];
+
+fs.readdir(mainConf.mediaDir, function(err, files){
+    if(err){
+        console.log(err);
+    }else{
+        console.log(files);
+        files.forEach(function(file){
+            exports.getMetaData(mainConf.mediaDir + '/' + file);
+        });
+    }
+});
+
+exports.getMetaData = function(path, cb){
+    mm(fs.createReadStream(path), function(err, meta){
+        if(err){
+            console.log('err');
+            console.log(err);
+            cb(err, null);
+        }else{
+            console.log(meta);
+            cb(null, meta);
+        }
+    });
+};
 
 exports.handle = function(file, cb){
     if(accepted_mimes.indexOf(file.mimetype) === -1){
