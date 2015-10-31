@@ -13,7 +13,8 @@
         "angular": true,
         "io" : true,
         "jsSHA" : true,
-        "Promise": true
+        "Promise": true,
+        "$" : true
     },
     "node" : true,
     "es6" : true,

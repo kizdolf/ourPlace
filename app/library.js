@@ -1,15 +1,11 @@
 'use strict';
 
-var conf = {
-    host: '149.202.44.123',
-    filesBucket: 'filesForUs'
-};
 
-var N1qlQuery = require('couchbase').N1qlQuery;
 
 var
-    couchbase   = require('couchbase'),
-    Cluster     = new couchbase.Cluster(conf.host),
+    conf            = require('./config').couch,
+    couchbase       = require('couchbase'),
+    Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
     accepted_mimes  = [
         'audio/mp3'
@@ -17,6 +13,7 @@ var
 
 exports.handle = function(file, cb){
     if(accepted_mimes.indexOf(file.mimetype) === -1){
+        //delete file via fs
         return false;
     }else{
         var obj = {

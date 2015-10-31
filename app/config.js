@@ -16,3 +16,14 @@ exports.conf = {
 exports.socket = {
     socketPort : 9091
 };
+
+exports.couch = {
+    host: '149.202.44.123',
+    filesBucket: 'filesForUs'
+};
+
+exports.mimes = {
+    'audio/mp3' : {
+        directory : exports.conf.mediaPath + '/music'
+    }
+};
