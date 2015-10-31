@@ -4,40 +4,17 @@
 */
 angular.module('ourPlace.homepage', ['ngRoute'])
 
-.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout',
-function(socket, localStorage, $scope, $http, Upload,$timeout) {
+.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval',
+function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.index = 0;
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
-    console.log(player);
-
 
     socket.on('files', function(data){
         $scope.streams = data;
     });
 
-    socket.on('meta', function(data){
-        $scope.playing = true;
-        console.log(data);
-        $scope.run = data;
-    });
-
-    // upload on file select or drop
-    $scope.upload = function (file) {
-        console.log(file);
-        Upload.upload({
-            url: '/api/upload',
-            data: {file: file}
-        }).then(function (resp) {
-            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
-        }, function (resp) {
-            console.log('Error status: ' + resp.status);
-        }, function (evt) {
-            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-        });
-    };
     // for multiple files:
     $scope.uploading = {};
     $scope.uploadFiles = function (files) {
@@ -70,6 +47,11 @@ function(socket, localStorage, $scope, $http, Upload,$timeout) {
     $scope.play = function(index){
         $scope.index = index;
         var run = $scope.streams[$scope.index] || $scope.streams[0];
+        var classItem = '.itemMusic.'+index;
+        var itemMusic = $(classItem);
+        $('.itemMusic').removeClass('current');
+        itemMusic.addClass('current');
+        $scope.running = run;
         audioSource.attr('src', run.path);
         audioSource.attr('type', run.type);
         player.pause();
@@ -87,7 +69,7 @@ function(socket, localStorage, $scope, $http, Upload,$timeout) {
             $scope.play($scope.index + 1);
     };
 
-    $timeout(function(){
+    $interval(function(){
         $scope.get_all();
     }, 15000);
 
