@@ -78,7 +78,7 @@ exports.all = function(){
             console.log(err);
         }else{
             res.forEach(function(one){
-                if(one.value.meta.picture){
+                if(one.value.meta.picture[0]){
                     var pic = new Buffer(one.value.meta.picture[0].data.data);
                     pic = 'data:image/gif;base64,' + pic.toString('base64');
                     one.value.meta.pic = pic;

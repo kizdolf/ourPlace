@@ -116,9 +116,10 @@
                 <span class="title">{{stream.meta.title}}</span>
                 <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
                 <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
-                <span class="cover"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></span>
+                <span class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></span>
+                <span class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></span>
             </div>
-            {{stream.name}}
+            <span ng-if="!stream.meta.title">{{stream.name}}</span>
         </li>
     </ul>
 </div>
