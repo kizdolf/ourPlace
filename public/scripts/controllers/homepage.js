@@ -13,7 +13,9 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     socket.on('files', function(data){
         var streams = data;
-        if(streams) $scope.streams = streams;
+        if(streams){
+            $scope.streams = streams;  
+        } 
     });
 
     // for multiple files:

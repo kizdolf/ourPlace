@@ -50,12 +50,12 @@
         }
         .itemMusic{
             width: 46vw;
-            height: 20vh;
+            height: 50vh;
             margin: 1px;
             cursor: pointer;
             line-height: 50px;
             text-align: center;
-            background: #EAEAEA;
+            background: #D5D5D5;
             float: left;
             word-wrap: break-word;
         }
@@ -108,7 +108,6 @@
         <span ng-if="up.ok"> Title uploaded.</span>
     </div>
 </div>
-
 <div class="music">
     <ul class="listMusic">
         <li ng-repeat="stream in streams track by $index" ng-click="play($index)" class="itemMusic {{$index}}">
