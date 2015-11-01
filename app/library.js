@@ -78,6 +78,12 @@ exports.all = function(){
             console.log(err);
         }else{
             res.forEach(function(one){
+                if(one.value.meta.picture){
+                    var pic = new Buffer(one.value.meta.picture[0].data.data);
+                    pic = 'data:image/gif;base64,' + pic.toString('base64');
+                    one.value.meta.pic = pic;
+                    delete one.value.meta.picture;
+                }
                 files.push(one.value);
             });
             sock.files(files);

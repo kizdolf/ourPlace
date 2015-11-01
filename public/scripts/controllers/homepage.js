@@ -12,8 +12,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var audioSource = $('#audioSource');
 
     socket.on('files', function(data){
-        $scope.streams = data;
-        console.log($scope.streams);
+        var streams = data;
+        if(streams){
+            $scope.streams = streams;
+            console.log($scope.streams);
+        }
     });
 
     // for multiple files:
