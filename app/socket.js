@@ -11,14 +11,11 @@ io.on('connection', function(socket){
         id: socket.id,
         socket: socket
     };
+    console.log('connection received');
+    console.log(user.id);
     socket.emit('files', lib.all());
-
-    socket.on('play', function(file){
-        var meta = lib.play(file);
-        socket.emit('meta', meta);
-    });
-
     socket.on('get_all', function(){
+        console.log('received a socket to get all.');
         lib.all();
     });
 });
