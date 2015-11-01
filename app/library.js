@@ -14,18 +14,7 @@ var
         'audio/mp3'
     ];
 
-fs.readdir(mainConf.mediaDir, function(err, files){
-    if(err){
-        console.log(err);
-    }else{
-        console.log(files);
-        files.forEach(function(file){
-            exports.getMetaData(mainConf.mediaDir + '/' + file);
-        });
-    }
-});
-
-exports.getMetaData = function(path, cb){
+var getMetaData = function(path, cb){
     mm(fs.createReadStream(path), function(err, meta){
         if(err){
             console.log('err');
@@ -43,27 +32,32 @@ exports.handle = function(file, cb){
         //delete file via fs
         return false;
     }else{
-        var obj = {
-            name : file.originalname,
-            path : '/' + file.path,
-            size : file.size,
-            date : new Date(),
-            type : file.mimetype,
-        };
-        var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-            if(err){
-                console.log(err);
-                cb(err, null);
-            }
-        });
-        Bucket.insert(obj.name, obj, function(err, res) {
-            if (err){
-                console.log(err);
-                cb(err, null);
-            }else{
-                console.log(res);
-                exports.all();
-                cb(null, true);
+        getMetaData(file.path, function(err, meta){
+            if(!err){
+                var obj = {
+                    name : file.originalname,
+                    path : '/' + file.path,
+                    size : file.size,
+                    date : new Date(),
+                    type : file.mimetype,
+                    meta : meta
+                };
+                var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+                    if(err){
+                        console.log(err);
+                        cb(err, null);
+                    }
+                });
+                Bucket.insert(obj.name, obj, function(err, res) {
+                    if (err){
+                        console.log(err);
+                        cb(err, null);
+                    }else{
+                        console.log(res);
+                        exports.all();
+                        cb(null, true);
+                    }
+                });
             }
         });
     }
