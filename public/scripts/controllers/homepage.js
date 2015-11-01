@@ -13,6 +13,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     socket.on('files', function(data){
         $scope.streams = data;
+        console.log($scope.streams);
     });
 
     // for multiple files:
@@ -45,8 +46,8 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.play = function(index){
-        $scope.index = index;
-        var run = $scope.streams[$scope.index] || $scope.streams[0];
+        $scope.index = ($scope.streams[index] === 'undefined') ? 0 : index;
+        var run = $scope.streams[$scope.index];
         var classItem = '.itemMusic.'+index;
         var itemMusic = $(classItem);
         $('.itemMusic').removeClass('current');
@@ -56,7 +57,6 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         audioSource.attr('type', run.type);
         player.pause();
         player.load();
-        player.play();
         player.oncanplaythrough = player.play();
     };
 
