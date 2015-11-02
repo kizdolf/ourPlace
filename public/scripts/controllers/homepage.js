@@ -68,6 +68,23 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         }
     };
 
+    $scope.options = function(index){
+        var cl = '.itemMusic.' + index,
+            opts = $(cl).find('.optsItem');
+        opts.toggle(0);
+    };
+
+    $scope.download = function(index){
+        var media = $scope.streams[index],
+            cl = '.itemMusic.' + index,
+            dl = document.createElement('a'),
+            opts = $(cl).find('.optsItem');
+            opts.toggle(0);
+        dl.setAttribute('href', media.path);
+        dl.setAttribute('download', media.name);
+        dl.click();
+    };
+
     $scope.play = function(index){
         $scope.index = (index >= $scope.streams.length) ? 0 : index;
         var run = $scope.streams[$scope.index];
