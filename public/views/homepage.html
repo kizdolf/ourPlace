@@ -1,9 +1,5 @@
 <style>
 
-    .body{
-        font-family: sans-serif;
-    }
-
     .listMusic{
         list-style-type: none;
         margin: 0;
@@ -18,35 +14,59 @@
     }
 
     .drop-box{
-        width: 100%;
-        height: 150px;
+        width: 55%;
+        height: 140px;
         border: 1px solid black;
         line-height: 150px;
         text-align: center;
+        position: absolute;
+        top: 0;
+        right: 0;
     }
 
     .current{
-        background: rgb(144, 255, 144) !important;
+        background: rgba(67, 179, 84, 0.7) !important;
+    }
+
+    .textItem{
+        float: right;
+        text-align: right;
     }
 
     @media (min-width: 640px){
         .itemMusic{
-            width: 150px;
-            height: 240px;
-            margin: 1px;
+            width: 400px;
+            height: 120px;
+            margin: 5px;
             cursor: pointer;
-            line-height: 50px;
-            text-align: center;
-            background: #D5D5D5;
+            background: #FFFFFF;
             float: left;
             word-wrap: break-word;
             padding: 2px;
+            box-shadow: 1px 1px 2px 0px #A2A2A2;
         }
 
         .itemMusic:hover{
-            background: #FFEFC7;
+            background: rgba(67, 179, 84, 0.4);
         }
 
+        .Meta{
+            height: 100%;
+            float: right;
+            padding-right: 9px;
+            max-width: 51%;
+        }
+
+        .cover{
+            width: 39%;
+            float: left;
+            height: 100%;
+        }
+
+        .cov{
+            height: 120px;
+            width: auto;
+        }
     }
 
     @media (max-width: 770px){
@@ -60,26 +80,31 @@
             cursor: pointer;
             line-height: 50px;
             text-align: center;
-            background: #D5D5D5;
+            background: #FFFFFF;
             float: left;
             word-wrap: break-word;
+            box-shadow: 1px 1px 2px 0px #A2A2A2;
         }
+
+        .Meta{
+            height: 60%;
+            padding-right: 9px;
+            width: 100%;
+        }
+
+        .cover{
+            width: 100%;
+            height: 40%;
+        }
+
+        .cov{
+            height: 100%;
+            width: auto;
+        }
+
     }
 
-    .cov{
-        width: 100%;
-        height: auto;
-    }
 
-    .cover{
-        width: 100%;
-        height: 100%;
-    }
-
-    .fromMeta{
-        height: 100%;
-        width: 100%;
-    }
 
     .title, .artist{
         width: 100%;
@@ -90,6 +115,35 @@
         margin: 0;
         font-size: 18px;
         padding: 0;
+        text-align: right;
+    }
+
+    .metaPlayer{
+        border: 1px solid black;
+        width: 40%;
+        position: relative;
+        height: 100px;
+    }
+
+    audio {
+        width : 40%;
+    }
+
+    .running{
+        margin-left: 150px;
+        height: 100%;
+    }
+
+    .runningCover{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 150px;
+        height: 100%;
+    }
+
+    .RunningCov{
+        height: 100%;
     }
 
 </style>
@@ -98,8 +152,18 @@
         <source src="null" type="null" id="audioSource">
         Your browser does not support the audio element.
     </audio>
-    <div class="running">
-        {{running.name}}
+    <div class="metaPlayer">
+        <span ng-if="running">
+            <div ng-if="!running.meta.title" class="running">
+                {{running.name}}
+            </div>
+            <div ng-if="running.meta" class="running">
+                {{running.meta.title}}
+                {{running.meta.artist[0]}}
+            </div>
+            <div class="runningCover" ng-if="running.meta.pic"><img src="{{running.meta.pic}}" alt="runningCover" class="RunningCov"/></div>
+            <div class="runningCover" ng-if="!running.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="runningCover" class="RunningCov"/></div>
+        </span>
     </div>
 </div>
 <div ngf-drop="uploadFiles($files)" class="drop-box"
@@ -116,14 +180,18 @@
 <div class="music">
     <ul class="listMusic">
         <li ng-repeat="stream in streams track by $index" ng-click="play($index)" class="itemMusic {{$index}}">
-            <div class="fromMeta" ng-if="stream.meta.title">
-                <span class="title">{{stream.meta.title}}</span>
-                <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
-                <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
-                <span class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></span>
-                <span class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></span>
+            <div class="Meta" ng-if="stream.meta.title">
+                <div class="textItem" style="height: 50%;">
+                    <span class="title">{{stream.meta.title}}</span>
+                    <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
+                    <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
+                </div>
             </div>
-            <span ng-if="!stream.meta.title">{{stream.name}}</span>
+            <div class="Meta" ng-if="!stream.meta.title">
+                <span class="title">{{stream.name}}</span>
+            </div>
+            <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
+            <div class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></div>
         </li>
     </ul>
 </div>
