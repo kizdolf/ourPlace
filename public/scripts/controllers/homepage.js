@@ -22,6 +22,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         $scope.loader = false;
         var streams = data;
         if(streams){
+            console.log(streams);
             $scope.streams = streams.sort(byDate);
         }
     });
@@ -56,6 +57,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
                     url: '/api/upload',
                     data: {file: file}
                 }).then(function () {
+                    $scope.index++;
                     $scope.uploading[file.name].ok = true;
                     $timeout(function(){
                         delete $scope.uploading[file.name];
@@ -105,13 +107,20 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     $scope.edit = function(index){
         $scope.onTop.show = true;
         $scope.onTop.meta = true;
+        console.log($scope.streams[index]);
         $scope.editMeta = $scope.streams[index].meta;
+        $scope.editMeta.path = $scope.streams[index].path;
         $scope.editMeta.index = index;
         $scope.editMeta.name = $scope.streams[index].name;
     };
 
     $scope.updateMeta = function(editMeta){
-        socket.emit('updateMeta', editMeta);
+        var meta = {
+            title : editMeta.title,
+            album: editMeta.album,
+            artist: editMeta.artist
+        };
+        socket.emit('updateMeta', meta);
         $scope.onTop.show = false;
         $scope.onTop.meta = false;
     };
@@ -148,6 +157,6 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $interval(function(){
         $scope.get_all();
-    }, 15000);
+    }, 25000);
 
 }]);

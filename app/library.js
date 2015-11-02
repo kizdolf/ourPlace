@@ -9,10 +9,27 @@ var
     Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
     fs              = require('fs'),
+    // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
     accepted_mimes  = [
         'audio/mp3'
     ];
+//Uncomment this to delete all docs in bucket.
+    // var ViewQuery = couchbase.ViewQuery;
+    // var bucket = Cluster.openBucket(conf.filesBucket);
+    // var q = ViewQuery.from('listing', 'allNames');
+    // bucket.query(q, function(err, res){
+    //     if(err){
+    //         console.log("err");
+    //         console.log(err);
+    //     }else{
+    //         res.forEach(function(one){
+    //             bucket.remove(one.key, function(err){
+    //                 console.log('removed ' + one.key);
+    //             });
+    //         });
+    //     }
+    // });
 
 var getMetaData = function(path, cb){
     mm(fs.createReadStream(path), function(err, meta){
@@ -21,29 +38,65 @@ var getMetaData = function(path, cb){
             console.log(err);
             cb(err, null);
         }else{
-            console.log(meta);
-            cb(null, meta);
+            if(meta.picture[0] && meta.picture[0].data){
+                var pic = new Buffer(meta.picture[0].data),
+                    picName = path.split('/')[1] + '.' + meta.picture[0].format;
+                pic = pic.toString('base64');
+                fs.writeFile(mainConf.coversPath + picName, pic, 'base64', function(err){
+                    if(err){
+                        console.log('err wrinting img');
+                        console.log(err);
+                        cb(err, null);
+                    }else{
+                        meta.picture = '/' + mainConf.coversPath + picName;
+                        cb(null, meta);
+                    }
+                });
+            }else{
+                delete meta.picture
+                cb(null, meta);
+            }
         }
     });
 };
 
 exports.updateMeta = function(data){
     console.log(data);
+    var name = data.name;
+    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+        if(err){ console.log(err); }
+    });
+    Bucket.get(name, function(err, doc){
+        if(!err){
+            doc.value.meta.artist = data.artist;
+            doc.value.meta.album = data.album;
+            doc.value.meta.title = data.title;
+            Bucket.replace(name, doc.value, function(err){
+                if(err){
+                    console.log(err);
+                }else{
+                    exports.all();
+                }
+            });
+        }
+    });
 };
 
 exports.delete = function(name){
-    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-        if(err){
-            console.log(err);
-        }
-    });
-    Bucket.remove(name, function(err){
-        if(err){
-            console.log(err);
-        }else{
-            exports.all();
-        }
-    });
+    if(name){
+        var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+            if(err){
+                console.log(err);
+            }
+        });
+        Bucket.remove(name, function(err){
+            if(err){
+                console.log(err);
+            }else{
+                exports.all();
+            }
+        });
+    }
 };
 
 exports.handle = function(file, cb){
@@ -69,10 +122,11 @@ exports.handle = function(file, cb){
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
+                        console.log('err inserting obj');
                         console.log(err);
                         cb(err, null);
                     }else{
-                        console.log(res);
+                        console.log('obj inserted:'+ res);
                         exports.all();
                         cb(null, true);
                     }
@@ -82,10 +136,6 @@ exports.handle = function(file, cb){
     }
 };
 
-exports.play = function(file){
-    console.log(file.name);
-};
-
 exports.all = function(){
     var files = [];
     var ViewQuery = couchbase.ViewQuery;
@@ -93,16 +143,10 @@ exports.all = function(){
     var q = ViewQuery.from('listing', 'allNames');
     bucket.query(q, function(err, res){
         if(err){
-            console.log("err");
+            console.log('err requesting all');
             console.log(err);
         }else{
             res.forEach(function(one){
-                if(one.value.meta.picture[0]){
-                    var pic = new Buffer(one.value.meta.picture[0].data.data);
-                    pic = 'data:image/gif;base64,' + pic.toString('base64');
-                    one.value.meta.pic = pic;
-                    delete one.value.meta.picture;
-                }
                 files.push(one.value);
             });
             sock.files(files);

@@ -12,8 +12,8 @@
                 {{running.meta.title}}
                 {{running.meta.artist[0]}}
             </div>
-            <div class="runningCover" ng-if="running.meta.pic"><img src="{{running.meta.pic}}" alt="runningCover" class="RunningCov"/></div>
-            <div class="runningCover" ng-if="!running.meta.pic"><img src="img/default_cover.png" alt="runningCover" class="RunningCov"/></div>
+            <div class="runningCover" ng-if="running.meta.picture"><img src="{{running.meta.picture}}" alt="runningCover" class="RunningCov"/></div>
+            <div class="runningCover" ng-if="!running.meta.picture"><img src="img/default_cover.png" alt="runningCover" class="RunningCov"/></div>
         </span>
     </div>
 </div>
@@ -58,8 +58,8 @@
                         <span class="title">{{stream.name}}</span>
                     </div>
                 </div>
-                <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
-                <div class="cover" ng-if="!stream.meta.pic"><img src="img/default_cover.png" alt="cover" class="cov"/></div>
+                <div class="cover" ng-if="stream.meta.picture"><img src="{{stream.meta.picture}}" alt="cover" class="cov"/></div>
+                <div class="cover" ng-if="!stream.meta.picture"><img src="img/default_cover.png" alt="cover" class="cov"/></div>
             </li>
         </span>
     </ul>

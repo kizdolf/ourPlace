@@ -7,7 +7,7 @@ exports.conf = {
     mediaPath: '/medias', //    on which path?
     webPath: '/', //    on which path?
     apiPrefix: '/api',//API prefix (useless comment right?)
-
+    coversPath: 'medias/covers/',
     bodyParserOpt:{ //options object for body-parser.
         extended: true
     }

@@ -6,24 +6,32 @@ io          = require('socket.io')(conf.socketPort),
 lib         = require('./library'),
 user;
 
+var liveUsers = 0;
+
 io.on('connection', function(socket){
+    liveUsers++;
+    console.log('live users : ' + liveUsers);
+
     user = {
         id: socket.id,
         socket: socket
     };
-    console.log('connection received');
-    console.log(user.id);
     socket.emit('files', lib.all());
     socket.on('get_all', function(){
-        console.log('received a socket to get all.');
         lib.all();
     });
 
     socket.on('delete', function(data){
+        console.log(data);
         lib.delete(data.name);
     });
 
     socket.on('updateMeta', lib.updateMeta);
+
+    socket.on('disconnect', function() {
+        liveUsers--;
+        console.log('live users : ' + liveUsers);
+    });
 });
 
 exports.files = function(data){
