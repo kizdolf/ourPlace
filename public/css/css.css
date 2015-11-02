@@ -90,8 +90,8 @@ body{
         display: none;
     }
     .itemMusic{
-        width: 46vw;
-        height: 50vh;
+        width: 100%;
+        height: 150px;
         margin: 1px;
         cursor: pointer;
         line-height: 50px;
@@ -104,14 +104,15 @@ body{
     }
 
     .Meta{
-        height: 60%;
+        height: 100%;
         padding-right: 9px;
-        width: 100%;
+        width: 58%;
+        float: right;
     }
 
     .cover{
-        width: 100%;
-        height: 40%;
+        height: 100%;
+        width: 38%;
     }
 
     .cov{
