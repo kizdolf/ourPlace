@@ -22,6 +22,8 @@ io.on('connection', function(socket){
     socket.on('delete', function(data){
         lib.delete(data.name);
     });
+
+    socket.on('updateMeta', lib.updateMeta);
 });
 
 exports.files = function(data){
