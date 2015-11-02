@@ -21,10 +21,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     socket.on('files', function(data){
         $scope.loader = false;
         var streams = data;
-        if(streams){
-            console.log(streams);
-            $scope.streams = streams.sort(byDate);
-        }
+        if(streams) $scope.streams = streams.sort(byDate);
     });
 
     var smallMusic = false;
@@ -73,21 +70,19 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.options = function(index){
-        var cl = '.itemMusic.' + index,
-            opts = $(cl).find('.optsItem'),
-            doMore = $(cl).find('.doMore');
+        var cl      = '.itemMusic.' + index,
+            opts    = $(cl).find('.optsItem'),
+            doMore  = $(cl).find('.doMore');
         opts.toggle(0);
         $('html').click(function(e){
-            if (!doMore.is(e.target) && doMore.has(e.target).length === 0){
-                opts.hide(0);
-           }
+            if (!doMore.is(e.target) && doMore.has(e.target).length === 0) opts.hide(0);
         });
     };
 
+    //TO DO: Add a warning, and a validation there.
     $scope.delete = function(index) {
         $('.itemMusic.' + index).find('.optsItem').hide(0);
-        var media = $scope.streams[index];
-        socket.emit('delete', {name : media.name});
+        socket.emit('delete', {name : $scope.streams[index].name});
         $('.itemMusic.' + index).remove();
     };
 
@@ -105,17 +100,17 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         meta: false
     };
     $scope.edit = function(index){
-        $scope.onTop.show = true;
-        $scope.onTop.meta = true;
-        console.log($scope.streams[index]);
-        $scope.editMeta = $scope.streams[index].meta;
-        $scope.editMeta.path = $scope.streams[index].path;
-        $scope.editMeta.index = index;
-        $scope.editMeta.name = $scope.streams[index].name;
+        $scope.onTop.show       = true;
+        $scope.onTop.meta       = true;
+        $scope.editMeta         = $scope.streams[index].meta;
+        $scope.editMeta.path    = $scope.streams[index].path;
+        $scope.editMeta.index   = index;
+        $scope.editMeta.name    = $scope.streams[index].name;
     };
 
     $scope.updateMeta = function(editMeta){
         var meta = {
+            name: editMeta.name,
             title : editMeta.title,
             album: editMeta.album,
             artist: editMeta.artist
@@ -132,13 +127,13 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.play = function(index){
-        $scope.index = (index >= $scope.streams.length) ? 0 : index;
-        var run = $scope.streams[$scope.index];
-        var classItem = '.itemMusic.'+$scope.index;
-        var itemMusic = $(classItem);
+        $scope.index    = (index >= $scope.streams.length) ? 0 : index;
+        var run         = $scope.streams[$scope.index],
+            classItem   = '.itemMusic.' + $scope.index,
+            itemMusic   = $(classItem);
+        $scope.running  = run;
         $('.itemMusic').removeClass('current');
         itemMusic.addClass('current');
-        $scope.running = run;
         audioSource.attr('src', run.path);
         audioSource.attr('type', run.type);
         player.pause();
@@ -151,8 +146,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     player.onended = function(){
-        if($scope.streams)
-            $scope.play($scope.index + 1);
+        if($scope.streams) $scope.play($scope.index + 1);
     };
 
     $interval(function(){
