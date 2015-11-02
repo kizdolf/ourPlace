@@ -69,9 +69,9 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.play = function(index){
-        $scope.index = ($scope.streams[index] === 'undefined') ? 0 : index;
+        $scope.index = (index >= $scope.streams.length) ? 0 : index;
         var run = $scope.streams[$scope.index];
-        var classItem = '.itemMusic.'+index;
+        var classItem = '.itemMusic.'+$scope.index;
         var itemMusic = $(classItem);
         $('.itemMusic').removeClass('current');
         itemMusic.addClass('current');
