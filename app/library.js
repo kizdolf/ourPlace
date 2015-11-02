@@ -27,6 +27,10 @@ var getMetaData = function(path, cb){
     });
 };
 
+exports.updateMeta = function(data){
+    console.log(data);
+};
+
 exports.delete = function(name){
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
         if(err){

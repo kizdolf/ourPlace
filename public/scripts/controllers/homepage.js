@@ -98,6 +98,30 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         dl.click();
     };
 
+    $scope.onTop = {
+        show: false,
+        meta: false
+    };
+    $scope.edit = function(index){
+        $scope.onTop.show = true;
+        $scope.onTop.meta = true;
+        $scope.editMeta = $scope.streams[index].meta;
+        $scope.editMeta.index = index;
+        $scope.editMeta.name = $scope.streams[index].name;
+    };
+
+    $scope.updateMeta = function(editMeta){
+        socket.emit('updateMeta', editMeta);
+        $scope.onTop.show = false;
+        $scope.onTop.meta = false;
+    };
+
+    $scope.closeMeta = function(){
+        $scope.editMeta = {};
+        $scope.onTop.show = false;
+        $scope.onTop.meta = false;
+    };
+
     $scope.play = function(index){
         $scope.index = (index >= $scope.streams.length) ? 0 : index;
         var run = $scope.streams[$scope.index];
