@@ -16,7 +16,10 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         else return 1;
     };
 
+    $scope.loader = true;
+
     socket.on('files', function(data){
+        $scope.loader = false;
         var streams = data;
         if(streams){
             $scope.streams = streams.sort(byDate);
