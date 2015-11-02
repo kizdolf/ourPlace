@@ -44,6 +44,7 @@
             word-wrap: break-word;
             padding: 2px;
             box-shadow: 1px 1px 2px 0px #A2A2A2;
+            position: relative;
         }
 
         .itemMusic:hover{
@@ -95,6 +96,7 @@
             float: left;
             word-wrap: break-word;
             box-shadow: 1px 1px 2px 0px #A2A2A2;
+            position: relative;
         }
 
         .Meta{
@@ -170,6 +172,50 @@
         margin: 5px;
     }
 
+    .optItem{
+        position: absolute;
+        bottom: 1px;
+        right: 1px;
+        z-index: 999;
+    }
+
+    .doMore{
+        display: normal;
+    }
+
+    .WrapperItem{
+        position: relative;
+    }
+
+    .liItem{
+        width: inherit;
+        height: inherit;
+    }
+
+    .optsItem{
+        background: #868686;
+        box-shadow: 1px 1px 10px 1px #405433;
+        height: 110px;
+        width: 120px;
+        position: absolute;
+        right: -14px;
+        bottom: 27px;
+        z-index: 9999;
+        cursor: default;
+    }
+
+    .oneOpt{
+        height: 30px;
+        background: #CCCECC;
+        width: 110px;
+        display: block;
+        line-height: 30px;
+        margin: 5px;
+        text-align: center;
+        box-shadow: 1px 1px 1px 0px #9E9595;
+        cursor: pointer;
+    }
+
 </style>
 <div class="player">
     <audio controls id="audioPlayer">
@@ -206,21 +252,29 @@
 </div>
 <div id="music">
     <ul class="listMusic">
-        <li ng-repeat="stream in streams track by $index" ng-click="play($index)" class="itemMusic {{$index}}">
-            <div class="Meta" ng-if="stream.meta.title">
-                <div class="textItem" style="height: 50%;">
-                    <span class="title">{{stream.meta.title}}</span>
-                    <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
-                    <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
+        <span ng-repeat="stream in streams track by $index" class="itemMusic {{$index}}">
+            <span class="doMore">
+                <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index)" class="optItem"/>
+                <div class="optsItem" style="display: none">
+                    <span class="oneOpt" ng-click="download($index)">Download</span>
                 </div>
-            </div>
-            <div class="Meta" ng-if="!stream.meta.title">
-                <div class="textItem" style="height: 50%;">
-                    <span class="title">{{stream.name}}</span>
+            </span>
+            <li ng-click="play($index)" class="liItem">
+                <div class="Meta" ng-if="stream.meta.title">
+                    <div class="textItem" style="height: 50%;">
+                        <span class="title">{{stream.meta.title}}</span>
+                        <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
+                        <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
-            <div class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></div>
-        </li>
+                <div class="Meta" ng-if="!stream.meta.title">
+                    <div class="textItem" style="height: 50%;">
+                        <span class="title">{{stream.name}}</span>
+                    </div>
+                </div>
+                <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
+                <div class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></div>
+            </li>
+        </span>
     </ul>
 </div>
