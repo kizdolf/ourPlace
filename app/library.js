@@ -12,7 +12,8 @@ var
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
     accepted_mimes  = [
-        'audio/mp3'
+        'audio/mp3',
+        'audio/x-m4a'
     ];
 //Uncomment this to delete all docs in bucket.
     // var ViewQuery = couchbase.ViewQuery;
@@ -34,12 +35,12 @@ var
 var getMetaData = function(path, cb){
     mm(fs.createReadStream(path), function(err, meta){
         if(err){
-            console.log('err');
+            console.log('err getting Metadata. Continuing with empty meta.');
             console.log(err);
-            cb(err, null);
+            cb(null, {});
         }else{
             if(meta.picture[0] && meta.picture[0].data){
-                var pic = new Buffer(meta.picture[0].data),
+                var pic     = new Buffer(meta.picture[0].data),
                     picName = path.split('/')[1] + '.' + meta.picture[0].format;
                 pic = pic.toString('base64');
                 fs.writeFile(mainConf.coversPath + picName, pic, 'base64', function(err){
@@ -61,7 +62,6 @@ var getMetaData = function(path, cb){
 };
 
 exports.updateMeta = function(data){
-    console.log(data);
     var name = data.name;
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
         if(err){ console.log(err); }
@@ -72,11 +72,8 @@ exports.updateMeta = function(data){
             doc.value.meta.album = data.album;
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
-                if(err){
-                    console.log(err);
-                }else{
-                    exports.all();
-                }
+                if(err) console.log(err);
+                else exports.all();
             });
         }
     });
@@ -100,6 +97,7 @@ exports.delete = function(name){
 };
 
 exports.handle = function(file, cb){
+    console.log(file.mimetype);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         //delete file via fs
         return false;
