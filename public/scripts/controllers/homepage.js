@@ -11,10 +11,15 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
 
+    var byDate = function(a, b){
+        if(a.date > b.date) return -1;
+        else return 1;
+    };
+
     socket.on('files', function(data){
         var streams = data;
         if(streams){
-            $scope.streams = streams;  
+            $scope.streams = streams.sort(byDate);
         } 
     });
 
