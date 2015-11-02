@@ -18,6 +18,10 @@ io.on('connection', function(socket){
         console.log('received a socket to get all.');
         lib.all();
     });
+
+    socket.on('delete', function(data){
+        lib.delete(data.name);
+    });
 });
 
 exports.files = function(data){

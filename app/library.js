@@ -27,6 +27,21 @@ var getMetaData = function(path, cb){
     });
 };
 
+exports.delete = function(name){
+    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+    Bucket.remove(name, function(err){
+        if(err){
+            console.log(err);
+        }else{
+            exports.all();
+        }
+    });
+};
+
 exports.handle = function(file, cb){
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         //delete file via fs

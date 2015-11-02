@@ -82,6 +82,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         });
     };
 
+    $scope.delete = function(index) {
+        var media = $scope.streams[index];
+        socket.emit('delete', {name : media.name});
+    };
+
     $scope.download = function(index){
         var media = $scope.streams[index], cl = '.itemMusic.' + index,
             dl = document.createElement('a'),opts = $(cl).find('.optsItem');
