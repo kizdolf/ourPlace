@@ -20,8 +20,24 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         var streams = data;
         if(streams){
             $scope.streams = streams.sort(byDate);
-        } 
+        }
     });
+
+    var smallMusic = false;
+    $scope.reduceMusic = function(){
+        var m = $('#music'), l = $('.itemMusic'), c = $('.cover'), r = $('.reduceMusic'),
+            M = $('.Meta'), t = $('.title'), a = $('.album'), A = $('.artist');
+        if(!smallMusic){
+            smallMusic = true;
+            a.css('font-size', '13px');A.css('font-size', '13px');t.css('font-size', '13px');M.css('max-width', '100%');
+            m.css('width', '150px');m.css('height', '60vh');m.css('overflow', 'auto');l.css('width', '120px');
+            l.css('height', '120px');c.hide(0);r.html('Expend Music');
+        }else{
+            smallMusic = false;
+            m.removeAttr('style');l.removeAttr('style');c.removeAttr('style');M.removeAttr('style');
+            t.removeAttr('style');a.removeAttr('style');A.removeAttr('style');r.html('Reduce Music');
+        }
+    };
 
     // for multiple files:
     $scope.uploading = {};

@@ -159,6 +159,17 @@
         height: 100%;
     }
 
+    #mainMenu{
+        width: 100%;
+        height: 50px;
+        background : #FFFFFF;
+    }
+
+    #mainMenu button{
+        height: 40px;
+        margin: 5px;
+    }
+
 </style>
 <div class="player">
     <audio controls id="audioPlayer">
@@ -190,7 +201,10 @@
         <span ng-if="up.ok"> Title uploaded.</span>
     </div>
 </div>
-<div class="music">
+<div id="mainMenu">
+    <button type="button" name="button" ng-click="reduceMusic()" class="reduceMusic">Reduce Music</button>
+</div>
+<div id="music">
     <ul class="listMusic">
         <li ng-repeat="stream in streams track by $index" ng-click="play($index)" class="itemMusic {{$index}}">
             <div class="Meta" ng-if="stream.meta.title">
@@ -201,7 +215,9 @@
                 </div>
             </div>
             <div class="Meta" ng-if="!stream.meta.title">
-                <span class="title">{{stream.name}}</span>
+                <div class="textItem" style="height: 50%;">
+                    <span class="title">{{stream.name}}</span>
+                </div>
             </div>
             <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
             <div class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></div>
