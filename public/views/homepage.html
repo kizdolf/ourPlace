@@ -232,7 +232,7 @@
                 {{running.meta.artist[0]}}
             </div>
             <div class="runningCover" ng-if="running.meta.pic"><img src="{{running.meta.pic}}" alt="runningCover" class="RunningCov"/></div>
-            <div class="runningCover" ng-if="!running.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="runningCover" class="RunningCov"/></div>
+            <div class="runningCover" ng-if="!running.meta.pic"><img src="img/default_cover.png" alt="runningCover" class="RunningCov"/></div>
         </span>
     </div>
 </div>
@@ -249,6 +249,9 @@
 </div>
 <div id="mainMenu">
     <button type="button" name="button" ng-click="reduceMusic()" class="reduceMusic">Reduce Music</button>
+</div>
+<div ng-if="loader" class="loading" style="text-align: center;">
+    <img src="img/loader-page.gif" />
 </div>
 <div id="music">
     <ul class="listMusic">
@@ -273,7 +276,7 @@
                     </div>
                 </div>
                 <div class="cover" ng-if="stream.meta.pic"><img src="{{stream.meta.pic}}" alt="cover" class="cov"/></div>
-                <div class="cover" ng-if="!stream.meta.pic"><img src="http://www.icone-png.com/png/16/15941.png" alt="cover" class="cov"/></div>
+                <div class="cover" ng-if="!stream.meta.pic"><img src="img/default_cover.png" alt="cover" class="cov"/></div>
             </li>
         </span>
     </ul>
