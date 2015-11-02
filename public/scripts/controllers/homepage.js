@@ -32,7 +32,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
             M = $('.Meta'), t = $('.title'), a = $('.album'), A = $('.artist');
         if(!smallMusic){
             smallMusic = true;
-            a.css('font-size', '13px');A.css('font-size', '13px');t.css('font-size', '13px');M.css('max-width', '100%');
+            a.css('font-size', '10px');A.css('font-size', '10px');t.css('font-size', '10px');M.css('max-width', '100%');
             m.css('width', '150px');m.css('height', '60vh');m.css('overflow', 'auto');l.css('width', '120px');
             l.css('height', '120px');c.hide(0);r.html('Expend Music');
         }else{
@@ -83,8 +83,10 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.delete = function(index) {
+        $('.itemMusic.' + index).find('.optsItem').hide(0);
         var media = $scope.streams[index];
         socket.emit('delete', {name : media.name});
+        $('.itemMusic.' + index).remove();
     };
 
     $scope.download = function(index){
