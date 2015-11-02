@@ -216,6 +216,10 @@
         cursor: pointer;
     }
 
+    .oneOpt:hover{
+        background: white;
+    }
+
 </style>
 <div class="player">
     <audio controls id="audioPlayer">
@@ -260,6 +264,8 @@
                 <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index)" class="optItem"/>
                 <div class="optsItem" style="display: none">
                     <span class="oneOpt" ng-click="download($index)">Download</span>
+                    <span class="oneOpt" ng-click="edit($index)">Edit</span>
+                    <span class="oneOpt" ng-click="delete($index)">Delete</span>
                 </div>
             </span>
             <li ng-click="play($index)" class="liItem">
