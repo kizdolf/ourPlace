@@ -42,7 +42,6 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         }
     };
 
-    // for multiple files:
     $scope.uploading = {};
     $scope.uploadFiles = function (files) {
         if (files && files.length) {
@@ -73,15 +72,19 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.options = function(index){
         var cl = '.itemMusic.' + index,
-            opts = $(cl).find('.optsItem');
+            opts = $(cl).find('.optsItem'),
+            doMore = $(cl).find('.doMore');
         opts.toggle(0);
+        $('html').click(function(e){
+            if (!doMore.is(e.target) && doMore.has(e.target).length === 0){
+                opts.hide(0);
+           }
+        });
     };
 
     $scope.download = function(index){
-        var media = $scope.streams[index],
-            cl = '.itemMusic.' + index,
-            dl = document.createElement('a'),
-            opts = $(cl).find('.optsItem');
+        var media = $scope.streams[index], cl = '.itemMusic.' + index,
+            dl = document.createElement('a'),opts = $(cl).find('.optsItem');
             opts.toggle(0);
         dl.setAttribute('href', media.path);
         dl.setAttribute('download', media.name);
