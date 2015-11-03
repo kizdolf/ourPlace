@@ -75,11 +75,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
             smallMusic = true;
             a.css('font-size', '10px');A.css('font-size', '10px');t.css('font-size', '10px');M.css('max-width', '100%');
             m.css('width', '150px');m.css('height', '60vh');m.css('overflow', 'auto');l.css('width', '120px');
-            l.css('height', '120px');c.hide(0);r.html('Expend Music');
+            l.css('height', '120px');c.hide(0);
         }else{
             smallMusic = false;
             m.removeAttr('style');l.removeAttr('style');c.removeAttr('style');M.removeAttr('style');
-            t.removeAttr('style');a.removeAttr('style');A.removeAttr('style');r.html('Reduce Music');
+            t.removeAttr('style');a.removeAttr('style');A.removeAttr('style');
         }
     };
 

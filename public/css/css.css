@@ -10,25 +10,25 @@ body{
     text-align: center;
 }
 .btn-upload{
-    width: 50px;
-    height: 50px;
     background: #F98B36;
     text-align: center;
-    cursor: pointer;
     border-radius: 50%;
-    margin: 10px;
-    box-shadow: 0px 0px 6px 0px #4E4E4E;
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
 }
 
-.btn-upload:hover{
+.btnMenu:hover{
     box-shadow: -1px -1px 6px -2px #4E4E4E;
     z-index: 9;
 }
 
-.btn-upload img{
+.btnMenu {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0px 0px 6px 0px #4E4E4E;
+}
+
+.btnMenu img{
     width: inherit;
     height: inherit;
     overflow: hidden;
@@ -128,6 +128,11 @@ body{
     audio {
         width : 40%;
     }
+    .ctrls img {
+        opacity: 0.4;
+        margin-left:15px;
+        cursor: pointer;
+    }
 }
 
 @media (max-width: 770px){
@@ -139,6 +144,14 @@ body{
         width: 100%;
         z-index: 99999999;
         background: rgba(255, 255, 255, 0.5);
+    }
+
+
+    .ctrls img {
+        opacity: 0.4;
+        margin-left: 2%;
+        cursor: pointer;
+        width: 30%;
     }
     .itemMusic{
         width: 100%;
@@ -221,11 +234,18 @@ body{
     background : #FFFFFF;
 }
 
-#mainMenu button{
-    height: 40px;
-    margin: 5px;
+#mainMenu ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0
 }
 
+#mainMenu ul li{
+    display: block;
+    margin: 0 15px;
+    height: 50px;
+    float: left;
+}
 .optItem{
     position: absolute;
     bottom: 1px;
@@ -315,10 +335,4 @@ body{
     position: absolute;
     left: 0;
     top: 0;
-}
-
-.ctrls img {
-    opacity: 0.4;
-    margin-left:15px;
-    cursor: pointer;
 }
