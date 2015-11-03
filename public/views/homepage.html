@@ -60,8 +60,8 @@
                 <div class="Meta" ng-if="stream.meta.title">
                     <div class="textItem" style="height: 50%;">
                         <span class="title">{{stream.meta.title}}</span>
-                        <span class="artist"><i>From : </i>{{stream.meta.artist[0]}}</span>
-                        <span class="album"><i>Album : </i>{{stream.meta.album}}</span>
+                        <span class="artist" ng-if="stream.meta.artist[0]"><i>From : </i>{{stream.meta.artist[0]}}</span>
+                        <span class="album" ng-if="stream.meta.album"><i>Album : </i>{{stream.meta.album}}</span>
                     </div>
                 </div>
                 <div class="Meta" ng-if="!stream.meta.title">
