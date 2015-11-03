@@ -63,6 +63,7 @@ body{
 
 .current{
     background: url('../img/playing.gif') no-repeat center !important;
+    background-color: rgba(67, 179, 84, 1) !important;
 }
 
 .textItem{
