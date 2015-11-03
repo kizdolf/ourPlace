@@ -28,7 +28,7 @@
     </div>
 </div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-<div class="btn-upload" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
+
 <div class="uploading">
     <div class="up" ng-repeat="up in uploading">
         {{up.name}} :  upload is at {{up.pct}}%<br>
@@ -37,10 +37,14 @@
     </div>
 </div>
 <div id="mainMenu">
-    <button type="button" name="button" ng-click="reduceMusic()" class="reduceMusic">Reduce Music</button>
-    <span>
-        Drag and drop documents everywhere to upload them :)
-    </span>
+    <ul>
+        <li>
+            <div ng-click="reduceMusic()" class="btnMenu"><img src="img/ic_swap_horiz_black_24dp.png" alt="reduce" title="swap music size"/></div>
+        </li>
+        <li>
+            <div class="btn-upload btnMenu" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
+        </li>
+    </ul>
 </div>
 <div ng-if="loader" class="loading" style="text-align: center;">
     <img src="img/loader-page.gif" />
