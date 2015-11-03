@@ -290,3 +290,19 @@ body{
     left: 0;
     top: 0;
 }
+
+.ctrls{
+    position: absolute;
+    top: 5px;
+    left: 115px;
+}
+
+.ctrls img {
+    opacity: 0.4;
+    margin-left:15px;
+    cursor: pointer;
+}
+
+.ctrls img:hover{
+    opacity: 1;
+}
