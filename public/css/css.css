@@ -10,19 +10,32 @@ body{
     text-align: center;
 }
 .btn-upload{
-    background: grey;
-    height:50px;
-    line-height:50px;
+    width: 90px;
+    background: #F98B36;
     text-align: center;
     cursor: pointer;
+    height: 90px;
+    border-radius: 50%;
+    margin: 10px;
+    box-shadow: 0px 0px 6px 0px #4E4E4E;
+    position: absolute;
+    top: 40px;
+    right: 0px;
+}
+
+.btn-upload:hover{
+    box-shadow: -1px -1px 6px -2px #4E4E4E;
+}
+
+.btn-upload img{
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
 }
 
 .drop-box{
-    width: 55%;
-    height: 140px;
-    border: 1px solid black;
-    line-height: 150px;
-    text-align: center;
+    width: 100%;
+    height: 100%;
     position: absolute;
     top: 0;
     right: 0;
@@ -74,7 +87,6 @@ body{
     }
 
     .metaPlayer{
-        border: 1px solid black;
         width: 40%;
         position: relative;
         height: 100px;
@@ -121,7 +133,6 @@ body{
     }
 
     .metaPlayer{
-        border: 1px solid black;
         width: 100%;
         position: relative;
         height: 100px;
@@ -197,10 +208,10 @@ body{
 }
 
 .optsItem{
-    background: #868686;
-    box-shadow: 1px 1px 10px 1px #405433;
-    height: 110px;
-    width: 120px;
+    background: #EFEFF2;
+    box-shadow: 1px 1px 10px 1px #8E8E8E;
+    height: 96px;
+    width: 110px;
     position: absolute;
     right: -14px;
     bottom: 27px;
@@ -211,13 +222,14 @@ body{
 .oneOpt{
     height: 30px;
     background: #CCCECC;
-    width: 110px;
+    width: 106px;
     display: block;
     line-height: 30px;
-    margin: 5px;
+    margin: 1px auto;
     text-align: center;
     box-shadow: 1px 1px 1px 0px #9E9595;
     cursor: pointer;
+    position: relative;
 }
 
 .oneOpt:hover{
@@ -246,4 +258,18 @@ body{
 .editMeta label{
     width: 30%;
     display: inline-block;
+}
+
+.txtOpt {
+    display: inline-block;
+    padding-left: 17px;
+}
+
+.imgOpt {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
 }

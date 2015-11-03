@@ -11,6 +11,8 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
 
+    $('.metaPlayer').hide(0);
+
     var byDate = function(a, b){
         if(a.date > b.date) return -1;
         else return 1;
@@ -127,6 +129,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.play = function(index){
+        $('.metaPlayer').show(80);
         $scope.index    = (index >= $scope.streams.length) ? 0 : index;
         var run         = $scope.streams[$scope.index],
             classItem   = '.itemMusic.' + $scope.index,
