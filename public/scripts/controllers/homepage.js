@@ -32,9 +32,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.audioPlay = function(){
         if(playingAudio){
+            playingAudio = false;
             $('.pause_play').attr('src', 'img/ic_play_arrow_black_24dp.png');
             player.pause();
         }else{
+            playingAudio = true;
             player.play();
             $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
         }
@@ -42,7 +44,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.audioPrev = function(){
         if ($scope.index > 0) $scope.index--;
-        else $scope.index = $scope.streams.length;
+        else $scope.index = $scope.streams.length-1;
         $scope.play($scope.index);
     };
 
