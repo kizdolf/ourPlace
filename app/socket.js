@@ -4,13 +4,14 @@ var
 conf        = require('./config').socket,
 io          = require('socket.io')(conf.socketPort),
 lib         = require('./library'),
+moment      = require('moment'),
 user;
 
 var liveUsers = 0;
 
 io.on('connection', function(socket){
     liveUsers++;
-    console.log('live users : ' + liveUsers);
+    console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] live users : ' + liveUsers);
 
     user = {
         id: socket.id,
@@ -30,7 +31,7 @@ io.on('connection', function(socket){
 
     socket.on('disconnect', function() {
         liveUsers--;
-        console.log('live users : ' + liveUsers);
+        console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] live users : ' + liveUsers);
     });
 });
 
