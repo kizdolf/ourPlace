@@ -18,9 +18,9 @@
     </div>
 </div>
 <div ngf-drop="uploadFiles($files)" class="drop-box"
-  ngf-drag-over-class="dragover" ngf-multiple="true">Drag and Drop files here to upload</div>
+  ngf-drag-over-class="dragover" ngf-multiple="true"></div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
-<div class="btn-upload" ngf-select="uploadFiles($files)" ngf-multiple="true">choose stuff(s) to upload</div>
+<div class="btn-upload" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
 <div class="uploading">
     <div class="up" ng-repeat="up in uploading">
         {{up.name}} :  upload is at {{up.pct}}%<br>
@@ -30,6 +30,9 @@
 </div>
 <div id="mainMenu">
     <button type="button" name="button" ng-click="reduceMusic()" class="reduceMusic">Reduce Music</button>
+    <span>
+        Drag and drop documents everywhere to upload them :)
+    </span>
 </div>
 <div ng-if="loader" class="loading" style="text-align: center;">
     <img src="img/loader-page.gif" />
@@ -40,9 +43,9 @@
             <span class="doMore">
                 <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index)" class="optItem"/>
                 <div class="optsItem" style="display: none">
-                    <span class="oneOpt" ng-click="download($index)">Download</span>
-                    <span class="oneOpt" ng-click="edit($index)">Edit</span>
-                    <span class="oneOpt" ng-click="delete($index)">Delete</span>
+                    <span class="oneOpt" ng-click="download($index)"><img src="img/ic_file_download_black_24dp.png" alt="dl" class="imgOpt"/><span class="txtOpt">Download</span></span>
+                    <span class="oneOpt" ng-click="edit($index)"><img src="img/ic_edit_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Edit</span></span>
+                    <span class="oneOpt" ng-click="delete($index)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Delete</span></span>
                 </div>
             </span>
             <li ng-click="play($index)" class="liItem">
