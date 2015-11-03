@@ -62,7 +62,7 @@ body{
 }
 
 .current{
-    background: rgba(67, 179, 84, 0.7) !important;
+    background: url('../img/playing.gif') no-repeat center !important;
 }
 
 .textItem{
@@ -222,6 +222,8 @@ body{
 .liItem{
     width: inherit;
     height: inherit;
+    color: black;
+    text-shadow: 1px 1px 2px #F1D2B9;
 }
 
 .optsItem{
@@ -272,6 +274,8 @@ body{
     background: white;
 }
 
+
+
 .editMeta label{
     width: 30%;
     display: inline-block;
@@ -295,6 +299,7 @@ body{
     position: absolute;
     top: 5px;
     left: 115px;
+    width: 370px;
 }
 
 .ctrls img {
