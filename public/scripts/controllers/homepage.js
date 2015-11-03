@@ -113,13 +113,22 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         }
     };
 
-    $scope.options = function(index){
-        var cl      = '.itemMusic.' + index,
-            opts    = $(cl).find('.optsItem'),
-            doMore  = $(cl).find('.doMore');
-        opts.toggle(0);
+    var optTrigger = false;
+    $scope.options = function(index, e){
+        optTrigger = !optTrigger;
+        $scope.optionsIndex = index;
+        var left    = e.clientX  + 10 + "px",
+            top     = e.clientY  + 10 + "px",
+            btn     = $('.optItem'),
+            opts    = $('#optsItem');
+        opts.show(80);
+        opts.css('top', top);
+        opts.css('left', left);
         $('html').click(function(e){
-            if (!doMore.is(e.target) && doMore.has(e.target).length === 0) opts.hide(0);
+            if ((!btn.is(e.target) || !optTrigger) && !opts.is(e.target) && opts.has(e.target).length === 0){
+                opts.hide(20);
+                optTrigger = false;
+            }
         });
     };
 
@@ -141,7 +150,8 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.onTop = {
         show: false,
-        meta: false
+        meta: false,
+        comment: false
     };
     $scope.edit = function(index){
         $scope.onTop.show       = true;
@@ -150,6 +160,16 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         $scope.editMeta.path    = $scope.streams[index].path;
         $scope.editMeta.index   = index;
         $scope.editMeta.name    = $scope.streams[index].name;
+    };
+
+    $scope.comment = function(index){
+        $scope.onTop.show       = true;
+        $scope.onTop.comment    = true;
+        $scope.editComment      = {
+            name : $scope.streams[index].name,
+            comment : '',
+            meta : $scope.streams[index].meta
+        };
     };
 
     $scope.updateMeta = function(editMeta){
