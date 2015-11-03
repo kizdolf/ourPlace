@@ -12,6 +12,12 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var audioSource = $('#audioSource');
     var playingAudio = false;
 
+    $('body').bind('keydown', function(e){
+        if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
+        else if(e.keyCode == 39) $scope.audioNext();
+        else if(e.keyCode == 37) $scope.audioPrev();
+    });
+
 
     $('.metaPlayer').hide(0);
     $('.drop-box').hide(0);
