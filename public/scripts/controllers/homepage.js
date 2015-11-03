@@ -10,17 +10,17 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     $scope.index = 0;
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
+    var playingAudio = false;
+
 
     $('.metaPlayer').hide(0);
     $('.drop-box').hide(0);
     $('html').bind('dragenter', function(){
         $('.drop-box').show(0);
     });
-
     $('.drop-box').bind('dragleave', function(){
         $('.drop-box').hide(0);
     });
-
     $('.drop-box').bind('dragend', function(){
         $('.drop-box').hide(0);
     });
@@ -28,6 +28,27 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var byDate = function(a, b){
         if(a.date > b.date) return -1;
         else return 1;
+    };
+
+    $scope.audioPlay = function(){
+        if(playingAudio){
+            $('.pause_play').attr('src', 'img/ic_play_arrow_black_24dp.png');
+            player.pause();
+        }else{
+            player.play();
+            $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
+        }
+    };
+
+    $scope.audioPrev = function(){
+        if ($scope.index > 0) $scope.index--;
+        else $scope.index = $scope.streams.length;
+        $scope.play($scope.index);
+    };
+
+    $scope.audioNext = function(){
+        $scope.index++;
+        $scope.play($scope.index);
     };
 
     $scope.loader = true;
@@ -142,6 +163,8 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     };
 
     $scope.play = function(index){
+        playingAudio = true;
+        $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
         $('.metaPlayer').show(80);
         $scope.index    = (index >= $scope.streams.length) ? 0 : index;
         var run         = $scope.streams[$scope.index],
