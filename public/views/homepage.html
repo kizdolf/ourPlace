@@ -1,3 +1,9 @@
+<div ngf-drop="uploadFiles($files)" class="drop-box" ngf-drag-over-class="dragover" ngf-multiple="true">
+    <div class="contentDrag">
+        Drop files here!
+        <img src="img/ic_file_upload_black_24dp.png" alt="upload" />
+    </div>
+</div>
 <div class="player">
     <audio controls id="audioPlayer">
         <source src="null" type="null" id="audioSource">
@@ -17,8 +23,6 @@
         </span>
     </div>
 </div>
-<div ngf-drop="uploadFiles($files)" class="drop-box"
-  ngf-drag-over-class="dragover" ngf-multiple="true"></div>
 <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 <div class="btn-upload" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
 <div class="uploading">

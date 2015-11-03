@@ -12,6 +12,18 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var audioSource = $('#audioSource');
 
     $('.metaPlayer').hide(0);
+    $('.drop-box').hide(0);
+    $('html').bind('dragenter', function(){
+        $('.drop-box').show(0);
+    });
+
+    $('.drop-box').bind('dragleave', function(){
+        $('.drop-box').hide(0);
+    });
+
+    $('.drop-box').bind('dragend', function(){
+        $('.drop-box').hide(0);
+    });
 
     var byDate = function(a, b){
         if(a.date > b.date) return -1;
@@ -44,6 +56,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $scope.uploading = {};
     $scope.uploadFiles = function (files) {
+        $('.drop-box').hide(0);
         if (files && files.length) {
             files.forEach(function(file){
                 $scope.uploading[file.name]= {
