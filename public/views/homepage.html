@@ -49,16 +49,17 @@
 <div ng-if="loader" class="loading" style="text-align: center;">
     <img src="img/loader-page.gif" />
 </div>
+<div id="optsItem" style="display: none">
+    <span class="oneOpt" ng-click="download(optionsIndex)"><img src="img/ic_file_download_black_24dp.png" alt="dl" class="imgOpt"/><span class="txtOpt">Download</span></span>
+    <span class="oneOpt" ng-click="edit(optionsIndex)"><img src="img/ic_edit_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Edit</span></span>
+    <span class="oneOpt" ng-click="comment(optionsIndex)"><img src="img/ic_comment_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Comment</span></span>
+    <span class="oneOpt" ng-click="delete(optionsIndex)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Delete</span></span>
+</div>
 <div id="music">
     <ul class="listMusic">
         <span ng-repeat="stream in streams track by $index" class="itemMusic {{$index}}">
             <span class="doMore">
-                <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index)" class="optItem"/>
-                <div class="optsItem" style="display: none">
-                    <span class="oneOpt" ng-click="download($index)"><img src="img/ic_file_download_black_24dp.png" alt="dl" class="imgOpt"/><span class="txtOpt">Download</span></span>
-                    <span class="oneOpt" ng-click="edit($index)"><img src="img/ic_edit_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Edit</span></span>
-                    <span class="oneOpt" ng-click="delete($index)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Delete</span></span>
-                </div>
+                <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index, $event)" class="optItem"/>
             </span>
             <li ng-click="play($index)" class="liItem">
                 <div class="Meta" ng-if="stream.meta.title">
@@ -87,6 +88,16 @@
             <label>Artist : </label><input type="text" ng-model="editMeta.artist[0]"><br>
             <label>Album : </label><input type="text"  ng-model="editMeta.album"><br>
             <label>Title : </label><input type="text"  ng-model="editMeta.title"><br>
+        </p>
+        <button type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
+        <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
+    </div>
+
+    <div class="editComment" ng-if="onTop.comment">
+        <span ng-click="closeMeta()">X</span>
+        <p>
+            <h4>Comment {{editComment.name}}</h4>
+            <textarea ng-model="editComment.comment"></textarea>
         </p>
         <button type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
         <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>

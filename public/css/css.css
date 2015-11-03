@@ -268,14 +268,11 @@ body{
     text-shadow: 1px 1px 2px #F1D2B9;
 }
 
-.optsItem{
+#optsItem{
+    position: absolute;
     background: #EFEFF2;
     box-shadow: 1px 1px 10px 1px #8E8E8E;
-    height: 96px;
     width: 110px;
-    position: absolute;
-    right: -14px;
-    bottom: 27px;
     z-index: 9999;
     cursor: default;
 }
