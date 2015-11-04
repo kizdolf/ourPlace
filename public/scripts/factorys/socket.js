@@ -2,7 +2,7 @@
 
 angular.module('ourPlace.socket',[])
 .factory('ourPlace.socket', function ($rootScope) {
-    var host = "149.202.44.123";
+    var host = "http://"+window.location.hostname;
     var port = conf.socketPort;
     var socket = io.connect(host + ':' + port);
   return {

@@ -8,6 +8,7 @@ var
     couchbase       = require('couchbase'),
     Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
+    moment          = require('moment'),
     fs              = require('fs'),
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
@@ -148,6 +149,43 @@ exports.all = function(){
                 files.push(one.value);
             });
             sock.files(files);
+        }
+    });
+};
+
+exports.allNotes = function(){
+    var ViewQuery   = couchbase.ViewQuery,
+        bucket      = Cluster.openBucket(conf.filesBucket),
+        q           = ViewQuery.from('listing', 'allNotes'),
+        notes       = [];
+    bucket.query(q, function(err, res){
+        if(err){
+            console.log('err requesting all Notes');
+            console.log(err);
+        }else{
+            res.forEach(function(one){
+                one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');
+                notes.push(one.value);
+            });
+            sock.notes(notes);
+        }
+    });
+};
+
+exports.addNote = function(note){
+    console.log(note);
+    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+        if(err) console.log(err);
+        else{
+            Bucket.insert(note.name, note, function(err) {
+                if (err){
+                    console.log('err inserting obj');
+                    console.log(err);
+                }else{
+                    console.log('obj inserted:'+ note.name);
+                    exports.allNotes();
+                }
+            });
         }
     });
 };

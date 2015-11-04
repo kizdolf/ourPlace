@@ -20,11 +20,16 @@ io.on('connection', function(socket){
     socket.emit('files', lib.all());
     socket.on('get_all', function(){
         lib.all();
+        lib.allNotes();
     });
 
     socket.on('delete', function(data){
         console.log(data);
         lib.delete(data.name);
+    });
+
+    socket.on('newNote', function(note){
+        lib.addNote(note);
     });
 
     socket.on('updateMeta', lib.updateMeta);
@@ -37,4 +42,9 @@ io.on('connection', function(socket){
 
 exports.files = function(data){
     user.socket.emit('files', data);
+};
+
+
+exports.notes = function(data){
+    user.socket.emit('notes', data);
 };

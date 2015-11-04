@@ -45,8 +45,8 @@
             <div class="btn-upload btnMenu" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
         </li>
         <li>
-            <div class="btnMenu">
-                Notes
+            <div class="btnMenu" ng-click="displayNotes()">
+                <span class="txtMenu">Notes</span>
             </div>
         </li>
     </ul>
@@ -110,4 +110,16 @@
         <button type="button" name="ok" ng-click="addComment(editComment)">Add</button> -->
         <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
     </div>
+</div>
+<div id="Notes" style="display: none;">
+    <textarea name="newNote" class="editorNote" ng-wig="newNote.content">New note... :)</textarea>
+    <div class="btnSub" ng-click="sendNote(newNote)">Send Note!</div>
+    <ul class="ulNotes">
+        <li ng-repeat="note in notes" class="oneNote">
+            <span class="date">{{note.date}}</span>
+            <div class="contentNote">
+                {{note.content}}
+            </div>
+        </li>
+    </ul>
 </div>
