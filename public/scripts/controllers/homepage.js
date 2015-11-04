@@ -76,7 +76,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         if(!smallMusic){
             smallMusic = true;
             a.css('font-size', '10px');A.css('font-size', '10px');t.css('font-size', '10px');M.css('max-width', '100%');
-            m.css('width', '100%');m.css('height', '130px');m.css('overflow', 'auto');
+            m.css('width', '100%');m.css('height', '150px');m.css('overflow', 'auto');
             l.css('display', 'table-cell');
             l.css('border', '2px solid rgba(249, 181, 53, 0.34)');
             m.css('float', 'left'); m.css('margin-right', '20px'); l.css('width', '120px');
