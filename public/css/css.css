@@ -358,6 +358,7 @@ body{
     background: white;
     float: left;
     margin: 10px;
+    overflow: auto;
 }
 
 .oneNote .date{
@@ -372,7 +373,7 @@ body{
     width: 400px;
     max-width: 90vw;
     height: 400px;
-    overflow: scroll;
+    overflow: auto;
 }
 
 .btnSub{
@@ -384,5 +385,4 @@ body{
 
 .contentNote{
     padding: 10px;
-    overflow: scroll;
 }
