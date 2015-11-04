@@ -372,6 +372,7 @@ body{
     width: 400px;
     max-width: 90vw;
     height: 400px;
+    overflow: scroll;
 }
 
 .btnSub{
@@ -383,4 +384,5 @@ body{
 
 .contentNote{
     padding: 10px;
+    overflow: scroll;
 }
