@@ -342,8 +342,8 @@ body{
 }
 
 #Notes{
-    float: left;
     margin-top: 20px;
+    width: 100%;
 }
 
 #Notes .ulNotes {
