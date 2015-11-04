@@ -13,9 +13,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var playingAudio = false;
 
     $('body').bind('keydown', function(e){
-        if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
-        else if(e.keyCode == 39) $scope.audioNext();
-        else if(e.keyCode == 37) $scope.audioPrev();
+        if(!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0){
+            if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
+            else if(e.keyCode == 39) $scope.audioNext();
+            else if(e.keyCode == 37) $scope.audioPrev();
+        }
     });
 
 
@@ -74,8 +76,11 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         if(!smallMusic){
             smallMusic = true;
             a.css('font-size', '10px');A.css('font-size', '10px');t.css('font-size', '10px');M.css('max-width', '100%');
-            m.css('width', '150px');m.css('height', '60vh');m.css('overflow', 'auto');l.css('width', '120px');
-            l.css('height', '120px');c.hide(0);
+            m.css('width', '100%');m.css('height', '130px');m.css('overflow', 'auto');
+            l.css('display', 'table-cell');
+            l.css('border', '2px solid rgba(249, 181, 53, 0.34)');
+            m.css('float', 'left'); m.css('margin-right', '20px'); l.css('width', '120px');
+            l.css('height', '120px');c.hide(0);M.css('width', '100%');
         }else{
             smallMusic = false;
             m.removeAttr('style');l.removeAttr('style');c.removeAttr('style');M.removeAttr('style');
@@ -219,5 +224,24 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     $interval(function(){
         $scope.get_all();
     }, 25000);
+
+    /*NOTES*/
+
+    socket.on('notes', function(notes){
+        $scope.notes = notes;
+    });
+
+    $scope.displayNotes = function(){
+        $scope.reduceMusic();
+        $scope.get_all();
+        $('#Notes').show(120);
+    };
+
+    $scope.sendNote = function(note){
+        console.log('note is on his way');
+        note.date = Date.now();
+        note.name = "ourNote" + note.date;
+        socket.emit('newNote', note);
+    };
 
 }]);
