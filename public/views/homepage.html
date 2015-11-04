@@ -117,8 +117,7 @@
     <ul class="ulNotes">
         <li ng-repeat="note in notes" class="oneNote">
             <span class="date">{{note.date}}</span>
-            <div class="contentNote">
-                {{note.content}}
+            <div class="contentNote" ng-bind-html="note.content">
             </div>
         </li>
     </ul>

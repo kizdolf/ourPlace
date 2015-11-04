@@ -374,6 +374,7 @@ body{
     max-width: 90vw;
     height: 400px;
     overflow: auto;
+    float: left;
 }
 
 .btnSub{

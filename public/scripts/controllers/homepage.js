@@ -2,7 +2,7 @@
 /*
     Controller for the homepage.
 */
-angular.module('ourPlace.homepage', ['ngRoute'])
+angular.module('ourPlace.homepage', ['ngRoute', 'ngSanitize'])
 
 .controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval',
 function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
