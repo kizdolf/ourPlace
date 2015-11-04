@@ -11,6 +11,9 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     var player = $('#audioPlayer')[0];
     var audioSource = $('#audioSource');
     var playingAudio = false;
+    $scope.streams = [];
+    var streamsPresent = {};
+    var notesPresent = {};
 
     $('body').bind('keydown', function(e){
         if(!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0){
@@ -66,12 +69,21 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
     socket.on('files', function(data){
         $scope.loader = false;
         var streams = data;
-        if(streams) $scope.streams = streams.sort(byDate);
+        if(streams){
+            streams = streams.sort(byDate);
+            streams.forEach(function(stream, i){
+                if(!streamsPresent[stream.name]){
+                    streamsPresent[stream.name] = true;
+                    $scope.streams[i] = stream;
+                }
+            });
+
+        }
     });
 
     var smallMusic = false;
     $scope.reduceMusic = function(){
-        var m = $('#music'), l = $('.itemMusic'), c = $('.cover'), r = $('.reduceMusic'),
+        var m = $('#music'), l = $('.itemMusic'), c = $('.cover'),
             M = $('.Meta'), t = $('.title'), a = $('.album'), A = $('.artist');
         if(!smallMusic){
             smallMusic = true;
@@ -223,22 +235,26 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
 
     $interval(function(){
         $scope.get_all();
-    }, 25000);
+    }, conf.delay);
 
     /*NOTES*/
-
+    $scope.notes = [];
     socket.on('notes', function(notes){
-        $scope.notes = notes;
+        notes.forEach(function(note, i){
+            if(!notesPresent[note.date]){
+                notesPresent[note.date] = true;
+                $scope.notes[i] = note;
+            }
+        });
     });
 
     $scope.displayNotes = function(){
         $scope.reduceMusic();
         $scope.get_all();
-        $('#Notes').show(120);
+        $('#Notes').toggle(0);
     };
 
     $scope.sendNote = function(note){
-        console.log('note is on his way');
         note.date = Date.now();
         note.name = "ourNote" + note.date;
         socket.emit('newNote', note);
