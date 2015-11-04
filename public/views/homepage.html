@@ -44,6 +44,11 @@
         <li>
             <div class="btn-upload btnMenu" ngf-select="uploadFiles($files)" ngf-multiple="true"><img src="img/ic_add_black_24dp.png" alt="upload" title="upload what you want" /></div>
         </li>
+        <li>
+            <div class="btnMenu">
+                Notes
+            </div>
+        </li>
     </ul>
 </div>
 <div ng-if="loader" class="loading" style="text-align: center;">
@@ -96,10 +101,13 @@
     <div class="editComment" ng-if="onTop.comment">
         <span ng-click="closeMeta()">X</span>
         <p>
+            Comming Soon!
+        </p>
+        <!-- <p>
             <h4>Comment {{editComment.name}}</h4>
             <textarea ng-model="editComment.comment"></textarea>
         </p>
-        <button type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
+        <button type="button" name="ok" ng-click="addComment(editComment)">Add</button> -->
         <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
     </div>
 </div>
