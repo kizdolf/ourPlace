@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Log in</title>
+    </head>
+    <body>
+        <div id="wrapper">
+            <h1>Hi!</h1>
+            <p>
+                Since you're not loggued you cannot see much of the website :s<br>
+                So log in!
+            </p>
+            <input type="text" name="username" id="username" placeholder="Username">
+            <input type="password" name="password" id="password" placeholder="Password">
+            <button type="button" name="logIn" id="logIn">Log-in!</button>
+        </div>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script>
+            var
+                token       = '',
+                userName    = $('#username'),
+                password    = $('#password'),
+                logIn       = $('#logIn');
+
+                $.get('/tokenLogin', function(data){
+                    token  = data.token;
+                });
+
+                logIn.click(function(){
+                    $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(ok){
+                        if(ok) location.reload();
+                    });
+                });
+        </script>
+    </body>
+</html>
