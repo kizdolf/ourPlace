@@ -44,8 +44,11 @@ Unique token for the invitation, unique token at each login.
 
 # Installation: 
 1) Git clone somewhere. 
-2) npm install
-3) edit config
+
+2) npm install 
+
+3) edit config 
+
 4) Couchbase views: 
 * Bucket name: fileForUs
 * views :
