@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 var
     mainConf        = require('./config').conf,
     conf            = require('./config').couch,
@@ -12,27 +10,35 @@ var
     fs              = require('fs'),
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
-    accepted_mimes  = [
+    accepted_mimes  = [ //should not be here. See config.js
         'audio/mp3',
         'audio/x-m4a'
     ];
-//Uncomment this to delete all docs in bucket.
-    // var ViewQuery = couchbase.ViewQuery;
-    // var bucket = Cluster.openBucket(conf.filesBucket);
-    // var q = ViewQuery.from('listing', 'allNames');
-    // bucket.query(q, function(err, res){
-    //     if(err){
-    //         console.log("err");
-    //         console.log(err);
-    //     }else{
-    //         res.forEach(function(one){
-    //             bucket.remove(one.key, function(err){
-    //                 console.log('removed ' + one.key);
-    //             });
-    //         });
-    //     }
-    // });
 
+var deleteAllFromBucket = function(){
+    var ViewQuery = couchbase.ViewQuery;
+    var bucket = Cluster.openBucket(conf.filesBucket);
+    var q = ViewQuery.from('listing', 'allNames');
+    bucket.query(q, function(err, res){
+        if(err){
+            console.log("err");
+            console.log(err);
+        }else{
+            res.forEach(function(one){
+                bucket.remove(one.key, function(err){
+                    console.log('removed ' + one.key);
+                });
+            });
+        }
+    });
+};
+//Uncomment this to delete all docs in bucket.
+// deleteAllFromBucket();
+
+/*
+Retrieve metadata from a file. Files are not always easy with that, 
+so in case of error an empty object is returned. The app continue to run.
+*/
 var getMetaData = function(path, cb){
     mm(fs.createReadStream(path), function(err, meta){
         if(err){
@@ -40,6 +46,7 @@ var getMetaData = function(path, cb){
             console.log(err);
             cb(null, {});
         }else{
+            //extract and save picture, need to be in it's own function.
             if(meta.picture[0] && meta.picture[0].data){
                 var pic     = new Buffer(meta.picture[0].data),
                     picName = path.split('/')[1] + '.' + meta.picture[0].format;
@@ -62,6 +69,8 @@ var getMetaData = function(path, cb){
     });
 };
 
+//update some metadata fields. it DOES NOT Write them in the file. 
+//TODO: write the new metadata IN the file AND in the db.
 exports.updateMeta = function(data){
     var name = data.name;
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
@@ -80,6 +89,7 @@ exports.updateMeta = function(data){
     });
 };
 
+//delete a db item. Should delete the related file as well. It's stupid to not.
 exports.delete = function(name){
     if(name){
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
@@ -97,14 +107,18 @@ exports.delete = function(name){
     }
 };
 
+/*
+Handler for a new file.
+Should be able to manage several type, not just music. 
+*/
 exports.handle = function(file, cb){
     console.log(file.mimetype);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
-        //delete file via fs
+        //TODO: delete file via fs
         return false;
     }else{
         getMetaData(file.path, function(err, meta){
-            if(!err){
+            if(!err){ //else log. No?
                 var obj = {
                     name : file.originalname,
                     path : '/' + file.path,
@@ -125,6 +139,7 @@ exports.handle = function(file, cb){
                         console.log(err);
                         cb(err, null);
                     }else{
+                        //this log is bad.
                         console.log('obj inserted:'+ res);
                         exports.all();
                         cb(null, true);
@@ -135,6 +150,7 @@ exports.handle = function(file, cb){
     }
 };
 
+//send all SONGS. Nomenclatura is not ok. 
 exports.all = function(){
     var files = [];
     var ViewQuery = couchbase.ViewQuery;
@@ -153,6 +169,7 @@ exports.all = function(){
     });
 };
 
+//send all notes.
 exports.allNotes = function(){
     var ViewQuery   = couchbase.ViewQuery,
         bucket      = Cluster.openBucket(conf.filesBucket),
@@ -172,8 +189,8 @@ exports.allNotes = function(){
     });
 };
 
+//add a note.
 exports.addNote = function(note){
-    console.log(note);
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
         if(err) console.log(err);
         else{
