@@ -1,3 +1,11 @@
+/*
+    Entry point.
+
+    Ideas:
+        - clusturize the application. Carefully because websockets don't like it really much. 
+          Solutions are out there to manage them, the pid used by one user need to stay the same all along the process.
+        - Run tests at startup. (this implies to BUILD and CODE tests. humpfff)
+*/
 'use strict';
 
 var
@@ -14,13 +22,15 @@ var
     .use(bodyParser.json())
     //serve webApp
     .use(conf.webPath, express.static(conf.webDir))
-
+    //serve medias
     .use(conf.mediaPath, express.static(conf.mediaDir))
     //use api
     .use(conf.apiPrefix, api.main)
-    //wrong http request. 404 (should send a true 404 page instead.)
+    //wrong path
     .use(function(req, res){
+        //TODO: Send a 404 page. Or redirect somewhere.
         res.json({msg: '404'});
     })
     //ready for requests.
+    //TODO: add log.
     .listen(conf.mainPort);
