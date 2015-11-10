@@ -12,51 +12,21 @@ var
     express     = require('express'),
     bodyParser  = require('body-parser'),
     conf        = require('./app/config').conf,
-    api         = require('./app/api');
+    api         = require('./app/api'),
+    login       = require('./app/login'),
+    session     = require('express-session');
 
     require('./app/socket');
 
-var loggued = false;
-
-/*Fake account managment.*/
-var accounts = {
-    isLoggued : function(body){
-        body = body;
-        return loggued;
-    },
-    goodUser : function(body){
-        console.log(body);
-        return true;
-    },
-    registerUser : function(body){
-        body = body;
-        return new Promise(function(ful){
-            loggued = true;
-            ful(true);
-        });
-    }
-};
-
     express()
     //middlewares
+    .use(session({secret: 'thisIsSecretForSession', resave: false, saveUninitialized: true}))
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
-    .use('/tokenLogin', function(req, res){
-        res.json({token: 123456});
-    })
-    .use('/login', function(req, res, next){
-        console.log('login!');
-        if(accounts.goodUser(req.body)){
-            accounts.registerUser(req.body).then(function(done){
-                res.send({ok: true});
-                done = done;
-            });
-        }else{
-            next();
-        }
-    })
+    .use('/tokenLogin', login.getToken)
+    .use('/login',  login.login)
     .use(function(req, res, next){
-        if(!accounts.isLoggued(req.body))
+        if(!login.isLoggued(req))
             res.sendFile(__dirname + '/login/index.html', {root : '/', token: 123456});
         else
             next();

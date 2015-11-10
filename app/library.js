@@ -83,7 +83,7 @@ exports.updateMeta = function(data){
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
                 if(err) console.log(err);
-                else exports.all();
+                else exports.allSongs();
             });
         }
     });
@@ -101,7 +101,7 @@ exports.delete = function(name){
             if(err){
                 console.log(err);
             }else{
-                exports.all();
+                exports.allSongs();
             }
         });
     }
@@ -141,7 +141,7 @@ exports.handle = function(file, cb){
                     }else{
                         //this log is bad.
                         console.log('obj inserted:'+ res);
-                        exports.all();
+                        exports.allSongs();
                         cb(null, true);
                     }
                 });
@@ -150,22 +150,24 @@ exports.handle = function(file, cb){
     }
 };
 
-//send all SONGS. Nomenclatura is not ok. 
-exports.all = function(){
+exports.allSongs = function(){
     var files = [];
     var ViewQuery = couchbase.ViewQuery;
     var bucket = Cluster.openBucket(conf.filesBucket);
     var q = ViewQuery.from('listing', 'allNames');
-    bucket.query(q, function(err, res){
-        if(err){
-            console.log('err requesting all');
-            console.log(err);
-        }else{
-            res.forEach(function(one){
-                files.push(one.value);
-            });
-            sock.files(files);
-        }
+    return new Promise(function(ful, rej){
+        bucket.query(q, function(err, res){
+            if(err){
+                console.log('err requesting all');
+                console.log(err);
+                rej(err);
+            }else{
+                res.forEach(function(one){
+                    files.push(one.value);
+                });
+                ful(files);
+            }
+        });
     });
 };
 

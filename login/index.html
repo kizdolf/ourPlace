@@ -3,10 +3,44 @@
     <head>
         <meta charset="utf-8">
         <title>Log in</title>
+        <style>
+        body{
+            background: black;
+            font-size: 2em;
+        }
+        #wrapper{
+            width: 80vW;
+            height: 80vh;
+            margin: 0 auto;
+            padding: 20px;
+            background: #FFE8BE;
+            font-family: monospace;
+            font-size: 2em;
+        }
+
+        input{
+            font-size: 1em;
+            font-family: monospace;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        #logIn{
+            margin-top: 15px;
+            width: 20vw;
+            background: black;
+            color: white;
+            font-size: 1em;
+            font-family: monospace;
+            cursor: pointer;
+        }
+
+        </style>
     </head>
     <body>
         <div id="wrapper">
             <h1>Hi!</h1>
+            <h4 id="erreur"></h4>
             <p>
                 Since you're not loggued you cannot see much of the website :s<br>
                 So log in!
@@ -25,11 +59,22 @@
 
                 $.get('/tokenLogin', function(data){
                     token  = data.token;
+                    console.log('token = '+ token);
+                });
+
+                $('html').keydown(function(e){
+                    if(e.which === 13)
+                        logIn.click();
                 });
 
                 logIn.click(function(){
-                    $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(ok){
-                        if(ok) location.reload();
+                    $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
+                        console.log(data);
+                        if(data.ok && data.ok === true) location.reload();
+                        else{
+                            console.log('la');
+                            $('#erreur').html(data.err.message);
+                        }
                     });
                 });
         </script>

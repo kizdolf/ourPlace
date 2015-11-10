@@ -1,0 +1,55 @@
+<style>
+    .optItem{
+        top: 1px !important;
+    }
+</style>
+<div id="Notes">
+    <div id="editorParent">
+    <textarea name="newNote" class="editorNote" ng-wig="newNote.content">New note... :)</textarea>
+    </div>
+    <div class="btnSub" ng-click="sendNote(newNote)">Send Note!</div>
+    <span><small>{{msgNote}}</small></span>
+
+    <ul class="ulNotes">
+        <li ng-repeat="note in notes track by $index" class="oneNote {{$index}}">
+            <span class="doMore">
+                <img src="img/ic_more_vert_black_24dp_1x.png" alt="more" ng-click="options($index, $event)" class="optItem"/>
+            </span>
+            <span class="date">{{note.date}}</span>
+            <div class="contentNote" ng-bind-html="note.content">
+            </div>
+        </li>
+    </ul>
+</div>
+<div id="optsItem" style="display: none">
+    <!-- <span class="oneOpt" ng-click="download(optionsIndex)"><img src="img/ic_file_download_black_24dp.png" alt="dl" class="imgOpt"/><span class="txtOpt">Download</span></span> -->
+    <!-- <span class="oneOpt" ng-click="edit(optionsIndex)"><img src="img/ic_edit_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Edit</span></span> -->
+    <!-- <span class="oneOpt" ng-click="comment(optionsIndex)"><img src="img/ic_comment_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Comment</span></span> -->
+    <span class="oneOpt" ng-click="delete(optionsIndex)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Delete</span></span>
+</div>
+<div class="onTop" ng-if="onTop.show">
+    <div class="editMeta" ng-if="onTop.meta">
+        <span ng-click="closeMeta()">X</span>
+        <p>
+            <h4>Edit of {{editMeta.name}}</h4>
+            <label>Artist : </label><input type="text" ng-model="editMeta.artist[0]"><br>
+            <label>Album : </label><input type="text"  ng-model="editMeta.album"><br>
+            <label>Title : </label><input type="text"  ng-model="editMeta.title"><br>
+        </p>
+        <button type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
+        <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
+    </div>
+
+    <div class="editComment" ng-if="onTop.comment">
+        <span ng-click="closeMeta()">X</span>
+        <p>
+            Comming Soon!
+        </p>
+        <!-- <p>
+            <h4>Comment {{editComment.name}}</h4>
+            <textarea ng-model="editComment.comment"></textarea>
+        </p>
+        <button type="button" name="ok" ng-click="addComment(editComment)">Add</button> -->
+        <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
+    </div>
+</div>

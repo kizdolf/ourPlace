@@ -21,17 +21,25 @@ io.on('connection', function(socket){
         socket: socket
     };
     //send what we have.
-    socket.emit('files', lib.all());
+    socket.emit('files', lib.allSongs());
 
     //send what we have, when the user want it.
     socket.on('get_all', function(){
+        lib.allSongs();
+        lib.allNotes();
+    });
+
+    socket.on('getMusic', function(){
         lib.all();
+    });
+
+    //send what we have, when the user want it.
+    socket.on('getNotes', function(){
         lib.allNotes();
     });
 
     //delete stuff in db
     socket.on('delete', function(data){
-        console.log(data);
         lib.delete(data.name);
     });
 

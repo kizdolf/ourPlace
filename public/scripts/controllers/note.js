@@ -2,24 +2,55 @@
 /*
     Controller for the homepage.
 */
-angular.module('ourPlace.homepage', ['ngRoute', 'ngSanitize'])
+angular.module('ourPlace.note', ['ngRoute', 'ngSanitize'])
 
-.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', 'ourPlace.music', '$rootScope',
-function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, musicService, $rootScope) {
+.controller('noteCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams',
+function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams) {
 
-    $scope.index = null; 
-    $scope.streams = [];
-    $scope.running  = false;
+    socket.emit('getNotes');
+    $scope.notes = [];
 
-    $scope.loader = false;
-    if($scope.streams && $scope.streams[0])
-        $scope.loader = false;
+    var byName = function(a, b){
+        var dOne = new Date(a.date).getTime();
+        var dTwo = new Date(b.date).getTime();
+        if(dOne > dTwo) return -1;
+        else return 1;
+    };
+
+    var notesPresent = {};
+    socket.on('notes', function(notes){
+        notes = notes.sort(byName);
+        notes.forEach(function(note, i){
+            if(note.name && !notesPresent[note.name]){
+                notesPresent[note.name] = true;
+                $scope.notes[i] = note;
+            }
+        });
+    });
+    var getNotes = function(){
+        socket.emit('getNotes');
+    };
+
+    $scope.sendNote = function(note){
+        note.date = Date.now();
+        note.name = 'ourNote' + note.date;
+        socket.emit('newNote', note);
+        $('.nw-editor__res').html('');
+        $scope.msgNote = 'note sent.';
+        $timeout(function(){
+            $scope.msgNote = '';
+        }, 3500);
+        $timeout(function(){
+            getNotes();
+        }, 1500);
+    };
+
 
     var optTrigger = false;
     $scope.options = function(index, e){
         optTrigger = !optTrigger;
         $scope.optionsIndex = index;
-        var left    = e.clientX  - 120 + 'px',
+        var left    = e.clientX - 120 + 'px',
             top     = e.clientY  + 10 + 'px',
             btn     = $('.optItem'),
             opts    = $('#optsItem');
@@ -36,9 +67,10 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
 
     //TO DO: Add a warning, and a validation there.
     $scope.delete = function(index) {
-        $('.itemMusic.' + index).find('.optsItem').hide(0);
-        socket.emit('delete', {name : $scope.streams[index].name});
-        $('.itemMusic.' + index).remove();
+        socket.emit('delete', {name : $scope.notes[index].name});
+        $('.oneNote.' + index).remove();
+        $('#optsItem').hide(0);
+        optTrigger = false;
     };
 
     $scope.download = function(index){
@@ -91,43 +123,5 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         $scope.onTop.show = false;
         $scope.onTop.meta = false;
     };
-
-    var oneIsPlaying = function(index){
-        var classItem   = '.itemMusic.' + index,
-        itemMusic   = $(classItem);
-        $('.itemMusic').removeClass('current');
-        itemMusic.addClass('current');
-    };
-
-    $scope.$on('playing', function(scope, index){
-        oneIsPlaying(index);
-    });
-
-    $scope.play = function(index){
-        musicService.play(index, true);
-    };
-
-    $scope.get_all = function(){
-        musicService.getMusic(function(music){
-            $scope.streams = music;
-        });
-    };
-
-    $scope.get_all();
-
-    $interval(function(){
-        $scope.get_all();
-    }, conf.delay);
-
-    /*this is a bit dirty (quite a lot). angular.document.ready is not enough so...*/
-    var playingItem = musicService.whichIsPlaying();
-    if(playingItem !== false){
-        $timeout(function(){
-            $scope.index = playingItem;
-            var classelem = '.itemMusic.' + playingItem;
-            var itemMusic = $(classelem);
-            itemMusic.addClass('current');
-        }, 800);
-    }
 
 }]);
