@@ -7,6 +7,8 @@ var
     Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
     moment          = require('moment'),
+    mime            = require('mime'),
+    child_process   = require('child_process'),
     fs              = require('fs'),
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
@@ -206,5 +208,42 @@ exports.addNote = function(note){
                 }
             });
         }
+    });
+};
+
+exports.fromYoutube = function(url){
+    var dir = process.env.PWD + '/medias';
+    var opts = " --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir " + dir;
+    console.log(dir);
+    var exec = "youtube-dl" + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
+    child_process.exec(exec, function(err, out){
+        sock.send('fromYoutube', {status: 2, msg: 'Download finish. Start to extract infos.'});
+        var ret = JSON.parse(out);
+        var obj = {
+            name : ret.fulltitle,
+            path :  mainConf.mediaPath + '/' +  ret.id + '.' + ret.ext,
+            size : ret.filesize,
+            date : new Date(),
+            type : mime.lookup(ret._filename),
+            meta : {
+                picture : mainConf.mediaPath + '/' +  ret.id + '.jpg'
+            }
+        };
+        var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
+            if(err){
+                console.log(err);
+            }
+        });
+        Bucket.insert(obj.name, obj, function(err, res) {
+            if (err){
+                console.log('err inserting obj');
+                console.log(err);
+            }else{
+                sock.send('fromYoutube', {status: 1, msg: 'Download finish. Start to extarct infos.'});
+                //this log is bad.
+                console.log('obj inserted:'+ res);
+                exports.allSongs();
+            }
+        });
     });
 };

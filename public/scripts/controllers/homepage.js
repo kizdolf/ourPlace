@@ -119,6 +119,24 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         $scope.get_all();
     }, conf.delay);
 
+    $scope.addFromYouTube = function(url){
+        url = url.split('&')[0];
+        if(url.indexOf('youtube.com') === -1){
+            $scope.ytError = 'this url is not from youtube.';
+            $timeout(function() {$scope.ytMsg = ''}, 2500);
+        }else{
+            socket.emit('fromYoutube', url);
+            $scope.ytMsg = 'Sound will arrive soon...';
+        }
+    }
+
+    socket.on('fromYoutube', function(data){
+        $scope.ytMsg = data.msg;
+        if(data.status === 1){
+            $scope.ytUrl = '';
+        }
+    });
+
     /*this is a bit dirty (quite a lot). angular.document.ready is not enough so...*/
     var playingItem = musicService.whichIsPlaying();
     if(playingItem !== false){

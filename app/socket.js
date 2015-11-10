@@ -56,6 +56,11 @@ io.on('connection', function(socket){
         liveUsers--;
         console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] live users : ' + liveUsers);
     });
+
+    socket.on('fromYoutube', function(url){
+        console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] From youtube : ' + url);
+        lib.fromYoutube(url);
+    });
 });
 
 //send songs when a back-end function want.
@@ -66,4 +71,8 @@ exports.files = function(data){
 //send notes when a back-end function want.
 exports.notes = function(data){
     user.socket.emit('notes', data);
+};
+
+exports.send = function(chan, data){
+    user.socket.emit(chan, data);
 };
