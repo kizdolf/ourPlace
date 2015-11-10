@@ -64,6 +64,15 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval) {
         $scope.play($scope.index);
     };
 
+    function shuffle(o){
+        for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
+
+    $scope.audioShuffle = function(){
+        $scope.streams = shuffle($scope.streams);
+    };
+
     $scope.loader = true;
 
     socket.on('files', function(data){
