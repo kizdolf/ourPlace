@@ -6,9 +6,19 @@ angular.module('ourPlace.routing', ['ngRoute'])
 
 .config(['$routeProvider', function($route) {
 
-    $route.when('/home', {
+    $route.when('/home/', {
         templateUrl: 'views/homepage.html',
         controller: 'homepageCtrl'
+    });
+
+    $route.when('/rss', {
+        templateUrl: 'views/rss.html',
+        controller: 'rssCtrl'
+    });
+
+    $route.when('/note', {
+        templateUrl: 'views/note.html',
+        controller: 'noteCtrl'
     });
 
     $route.otherwise({

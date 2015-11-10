@@ -14,6 +14,7 @@
         "io" : true,
         "jsSHA" : true,
         "Promise": true,
+        "conf": true,
         "$" : true
     },
     "node" : true,

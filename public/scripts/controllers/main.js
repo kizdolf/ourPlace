@@ -1,0 +1,118 @@
+'use strict';
+/*
+    Controller for the layout.
+*/
+angular.module('ourPlace.main', ['ngRoute', 'ngSanitize'])
+
+.controller('mainCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', '$rootScope', 'ourPlace.music',
+function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, $rootScope, musicService) {
+
+    $('.metaPlayer').hide(0);
+    $('.player').hide(0);
+    $('.drop-box').hide(0);
+    $('html').bind('dragenter', function(){
+        $('.drop-box').show(0);
+    });
+    $('.drop-box').bind('dragleave', function(){
+        $('.drop-box').hide(0);
+    });
+    $('.drop-box').bind('dragend', function(){
+        $('.drop-box').hide(0);
+    });
+    var player = $('#audioPlayer')[0];
+    var audioSource = $('#audioSource');
+    var playingAudio = false;
+    var shuffle = false;
+
+    var play = function(song){
+        $scope.running = song;
+        $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
+        $('.metaPlayer').show(80);
+        $('.player').show(0);
+        audioSource.attr('src', song.path);
+        audioSource.attr('type', song.type);
+        player.pause();
+        player.load();
+        player.oncanplaythrough = player.play();
+    };
+
+    $scope.$on('playSong', function(scope, song){
+        play(song);
+    });
+
+    $scope.audioPlay = function(){
+        if(playingAudio){
+            playingAudio = false;
+            $('.pause_play').attr('src', 'img/ic_play_arrow_black_24dp.png');
+            player.pause();
+        }else{
+            playingAudio = true;
+            player.play();
+            $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
+        }
+    };
+
+    $scope.audioPrev = function(){
+        musicService.prev();
+    };
+
+    $scope.audioNext = function(){
+        musicService.next();
+    };
+
+    $scope.audioShuffle = function(){
+        var img = $($('.ctrls').find('img')[3]);
+        if(!shuffle){
+            musicService.shuffle();
+            img.attr('src', 'img/ic_sort_black_24dp.png');
+        }else{
+            musicService.shuffle(true);
+            img.attr('src', 'img/ic_shuffle_black_24dp.png');
+        }
+        shuffle = !shuffle;
+    };
+
+    player.onended = function(){
+        musicService.next();
+    };
+
+    $scope.uploading = {};
+    $scope.uploadFiles = function (files) {
+        $('.drop-box').hide(0);
+        if (files && files.length) {
+            files.forEach(function(file){
+                $scope.uploading[file.name]= {
+                    name: file.name,
+                    pct: 0,
+                    ok: false,
+                    error: null
+                };
+                Upload.upload({
+                    url: '/api/upload',
+                    data: {file: file}
+                }).then(function () {
+                    $scope.index++;
+                    $scope.uploading[file.name].ok = true;
+                    $timeout(function(){
+                        delete $scope.uploading[file.name];
+                    }, 3000);
+                }, function (resp) { //jshint ignore:line
+                    $scope.uploading[file.name].error = resp.status;
+                }, function (evt) { //jshint ignore:line
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    $scope.uploading[evt.config.data.file.name].pct = progressPercentage;
+                }); //jshint ignore:line
+            });
+        }
+    };
+
+    $('body').bind('keydown', function(e){
+        if((!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0) && 
+           (!$('.onTop').is(e.target) && $('.onTop').has(e.target).length === 0)) {
+            if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
+            else if(e.keyCode == 39) $scope.audioNext();
+            else if(e.keyCode == 37) $scope.audioPrev();
+        }
+    });
+
+}]);

@@ -20,7 +20,8 @@ exports.socket = {
 /* Couchbase NEED to be protected somehow.*/
 exports.couch = {
     host: '149.202.44.123',
-    filesBucket: 'filesForUs'
+    filesBucket: 'filesForUs',
+    users: 'users'
 };
 
 /*Unused. Need to be rethink. Need to be store in a db as well. To make it updatable.*/
