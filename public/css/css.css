@@ -400,3 +400,13 @@ body{
     width: 317px;
     display: inline-block;
 }
+
+.inline{
+    display: inline-block !important;
+}
+#addLink input{
+    width: 600px;
+    max-width: 80vw;
+    height: 31px;
+    font-size: 1.2em;
+}
