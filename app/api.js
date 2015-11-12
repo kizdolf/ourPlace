@@ -13,12 +13,12 @@
 /*TODO:
     - path of the upload need to be changed depending on the file type. 
     - make the api able to upload multiple file simultenaously.
-    - Handle the login mechanics here.
 */
 var
 express     = require('express'),
 multer      = require('multer'),
 upload      = multer({dest: 'medias/'}),
+login       = require('./login'),
 lib         = require('./library');
 
 exports.main = (function(){
@@ -36,6 +36,27 @@ exports.main = (function(){
     router.get('/music', function(req, res){
         lib.allSongs().then(function(music){
             res.json({music : music});
+        });
+    });
+
+    router.get('/amiroot', function(req, res){
+        login.isRoot(req).then(function(isIt){
+            if(!!isIt){
+                res.json(true);
+            }else{
+                res.json(false);
+            }
+        });
+    });
+
+    router.post('/newUser', function(req, res){
+        var user = req.body;
+        login.isRoot(req).then(function(canRoot){
+            if(!!canRoot){
+                console.log('create user!');
+                login.createUser(user.pseudo, user.password);
+                res.json({done: 'user created.'});
+            }
         });
     });
 

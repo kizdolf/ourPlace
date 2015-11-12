@@ -4,7 +4,7 @@
 */
 angular.module('ourPlace.main', ['ngRoute', 'ngSanitize'])
 
-.controller('mainCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', '$rootScope', 'ourPlace.music',
+.controller('mainCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', '$rootScope', 'ourPlace.music', 
 function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, $rootScope, musicService) {
 
     $('.metaPlayer').hide(0);
@@ -108,11 +108,34 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
 
     $('body').bind('keydown', function(e){
         if((!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0) && 
-           (!$('.onTop').is(e.target) && $('.onTop').has(e.target).length === 0)) {
+           (!$('.onTop').is(e.target) && $('.onTop').has(e.target).length === 0) &&
+           (!$('input').is(e.target))) {
             if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
             else if(e.keyCode == 39) $scope.audioNext();
             else if(e.keyCode == 37) $scope.audioPrev();
         }
     });
 
+    /*
+    Is user root ?
+    */
+    $scope.isRoot = false;
+    $scope.showRoot = false;
+    $http.get('/api/amiroot')
+    .then(function(data){
+        console.log('root?');
+        console.log(data);
+        if(data.data === true){
+            $scope.isRoot = true;
+        }
+    });
+
+    $scope.createUser = function (newUser){
+        if($scope.isRoot){
+            $http.post('/api/newUser', newUser)
+            .then(function(data){
+                $scope.RootMsg = data.data.done;
+            });
+        }
+    }
 }]);

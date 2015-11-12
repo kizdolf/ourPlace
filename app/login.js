@@ -60,7 +60,29 @@ exports.isLoggued = function(req){
     return req.session.logued;
 };
 
-var createUser = function(pseudo, password){
+exports.isRoot = function(req){
+    return new Promise(function(ful, rej){
+        var Bucket = Cluster.openBucket(conf.users, function(err){
+            if(err) {
+                rej(false);
+            }
+        });
+        Bucket.get(req.session.pseudo, function(err, doc){
+            if(err) rej(err);
+            else{
+                var user = doc.value;
+                if(user.root && user.root === true) {
+                    ful(true);
+                }
+                else {
+                    ful(false);
+                }
+            }
+        });
+    });
+};
+
+exports.createUser = function(pseudo, password){
     var hash = pass.generate(password);
     var o = {
         pseudo : pseudo,

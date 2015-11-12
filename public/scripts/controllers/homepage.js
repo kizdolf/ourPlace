@@ -134,8 +134,25 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         $scope.ytMsg = data.msg;
         if(data.status === 1){
             $scope.ytUrl = '';
+            $timeout(function(){
+                $scope.ytMsg = '';
+            }, 2500);
         }
     });
+
+    $scope.search = function(str){
+        $scope.streams.forEach(function(item, i){
+            var classelem = '.itemMusic.' + i;
+            var itemMusic = $(classelem);
+            var show = false;
+            if(item.name.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            else if(item.meta.title && item.meta.title.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            else if(item.meta.artist && item.meta.artist[0] && item.meta.artist[0].toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            else if(item.meta.album && item.meta.album.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            if(!show) itemMusic.css('display', 'none');
+            else itemMusic.css('display', 'inline-block');
+        });
+    };
 
     /*this is a bit dirty (quite a lot). angular.document.ready is not enough so...*/
     var playingItem = musicService.whichIsPlaying();

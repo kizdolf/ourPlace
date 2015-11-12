@@ -6,11 +6,26 @@
 </div>
 <div id="music">
     <div id="addLink">
-        <input type="text" ng-model="ytUrl" placeholder="youtubeUrl. eg : https://www.youtube.com/watch?v=S1FnYtmE8Fs">
-        <div class="btnMenu inline" ng-click="addFromYouTube(ytUrl)">
-            <span class="txtMenu">Add</span>
+        <span ng-show="!showInputs">
+            <input type="text" ng-model="ytUrl" placeholder="youtubeUrl. eg : https://www.youtube.com/watch?v=S1FnYtmE8Fs">
+            <div class="btnMenu inline" ng-click="addFromYouTube(ytUrl)">
+                <span class="txtMenu">Add</span>
+            </div>
+            <span>{{ytMsg}}</span>
+            <input type="text" ng-model="str" ng-change="search(str)"  placeholder="search music (artist, title, album)">
+            <div class="btnMenu inline" ng-click="search(str)">
+                <span class="txtMenu">Search</span>
+            </div>
+            <div class="btnMenu inline" ng-click=" str = ''; search(str)">
+                <span class="txtMenu">clear</span>
+            </div>
+        </span>
+        <div class="btnMenu inline">
+            <span class="txtMenu" ng-click="showInputs = !showInputs">
+            <span ng-if="!showInputs">Hide</span>
+            <span ng-if="showInputs">Show</span>
+            </span>
         </div>
-        <span>{{ytMsg}}</span>
     </div>
     <ul class="listMusic">
         <span ng-repeat="stream in streams track by $index" class="itemMusic {{$index}}">

@@ -213,9 +213,9 @@ exports.addNote = function(note){
 
 exports.fromYoutube = function(url){
     var dir = process.env.PWD + '/medias';
-    var opts = " --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir " + dir;
-    console.log(dir);
+    var opts = " --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir " + dir + " ";
     var exec = "youtube-dl" + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
+    console.log(exec);
     child_process.exec(exec, function(err, out){
         sock.send('fromYoutube', {status: 2, msg: 'Download finish. Start to extract infos.'});
         var ret = JSON.parse(out);
@@ -239,7 +239,7 @@ exports.fromYoutube = function(url){
                 console.log('err inserting obj');
                 console.log(err);
             }else{
-                sock.send('fromYoutube', {status: 1, msg: 'Download finish. Start to extarct infos.'});
+                sock.send('fromYoutube', {status: 1, msg: 'All went well. Music will apear soon.'});
                 //this log is bad.
                 console.log('obj inserted:'+ res);
                 exports.allSongs();
