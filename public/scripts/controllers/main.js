@@ -4,7 +4,7 @@
 */
 angular.module('ourPlace.main', ['ngRoute', 'ngSanitize'])
 
-.controller('mainCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', '$rootScope', 'ourPlace.music', 
+.controller('mainCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', '$rootScope', 'ourPlace.music',
 function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, $rootScope, musicService) {
 
     $('.metaPlayer').hide(0);
@@ -23,6 +23,29 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
     var audioSource = $('#audioSource');
     var playingAudio = false;
     var shuffle = false;
+
+    // var play = function(song){
+    //     console.log(song);
+    //     $scope.running = song;
+    //     if(!song.canBePlayed){
+    //         musicService.forcePlay(song, function(){
+    //             console.log('not ready.');
+    //             song.player.play();
+
+    //             // $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
+    //             // $('.metaPlayer').show(80);
+    //             // $('.player').show(0);
+    //             // audioSource.attr('src', song.path);
+    //             // audioSource.attr('type', song.type);
+    //             // player.pause();
+    //             // player.load();
+    //             // player.oncanplaythrough = player.play();
+    //         });
+    //     }else{
+    //         console.log('was ready.');
+    //         song.player.play();
+    //     }
+    // };
 
     var play = function(song){
         $scope.running = song;
@@ -107,7 +130,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
     };
 
     $('body').bind('keydown', function(e){
-        if((!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0) && 
+        if((!$('#Notes').is(e.target) && $('#Notes').has(e.target).length === 0) &&
            (!$('.onTop').is(e.target) && $('.onTop').has(e.target).length === 0) &&
            (!$('input').is(e.target))) {
             if(e.keyCode == 32) {e.preventDefault();$scope.audioPlay(); }
@@ -123,8 +146,6 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
     $scope.showRoot = false;
     $http.get('/api/amiroot')
     .then(function(data){
-        console.log('root?');
-        console.log(data);
         if(data.data === true){
             $scope.isRoot = true;
         }
@@ -137,5 +158,5 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
                 $scope.RootMsg = data.data.done;
             });
         }
-    }
+    };
 }]);

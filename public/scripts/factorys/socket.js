@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('ourPlace.socket',[])
-.factory('ourPlace.socket', function ($rootScope) {
+.factory('ourPlace.socket', ['$rootScope', function ($rootScope) {
     var host = "http://"+window.location.hostname;
     var port = conf.socketPort;
     var socket = io.connect(host + ':' + port);
@@ -25,4 +25,4 @@ angular.module('ourPlace.socket',[])
         });
     }
   };
-});
+}]);

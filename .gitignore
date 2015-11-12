@@ -28,3 +28,6 @@ node_modules
 
 medias/*
 databases/*
+minifyAngular.js
+app.js
+app.min.js
