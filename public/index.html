@@ -102,6 +102,15 @@
                     </li>
                 </ul>
             </div>
+            <div ng-show="isRoot">
+                <div ng-click="showRoot = !showRoot"><img src="img/ic_vpn_key_black_24dp_1x.png"></div>
+                <div ng-show="showRoot">
+                    <p>Create user:</p>
+                    <input type="text" ng-model="newUser.pseudo" placeholder="pseudo">
+                    <input type="text" ng-model="newUser.password" placeholder="password">
+                    <button ng-click="createUser(newUser)">Create user</button><span>{{rootMsg}}</span>
+                </div>
+            </div>
         </span>
 
         <div ng-view></div>

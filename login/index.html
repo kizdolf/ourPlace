@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Log in</title>
         <style>
         body{
@@ -15,7 +16,7 @@
             padding: 20px;
             background: #FFE8BE;
             font-family: monospace;
-            font-size: 2em;
+            font-size: 20px;
         }
 
         input{
@@ -23,16 +24,44 @@
             font-family: monospace;
             font-weight: bold;
             width: 100%;
+            height: 80px;
+            margin: 10px;
         }
 
         #logIn{
             margin-top: 15px;
             width: 20vw;
+            min-width: 300px;
             background: black;
             color: white;
             font-size: 1em;
             font-family: monospace;
             cursor: pointer;
+            height: 100px;
+        }
+        @media (max-width: 770px){
+            body{
+                margin: 0;
+                padding: 0;   
+            }
+            #wrapper{
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0px;
+                background: #FFE8BE;
+                font-family: monospace;
+                font-size: 20px;
+            }
+            input{
+                font-size: 1em;
+                font-family: monospace;
+                font-weight: bold;
+                width: 90%;
+                height: 80px;
+                margin:10px 0;
+            }
+       
         }
 
         </style>
@@ -45,9 +74,11 @@
                 Since you're not loggued you cannot see much of the website :s<br>
                 So log in!
             </p>
-            <input type="text" name="username" id="username" placeholder="Username">
-            <input type="password" name="password" id="password" placeholder="Password">
-            <button type="button" name="logIn" id="logIn">Log-in!</button>
+            <form>
+                <input type="text" name="username" id="username" placeholder="Username">
+                <input type="password" name="password" id="password" placeholder="Password">
+                <button type="button" name="logIn" id="logIn">Log-in!</button>
+            </form>
         </div>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script>

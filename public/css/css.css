@@ -118,8 +118,11 @@ body{
     }
 
     .cov{
-        height: 120px;
-        width: auto;
+      height: auto;
+      max-height: 100%;
+      /* width: auto; */
+      max-width: 100%;
+      margin: 0 auto;
     }
 
     .metaPlayer{
@@ -183,8 +186,11 @@ body{
     }
 
     .cov{
-        height: 100%;
-        width: auto;
+        heit: auto;
+        max-height: 100%;
+        /* width: auto; */
+        max-width: 100%;
+        margin: 0 auto;
     }
 
     .metaPlayer{
@@ -200,6 +206,9 @@ body{
         width: 100% !important;
     }
 
+    #addLink{
+        position: inherit !important;
+    }
 }
 
 .title, .artist{
@@ -409,4 +418,16 @@ body{
     max-width: 80vw;
     height: 31px;
     font-size: 1.2em;
+}
+
+#addLink{
+  position: relative;
+  top: -79px;
+  left: 393px;
+  z-index: 1000;
+  /* background: white; */
+  height: 50px;
+  padding-bottom: 16px;
+  display: inline-block;
+  /* width: 100%; */
 }

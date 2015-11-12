@@ -8,6 +8,11 @@ angular.module('ourPlace.note', ['ngRoute', 'ngSanitize'])
 function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams) {
 
     socket.emit('getNotes');
+    
+    $timeout(function(){
+        socket.emit('getNotes');
+    }, 1000);
+
     $scope.notes = [];
 
     var byName = function(a, b){
@@ -123,5 +128,9 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         $scope.onTop.show = false;
         $scope.onTop.meta = false;
     };
+
+    $interval(function(){
+        socket.emit('getNotes');
+    }, 25000);
 
 }]);
