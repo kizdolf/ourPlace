@@ -13,13 +13,13 @@
 ### What's will be here? 
 
 
-* Accounts: 
+* Accounts: **[DONE]**
 This deserve a bit of explaination I suppose. I want to be able to share everything uploaded on the cloud. But not to everyone. So I don't want to allow people to log-on. Just log-in. Only the Admin should be able to send invitations, and only people with invitations should be able to log-in. Then why not allow some members to invite?  
 So. An invite system. Token based. With the smallest account managment possible: pseudo/password/profilPicture/id. 
 Unique token for the invitation, unique token at each login.
 
 * Music: 
- * youtube links, paste a link and the app will download it and gice it to you gently and quickly.
+ * youtube links, paste a link and the app will download it and gice it to you gently and quickly. **[DONE]**
  * Comments: We are such good as trolling, we should be able to troll even on a simple could based music player.
  * Change/Add a cover. Because some metaData are broken, or imcomplete, or emptys, but a picture for a song is usefull. 
  * sort Music. By artist, by date. 
