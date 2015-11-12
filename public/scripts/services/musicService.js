@@ -10,6 +10,56 @@ function(socket, $http, $rootScope){
     var playList = [];
     var playing = false;
 
+    var createPLayer = function(i){
+        if(!musics[i].loading && !musics[i].canBePlayed){
+            console.log('loading ' + musics[i].name);
+            musics[i].loading = true;
+            var song = musics[i];    
+            musics[i].player = new Audio(song.path);
+            musics[i].player.preload = 'auto';
+            musics[i].player.load();
+        }
+        musics[i].player.onerror = function(e){
+            console.log('ereur on ' + musics[i].name);
+            console.log(e);
+        };
+        musics[i].player.onloadstart = function(){
+            console.log('load start for ' + musics[i].name);
+        };
+        musics[i].player.oncanplaythrough = function(){
+            console.log('can play ' + song.name);
+            musics[i].loading = false;
+            musics[i].canBePlayed = true;
+            if(musics[i + 1])
+                createPLayer(i + 1);
+        };
+    };
+
+    var forcePlay = function(song, cb){
+        musics.forEach(function(s, i){
+            if(s.loading === true && s.player){
+                console.log('stop loading ' + s.name);
+                musics[i].player.src = '';
+                musics[i].player.load();
+                delete musics[i].player;
+                musics[i].loading = false;
+            }
+            if(s.name === song.name){
+                console.log('start loading ' + s.name);
+                musics[i].player = new Audio(song.path);
+                musics[i].player.preload = 'auto';
+                musics[i].player.load();
+                musics[i].player.oncanplaythrough = function(){
+                    console.log('can play ' + s.name);
+                    musics[i].loading = false;
+                    musics[i].canBePlayed = true;
+                    createPLayer(0);
+                    cb();
+                };
+            }
+        });
+    };
+
     var byDate = function(a, b){
         if(a.date > b.date) return -1;
         else return 1;
@@ -52,9 +102,9 @@ function(socket, $http, $rootScope){
         if(currentIndex > 0)
             play(currentIndex - 1);
         else
-            play(musics.length);
+            play(musics.length - 1);
     };
-    
+
     var getMusic = function(cb){
         $http.get('/api/music').then(function(data){
             var streams = data.data.music;
@@ -63,9 +113,12 @@ function(socket, $http, $rootScope){
                 if(!presents[stream.name]){
                     presents[stream.name] = true;
                     musics[i] = stream;
+                    musics[i].canBePlayed = false;
                     playList.push(i);
                 }
             });
+            console.log('coucou');
+            // createPLayer(0);
             cb(musics);
         });
     };
@@ -73,7 +126,7 @@ function(socket, $http, $rootScope){
     var whichIsPlaying = function(){
         if(!playing)
             return false;
-        else 
+        else
             return playList[currentIndex];
     };
 
@@ -83,7 +136,8 @@ function(socket, $http, $rootScope){
         next: next,
         prev: prev,
         shuffle: shuffle,
-        whichIsPlaying: whichIsPlaying
+        whichIsPlaying: whichIsPlaying,
+        forcePlay : forcePlay
     };
 
 }]);

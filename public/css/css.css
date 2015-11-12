@@ -422,12 +422,9 @@ body{
 
 #addLink{
   position: relative;
-  top: -79px;
-  left: 393px;
   z-index: 1000;
-  /* background: white; */
   height: 50px;
   padding-bottom: 16px;
   display: inline-block;
-  /* width: 100%; */
+  width: 100%; 
 }

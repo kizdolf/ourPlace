@@ -12,7 +12,7 @@ angular.module('ourPlace', [
     'ourPlace.music',
     'ngFileUpload'
 ])
-.config(function(localStorageServiceProvider){
+.config(['localStorageServiceProvider', function(localStorageServiceProvider){
     localStorageServiceProvider
         .setPrefix('ourPlace');
-});
+}]);
