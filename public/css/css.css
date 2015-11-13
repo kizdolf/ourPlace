@@ -77,10 +77,13 @@ body{
 @media (min-width: 640px){
 
     .ctrls{
-        position: absolute;
-        top: 5px;
-        left: 115px;
-        width: 370px;
+        position: fixed;
+        top: 15px;
+        right: 5px;
+        width: auto;
+        background: white;
+        z-index: 1000;
+        box-shadow: 0px 0px 18px 0px white;
     }
 
     .ctrls img:hover{
@@ -319,11 +322,12 @@ body{
     padding: 10%;
 }
 
-.editMeta{
+.topDiv{
     width: 500px;
     margin: 50px auto;
     height: 500px;
     background: white;
+    box-shadow: 0px 0px 79px 9px #504C4C;
 }
 
 .editMeta label{
@@ -426,5 +430,36 @@ body{
   height: 50px;
   padding-bottom: 16px;
   display: inline-block;
-  width: 100%; 
+  width: 100%;
+}
+
+.closeMeta{
+    font-size: 25px;
+    background: #f98b36;
+    height: 28px;
+    width: 28px;
+    display: block;
+    text-align: center;
+    line-height: 28px;
+    cursor: pointer;
+    box-shadow: 0px 0px 2px 0px #252121;
+}
+
+.closeMeta:hover{
+    box-shadow: 1px 1px 2px 0px #252121;
+}
+
+.btnOnTop{
+    height: 40px;
+    width: 45%;
+    font-weight: bold;
+    background: #f98b36;
+    border: none;
+    margin: 1px;
+    box-shadow: 0px 0px 2px 0px #252121;
+    cursor: pointer;
+}
+
+.btnOnTop:hover{
+    box-shadow: 1px 1px 2px 0px #252121;
 }

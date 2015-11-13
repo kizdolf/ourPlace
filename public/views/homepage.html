@@ -52,20 +52,21 @@
     </ul>
 </div>
 <div class="onTop" ng-if="onTop.show">
-    <div class="editMeta" ng-if="onTop.meta">
-        <span ng-click="closeMeta()">X</span>
-        <p>
-            <h4>Edit of {{editMeta.name}}</h4>
-            <label>Artist : </label><input type="text" ng-model="editMeta.artist[0]"><br>
-            <label>Album : </label><input type="text"  ng-model="editMeta.album"><br>
-            <label>Title : </label><input type="text"  ng-model="editMeta.title"><br>
-        </p>
-        <button type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
-        <button type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
+    <div class="topDiv editMeta" ng-if="onTop.meta">
+        <span ng-click="closeMeta()" class="closeMeta">X</span>
+        <h4 ng-if="!editMeta.title">Edit of {{editMeta.name}}</h4>
+        <h4 ng-if="editMeta.title">Edit of {{editMeta.title}}</h4>
+        <label>Artist : </label><input type="text" ng-model="editMeta.artist[0]"><br>
+        <label>Album : </label><input type="text"  ng-model="editMeta.album"><br>
+        <label>Title : </label><input type="text"  ng-model="editMeta.title"><br>
+        <div>
+            <button class="btnOnTop" type="button" name="ok" ng-click="updateMeta(editMeta)">Validate</button>
+            <button class="btnOnTop" type="button" name="notOk" ng-click="closeMeta()">Cancel</button>
+        </div>
     </div>
 
-    <div class="editComment" ng-if="onTop.comment">
-        <span ng-click="closeMeta()">X</span>
+    <div class="topDiv editComment" ng-if="onTop.comment">
+        <span ng-click="closeMeta()" class="closeMeta">X</span>
         <p>
             Comming Soon!
         </p>
