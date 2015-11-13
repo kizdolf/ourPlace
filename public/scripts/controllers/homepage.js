@@ -4,8 +4,8 @@
 */
 angular.module('ourPlace.homepage', ['ngRoute', 'ngSanitize'])
 
-.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', 'ourPlace.music', '$rootScope',
-function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, musicService, $rootScope) {
+.controller('homepageCtrl', ['ourPlace.socket', 'localStorageService', '$scope', '$http', 'Upload', '$timeout', '$interval', '$routeParams', 'ourPlace.music', '$rootScope', '$sce',
+function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $routeParams, musicService, $rootScope, $sce) {
 
     $scope.index = null; 
     $scope.streams = [];
@@ -48,6 +48,17 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         dl.setAttribute('href', media.path);
         dl.setAttribute('download', media.name);
         dl.click();
+    };
+
+    $scope.getLink = function(index){
+        var name = $scope.streams[index].name;
+        $http.post('/api/getToken', {name: name})
+        .then(function(data){
+            console.log(data.data);
+            if(data.data.url){
+                $scope.mainMsg = ('<p>link to share : <a href="' + data.data.url + '">' + data.data.url + '</a></p>');
+            }
+        });
     };
 
     $scope.onTop = {
@@ -123,12 +134,12 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         url = url.split('&')[0];
         if(url.indexOf('youtube.com') === -1){
             $scope.ytError = 'this url is not from youtube.';
-            $timeout(function() {$scope.ytMsg = ''}, 2500);
+            $timeout(function() {$scope.ytMsg = '';}, 2500);
         }else{
             socket.emit('fromYoutube', url);
             $scope.ytMsg = 'Sound will arrive soon...';
         }
-    }
+    };
 
     socket.on('fromYoutube', function(data){
         $scope.ytMsg = data.msg;

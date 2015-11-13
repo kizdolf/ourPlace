@@ -3,6 +3,7 @@
     <span class="oneOpt" ng-click="edit(optionsIndex)"><img src="img/ic_edit_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Edit</span></span>
     <span class="oneOpt" ng-click="comment(optionsIndex)"><img src="img/ic_comment_black_24dp.png" alt="edit" class="imgOpt"/><span class="txtOpt">Comment</span></span>
     <span class="oneOpt" ng-click="delete(optionsIndex)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Delete</span></span>
+    <span class="oneOpt" ng-click="getLink(optionsIndex)"><img src="img/ic_delete_black_24dp.png" alt="del" class="imgOpt"/><span class="txtOpt">Get link</span></span>
 </div>
 <div id="music">
     <div id="addLink">
@@ -27,6 +28,7 @@
             </span>
         </div>
     </div>
+    <span ng-bind-html="mainMsg"></span>
     <ul class="listMusic">
         <span ng-repeat="stream in streams track by $index" class="itemMusic {{$index}}">
             <span class="doMore">

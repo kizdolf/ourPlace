@@ -14,7 +14,10 @@ var
     conf        = require('./app/config').conf,
     api         = require('./app/api'),
     login       = require('./app/login'),
+    externSession = require('./app/externSession'),
     session     = require('express-session');
+
+var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
     require('./app/socket');
 
@@ -23,11 +26,28 @@ var
     .use(session({secret: 'thisIsSecretForSession', resave: false, saveUninitialized: true}))
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
+    .use('/play/:token', function(req, res){
+        var token = req.params.token;
+        externSession.tokenIsGood(token, function(err, name){
+            if(!err) {
+                log.info('allow playing for ', name);
+                req.session.logued = true;
+                if(!req.session.nbLeft && req.session.nbLeft !== 0)
+                    req.session.nbLeft = 5;
+                req.session.canPlay = true;
+                req.session.name = name;
+                res.sendFile(__dirname + '/play/index.html', {root: '/'});
+            }else{
+                res.json({err : 'not allowed.'});
+                log.info('cannot play it anymore.');
+            }
+        });
+    })
     .use('/tokenLogin', login.getToken)
     .use('/login',  login.login)
     .use(function(req, res, next){
         if(!login.isLoggued(req))
-            res.sendFile(__dirname + '/login/index.html', {root : '/', token: 123456});
+            res.sendFile(__dirname + '/login/index.html', {root : '/'});
         else
             next();
     })

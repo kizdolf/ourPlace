@@ -17,9 +17,12 @@
 var
 express     = require('express'),
 multer      = require('multer'),
+externSession   = require('./externSession'),
 upload      = multer({dest: 'medias/'}),
 login       = require('./login'),
 lib         = require('./library');
+
+var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 exports.main = (function(){
     var router      = express.Router();
@@ -48,6 +51,15 @@ exports.main = (function(){
             }
         });
     });
+    router.post('/getToken', function(req, res){
+        log.info('Create token for ', req.body.name);
+         externSession.generateToken(req.body.name, function(err, token){
+            if(err)
+                res.json({err: err});
+            else
+                res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
+         });
+    });
 
     router.post('/newUser', function(req, res){
         var user = req.body;
@@ -58,6 +70,24 @@ exports.main = (function(){
                 res.json({done: 'user created.'});
             }
         });
+    });
+
+    router.get('/playplease/:token', function(req, res){
+        if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
+            log.info('can play ' + req.session.name);
+            externSession.getPath(req.session.name, function(err, rep){
+                if(!err){
+                    req.session.nbLeft = req.session.nbLeft - 1;
+                    res.json(rep);
+                }else{
+                    log.error(err);
+                }
+            });
+        }else{
+            req.session = null;
+            externSession.delToken(req.params.token);
+            res.json({err: 'not allowed'});
+        }
     });
 
     return router;

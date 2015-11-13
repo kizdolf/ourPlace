@@ -21,7 +21,8 @@ exports.socket = {
 exports.couch = {
     host: '149.202.44.123',
     filesBucket: 'filesForUs',
-    users: 'users'
+    users: 'users',
+    tokenBucket :'token'
 };
 
 /*Unused. Need to be rethink. Need to be store in a db as well. To make it updatable.*/
