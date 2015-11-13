@@ -60,19 +60,23 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
     };
 
     $scope.$on('playSong', function(scope, song){
+        playingAudio = true;
         play(song);
     });
 
     $scope.audioPlay = function(){
         if(playingAudio){
-            playingAudio = false;
             $('.pause_play').attr('src', 'img/ic_play_arrow_black_24dp.png');
             player.pause();
         }else{
-            playingAudio = true;
-            player.play();
+            if(audioSource.attr('src') === 'null'){
+                musicService.play(0);
+            }else{
+                player.play();
+            }
             $('.pause_play').attr('src', 'img/ic_pause_black_24dp.png');
         }
+        playingAudio = !playingAudio;
     };
 
     $scope.audioPrev = function(){

@@ -8,13 +8,14 @@ function(socket, $http, $rootScope){
     var presents = {};
     var currentIndex = null;
     var playList = [];
+    var shuffling = false;
     var playing = false;
 
     var createPLayer = function(i){
         if(!musics[i].loading && !musics[i].canBePlayed){
             console.log('loading ' + musics[i].name);
             musics[i].loading = true;
-            var song = musics[i];    
+            var song = musics[i];
             musics[i].player = new Audio(song.path);
             musics[i].player.preload = 'auto';
             musics[i].player.load();
@@ -66,13 +67,18 @@ function(socket, $http, $rootScope){
     };
 
     var shuffle = function(bool){
-        if(!bool || bool === false)
+        if(!bool || bool === false){
+            shuffling = true;
             for(var j, x, i = playList.length; i; j = Math.floor(Math.random() * i), x = playList[--i], playList[i] = playList[j], playList[j] = x);
-        else{
+        }else{
+            shuffling = false;
             playList = [];
             musics.forEach(function(m, i){
                 playList.push(i);
             });
+        }
+        if(!playing){
+            play(0);
         }
     };
 
@@ -112,11 +118,13 @@ function(socket, $http, $rootScope){
             streams.forEach(function(stream, i){
                 if(!presents[stream.name]){
                     presents[stream.name] = true;
-                    musics[i] = stream;
-                    musics[i].canBePlayed = false;
-                    playList.push(i);
+                    stream.canBePlayed = false;
+                    musics.push(stream);
+                    playList.push(musics.length - 1);
                 }
             });
+            if(shuffling)
+                shuffle();
             console.log('coucou');
             // createPLayer(0);
             cb(musics);

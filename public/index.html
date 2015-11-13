@@ -63,14 +63,14 @@
                         </div>
                         <div class="runningCover" ng-if="running.meta.picture"><img src="{{running.meta.picture}}" alt="runningCover" class="RunningCov"/></div>
                         <div class="runningCover" ng-if="!running.meta.picture"><img src="img/default_cover.png" alt="runningCover" class="RunningCov"/></div>
-                        <div class="ctrls">
-                            <img ng-click="audioPrev()" src="img/ic_skip_previous_black_24dp.png" alt="prev" />
-                            <img ng-click="audioPlay()" src="img/ic_pause_black_24dp.png" alt="pause_play" class="pause_play" />
-                            <img ng-click="audioNext()" src="img/ic_skip_next_black_24dp.png" alt="next" />
-                            <img ng-click="audioShuffle()" src="img/ic_shuffle_black_24dp.png" alt="next" />
-                        </div>
                     </span>
                 </div>
+                    <div class="ctrls">
+                        <img ng-click="audioPrev()" src="img/ic_skip_previous_black_24dp.png" alt="prev" />
+                        <img ng-click="audioPlay()" src="img/ic_play_arrow_black_24dp.png" alt="pause_play" class="pause_play" />
+                        <img ng-click="audioNext()" src="img/ic_skip_next_black_24dp.png" alt="next" />
+                        <img ng-click="audioShuffle()" src="img/ic_shuffle_black_24dp.png" alt="next" />
+                    </div>
             </div>
             <div ngf-no-file-drop>File Drag/Drop is not supported for this browser</div>
 
