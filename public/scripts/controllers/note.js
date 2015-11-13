@@ -126,7 +126,7 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
     $scope.closeMeta = function(){
         $scope.editMeta = {};
         $scope.onTop.show = false;
-        $scope.onTop.meta = false;
+        $scope.onTop.comment = false;
     };
 
     $interval(function(){

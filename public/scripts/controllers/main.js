@@ -117,9 +117,13 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
                 Upload.upload({
                     url: '/api/upload',
                     data: {file: file}
-                }).then(function () {
-                    $scope.index++;
-                    $scope.uploading[file.name].ok = true;
+                }).then(function (ret) {
+                    if(!ret.data.err){
+                        $scope.index++;
+                        $scope.uploading[file.name].ok = true;
+                    }else{
+                        $scope.uploading[file.name].error = ret.err;
+                    }
                     $timeout(function(){
                         delete $scope.uploading[file.name];
                     }, 3000);

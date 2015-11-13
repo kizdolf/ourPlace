@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Play it.</title>
+</head>
+<body>
+    <h1> Hi!</h1>
+    <audio controls id="audioPlayer">
+        <source src="null" type="null" id="audioSource">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>
+    window.onload = function(){
+        var token = window.location.pathname.split('/')[2];
+        console.log(token);
+        $.get('/api/playplease/' + token, function(data){
+                console.log(data);
+            if(data.file){
+                var player = $('audio')[0];
+                $('#audioSource').attr('src', data.file);
+                $('#audioSource').attr('type', data.type);
+                console.log(player);
+                player.pause();
+                player.load();
+                player.oncanplaythrough = player.play();
+            }
+        });
+    };
+</script>
+</html>

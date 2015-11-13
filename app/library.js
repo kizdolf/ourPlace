@@ -12,14 +12,21 @@ var
     fs              = require('fs'),
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
-    accepted_mimes  = [ //should not be here. See config.js
+    accepted_mimes  = [ //should not be here. See config.jsf
         'audio/mp3',
-        'audio/x-m4a'
+        'audio/x-m4a',
+        'audio/aac',
+        'audio/mp4',
+        'audio/mpeg',
+        'audio/ogg',
+        'audio/wav',
+        'audio/webm',
     ];
+
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
-var deleteAllFromBucket = function(){
+var deleteAllFromBucket = function(){  // jshint ignore:line
     var ViewQuery = couchbase.ViewQuery;
     var bucket = Cluster.openBucket(conf.filesBucket);
     var q = ViewQuery.from('listing', 'allNames');
@@ -29,7 +36,8 @@ var deleteAllFromBucket = function(){
             log.error(err);
         }else{
             res.forEach(function(one){
-                bucket.remove(one.key, function(err){
+                fs.unlinkSync(__dirname + '/..' + res.value.path);
+                bucket.remove(one.key, function(){
                     console.log('removed ' + one.key);
                 });
             });
@@ -66,7 +74,7 @@ var getMetaData = function(path, cb){
                     }
                 });
             }else{
-                delete meta.picture
+                delete meta.picture;
                 cb(null, meta);
             }
         }
@@ -106,9 +114,15 @@ exports.delete = function(name){
                 console.log(err);
             }
         });
+        Bucket.get(name, function(err, res){
+            if(!err){
+                var path = __dirname + '/..' + res.value.path;
+                fs.unlinkSync(path);
+            }
+        });
         Bucket.remove(name, function(err){
             if(err){
-                log.error('rmoving ', name); 
+                log.error('removing ', name); 
                 log.error(err);
             }else{
                 exports.allSongs();
@@ -124,8 +138,10 @@ Should be able to manage several type, not just music.
 exports.handle = function(file, cb){
     console.log(file.mimetype);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
-        //TODO: delete file via fs
-        return false;
+        log.info('file ' + file.path + ' is to remove because it does not fit mimes types.');
+        var path = __dirname + '/../' + file.path;
+        fs.unlinkSync(path);
+        cb('does not fit mimes types', null);
     }else{
         getMetaData(file.path, function(err, meta){
             if(!err){ //else log. No?
