@@ -6,13 +6,15 @@ io          = require('socket.io')(conf.socketPort),
 lib         = require('./library'),
 moment      = require('moment'),
 user;
+var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 /*This my whole stats system. How many pepole are online?*/
 var liveUsers = 0;
 
 io.on('connection', function(socket){
     liveUsers++;
-    console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] live users : ' + liveUsers);
+    log.info('live users : ' , liveUsers);
+    log.info('new user IP: ', socket.handshake.address);
 
     //used to broadcast essentially. users should be stored in a session to make the app able to select who 
     // to talk too.
@@ -54,11 +56,11 @@ io.on('connection', function(socket){
     //minus one user. You'll be much missed.
     socket.on('disconnect', function() {
         liveUsers--;
-        console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] live users : ' + liveUsers);
+        log.info('live users : ' , liveUsers.toString());
     });
 
     socket.on('fromYoutube', function(url){
-        console.log('[ ' + moment().format('D/M/YY H:m:s:S') + ' ] From youtube : ' + url);
+        log.info('From youtube : ' , url);
         lib.fromYoutube(url);
     });
 });

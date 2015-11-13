@@ -4,12 +4,8 @@ angular.module('ourPlace.music',[])
 .service('ourPlace.music',['ourPlace.socket', '$http', '$rootScope',
 function(socket, $http, $rootScope){
 
-    var musics = [];
-    var presents = {};
-    var currentIndex = null;
-    var playList = [];
-    var shuffling = false;
-    var playing = false;
+    var musics = [], presents = {}, currentIndex = null,
+        playList = [], shuffling = false, playing = false;
 
     var createPLayer = function(i){
         if(!musics[i].loading && !musics[i].canBePlayed){
@@ -115,7 +111,7 @@ function(socket, $http, $rootScope){
         $http.get('/api/music').then(function(data){
             var streams = data.data.music;
             streams = streams.sort(byDate);
-            streams.forEach(function(stream, i){
+            streams.forEach(function(stream){
                 if(!presents[stream.name]){
                     presents[stream.name] = true;
                     stream.canBePlayed = false;
@@ -123,19 +119,15 @@ function(socket, $http, $rootScope){
                     playList.push(musics.length - 1);
                 }
             });
-            if(shuffling)
-                shuffle();
-            console.log('coucou');
+            if(shuffling) shuffle();
             // createPLayer(0);
             cb(musics);
         });
     };
 
     var whichIsPlaying = function(){
-        if(!playing)
-            return false;
-        else
-            return playList[currentIndex];
+        if(!playing) return false;
+        else return playList[currentIndex];
     };
 
     return {

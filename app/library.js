@@ -17,14 +17,16 @@ var
         'audio/x-m4a'
     ];
 
+var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+
 var deleteAllFromBucket = function(){
     var ViewQuery = couchbase.ViewQuery;
     var bucket = Cluster.openBucket(conf.filesBucket);
     var q = ViewQuery.from('listing', 'allNames');
     bucket.query(q, function(err, res){
         if(err){
-            console.log("err");
-            console.log(err);
+            log.error('err deleting something');
+            log.error(err);
         }else{
             res.forEach(function(one){
                 bucket.remove(one.key, function(err){
@@ -44,8 +46,8 @@ so in case of error an empty object is returned. The app continue to run.
 var getMetaData = function(path, cb){
     mm(fs.createReadStream(path), function(err, meta){
         if(err){
-            console.log('err getting Metadata. Continuing with empty meta.');
-            console.log(err);
+            log.error('err getting Metadata. Continuing with empty meta.');
+            log.error(err);
             cb(null, {});
         }else{
             //extract and save picture, need to be in it's own function.
@@ -55,8 +57,8 @@ var getMetaData = function(path, cb){
                 pic = pic.toString('base64');
                 fs.writeFile(mainConf.coversPath + picName, pic, 'base64', function(err){
                     if(err){
-                        console.log('err wrinting img');
-                        console.log(err);
+                        log.err('err wrinting img');
+                        log.err(err);
                         cb(err, null);
                     }else{
                         meta.picture = '/' + mainConf.coversPath + picName;
@@ -76,7 +78,10 @@ var getMetaData = function(path, cb){
 exports.updateMeta = function(data){
     var name = data.name;
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-        if(err){ console.log(err); }
+        if(err){ 
+            log.error('openBucket failed '); 
+            log.error(err); 
+        }
     });
     Bucket.get(name, function(err, doc){
         if(!err){
@@ -84,8 +89,10 @@ exports.updateMeta = function(data){
             doc.value.meta.album = data.album;
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
-                if(err) console.log(err);
-                else exports.allSongs();
+                if(err) {
+                    log.error('updating meta for ', name); 
+                    log.error(err);
+                }else exports.allSongs();
             });
         }
     });
@@ -101,7 +108,8 @@ exports.delete = function(name){
         });
         Bucket.remove(name, function(err){
             if(err){
-                console.log(err);
+                log.error('rmoving ', name); 
+                log.error(err);
             }else{
                 exports.allSongs();
             }
@@ -137,12 +145,12 @@ exports.handle = function(file, cb){
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
-                        console.log('err inserting obj');
-                        console.log(err);
+                        log.error(' inserting obj');
+                        log.error(err);
                         cb(err, null);
                     }else{
                         //this log is bad.
-                        console.log('obj inserted:'+ res);
+                        log.info('obj inserted:',  res.cas);
                         exports.allSongs();
                         cb(null, true);
                     }
@@ -213,9 +221,8 @@ exports.addNote = function(note){
 
 exports.fromYoutube = function(url){
     var dir = process.env.PWD + '/medias';
-    var opts = " --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir " + dir + " ";
-    var exec = "youtube-dl" + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
-    console.log(exec);
+    var opts = ' --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir ' + dir + ' ';
+    var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
     child_process.exec(exec, function(err, out){
         sock.send('fromYoutube', {status: 2, msg: 'Download finish. Start to extract infos.'});
         var ret = JSON.parse(out);
@@ -241,7 +248,7 @@ exports.fromYoutube = function(url){
             }else{
                 sock.send('fromYoutube', {status: 1, msg: 'All went well. Music will apear soon.'});
                 //this log is bad.
-                console.log('obj inserted:'+ res);
+                log.info('obj inserted:'+ res.cas);
                 exports.allSongs();
             }
         });
