@@ -117,7 +117,9 @@ exports.delete = function(name){
         Bucket.get(name, function(err, res){
             if(!err){
                 var path = __dirname + '/..' + res.value.path;
-                fs.unlinkSync(path);
+                fs.access(path, function(err){
+                    if(!err) fs.unlinkSync(path);
+                });
             }
         });
         Bucket.remove(name, function(err){
