@@ -79,17 +79,22 @@ function(socket, $http, $rootScope){
     };
 
     var play = function(index, force){
-        playing = true;
-        currentIndex = index;
-        var toPlay;
-        if(force && force === true){
-            toPlay = musics[index];
+        if(musics.length === 0){
+            getMusic(function(){
+                play(index, force);
+            });
+        }else{
+            playing = true;
+            currentIndex = index;
+            var toPlay;
+            if(force && force === true)
+                toPlay = musics[index];
+            else{
+                toPlay = musics[playList[index]];
+                index = playList[index];
+            }
             $rootScope.$broadcast('playing', index);
             $rootScope.$broadcast('playSong', toPlay);
-        }else{
-            toPlay = musics[playList[index]];
-            $rootScope.$broadcast('playSong', toPlay);
-            $rootScope.$broadcast('playing', playList[index]);
         }
     };
 
