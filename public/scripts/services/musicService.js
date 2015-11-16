@@ -68,14 +68,12 @@ function(socket, $http, $rootScope){
             for(var j, x, i = playList.length; i; j = Math.floor(Math.random() * i), x = playList[--i], playList[i] = playList[j], playList[j] = x);
         }else{
             shuffling = false;
-            playList = [];
-            musics.forEach(function(m, i){
-                playList.push(i);
-            });
+            playList = (function(l, a){
+                            while(l--) a[l] = l;
+                            return a;
+                        })(musics.length -1, []);
         }
-        if(!playing){
-            play(0);
-        }
+        if(!playing) play(0);
     };
 
     var play = function(index, force){
