@@ -54,6 +54,9 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
         $('.player').show(0);
         audioSource.attr('src', song.path);
         audioSource.attr('type', song.type);
+        if(song.meta.title){
+            $('title').html(song.meta.title);
+        }
         player.pause();
         player.load();
         player.oncanplaythrough = player.play();
