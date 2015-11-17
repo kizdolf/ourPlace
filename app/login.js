@@ -103,6 +103,3 @@ exports.createUser = function(pseudo, password){
         }
     });
 };
-
-/*create some users:*/
-// createUser('smia', 'smia');
