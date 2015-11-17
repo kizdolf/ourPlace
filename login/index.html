@@ -88,24 +88,16 @@
                 password    = $('#password'),
                 logIn       = $('#logIn');
 
-                $.get('/tokenLogin', function(data){
-                    token  = data.token;
-                    console.log('token = '+ token);
-                });
+                $.get('/tokenLogin', function(data){token  = data.token;});
 
                 $('html').keydown(function(e){
-                    if(e.which === 13)
-                        logIn.click();
+                    if(e.which === 13) logIn.click();
                 });
 
                 logIn.click(function(){
                     $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
-                        console.log(data);
                         if(data.ok && data.ok === true) location.reload();
-                        else{
-                            console.log('la');
-                            $('#erreur').html(data.err.message);
-                        }
+                        else $('#erreur').html(data.err.message);
                     });
                 });
         </script>
