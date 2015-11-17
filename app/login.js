@@ -7,6 +7,8 @@ var
     conf        = require('./config').couch,
     Cluster     = new couchbase.Cluster(conf.host);
 
+var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+
 var userExist = function(pseudo, password){
     return new Promise(function(ful, rej){  
         var Bucket = Cluster.openBucket(conf.users, function(err){
@@ -45,6 +47,7 @@ exports.login = function(req, res, next){
     }else{
         userExist(params.userName, params.password)
         .then(function(ok){
+            log.info(params.userName + ' just logued.');
             sess.logued = true;
             sess.pseudo = params.userName;
             sess.date = new Date();

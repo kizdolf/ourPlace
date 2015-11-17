@@ -7,7 +7,8 @@ function(socket, $http, $rootScope){
     var musics = [], presents = {}, currentIndex = null,
         playList = [], shuffling = false, playing = false;
 
-    var createPLayer = function(i){
+    /*  Under dev. function unused. */
+    var createPlayer = function(i){
         if(!musics[i].loading && !musics[i].canBePlayed){
             console.log('loading ' + musics[i].name);
             musics[i].loading = true;
@@ -28,7 +29,7 @@ function(socket, $http, $rootScope){
             musics[i].loading = false;
             musics[i].canBePlayed = true;
             if(musics[i + 1])
-                createPLayer(i + 1);
+                createPlayer(i + 1);
         };
     };
 
@@ -50,7 +51,7 @@ function(socket, $http, $rootScope){
                     console.log('can play ' + s.name);
                     musics[i].loading = false;
                     musics[i].canBePlayed = true;
-                    createPLayer(0);
+                    createPlayer(0);
                     cb();
                 };
             }
@@ -68,21 +69,17 @@ function(socket, $http, $rootScope){
             for(var j, x, i = playList.length; i; j = Math.floor(Math.random() * i), x = playList[--i], playList[i] = playList[j], playList[j] = x);
         }else{
             shuffling = false;
-            playList = [];
-            musics.forEach(function(m, i){
-                playList.push(i);
-            });
+            playList = (function(l, a){
+                            while(l--) a[l] = l;
+                            return a;
+                        })(musics.length -1, []);
         }
-        if(!playing){
-            play(0);
-        }
+        if(!playing) play(0);
     };
 
     var play = function(index, force){
         if(musics.length === 0){
-            getMusic(function(){
-                play(index, force);
-            });
+            getMusic(function(){ play(index, force); });
         }else{
             playing = true;
             currentIndex = index;
@@ -106,10 +103,8 @@ function(socket, $http, $rootScope){
     };
 
     var prev = function(){
-        if(currentIndex > 0)
-            play(currentIndex - 1);
-        else
-            play(musics.length - 1);
+        if(currentIndex > 0) play(currentIndex - 1);
+        else play(musics.length - 1);
     };
 
     var getMusic = function(cb){
@@ -125,7 +120,7 @@ function(socket, $http, $rootScope){
                 }
             });
             if(shuffling) shuffle();
-            // createPLayer(0);
+            // createPlayer(0);
             cb(musics);
         });
     };
