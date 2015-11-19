@@ -48,7 +48,7 @@ var deleteAllFromBucket = function(){  // jshint ignore:line
 // deleteAllFromBucket();
 
 /*
-Retrieve metadata from a file. Files are not always easy with that, 
+Retrieve metadata from a file. Files are not always easy with that,
 so in case of error an empty object is returned. The app continue to run.
 */
 var getMetaData = function(path, cb){
@@ -81,14 +81,14 @@ var getMetaData = function(path, cb){
     });
 };
 
-//update some metadata fields. it DOES NOT Write them in the file. 
+//update some metadata fields. it DOES NOT Write them in the file.
 //TODO: write the new metadata IN the file AND in the db.
 exports.updateMeta = function(data){
     var name = data.name;
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-        if(err){ 
-            log.error('openBucket failed '); 
-            log.error(err); 
+        if(err){
+            log.error('openBucket failed ');
+            log.error(err);
         }
     });
     Bucket.get(name, function(err, doc){
@@ -98,7 +98,7 @@ exports.updateMeta = function(data){
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
                 if(err) {
-                    log.error('updating meta for ', name); 
+                    log.error('updating meta for ', name);
                     log.error(err);
                 }else exports.allSongs();
             });
@@ -124,7 +124,7 @@ exports.delete = function(name){
         });
         Bucket.remove(name, function(err){
             if(err){
-                log.error('removing ', name); 
+                log.error('removing ', name);
                 log.error(err);
             }else{
                 exports.allSongs();
@@ -135,7 +135,7 @@ exports.delete = function(name){
 
 /*
 Handler for a new file.
-Should be able to manage several type, not just music. 
+Should be able to manage several type, not just music.
 */
 exports.handle = function(file, cb){
     console.log(file.mimetype);
@@ -190,7 +190,8 @@ exports.allSongs = function(){
                 console.log(err);
                 rej(err);
             }else{
-                res.forEach(function(one){
+                res.forEach(function(one, i){
+                    one.value.id = i;
                     files.push(one.value);
                 });
                 ful(files);

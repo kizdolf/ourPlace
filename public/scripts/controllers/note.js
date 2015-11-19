@@ -24,13 +24,13 @@ function(socket, localStorage, $scope, $http, Upload, $timeout, $interval, $rout
 
     var notesPresent = {};
     socket.on('notes', function(notes){
-        notes = notes.sort(byName);
         notes.forEach(function(note){
             if(note.name && !notesPresent[note.name]){
                 notesPresent[note.name] = true;
                 $scope.notes.unshift(note);
             }
         });
+        $scope.notes = $scope.notes.sort(byName);
     });
     var getNotes = function(){
         socket.emit('getNotes');
