@@ -24,5 +24,6 @@
     "regexp": false,
     "undef": true,
     "strict": false,
-    "unused": true
+    "unused": true,
+    "esnext": true
 }

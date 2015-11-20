@@ -138,3 +138,30 @@ ReactDOM.render(
     <MusicList url="/api/music" inter={2000}/>,
     document.getElementById('wrapper')
 );
+/*
+<Layout> app.jsx : contains=> upload, music dispatch (player <=> MusicBox), sockets, popUp dispatcher( [musicBox, NoteBox] <=> popUp), topLevelrouting (Menu <=> Wrapper)
+    <Player /> player.jsx : contains=> audio managing (play/pause/shuffle/playlist),
+    <Menu /> menu.jsx : contains=> routing, sorting music (if good route), add from youtube,
+    <Wrapper> wrapper.jsx: contains=> lazyload box on route, passing data to layout from box.
+        //route main
+        <MusicBox> music.jsx
+            <MusicList> music.jsx
+                <MusicItem /> music.jsx
+                ...
+                ...
+                ...
+            </MusicList>
+        </MusciBox>
+        //route notes
+        <NoteBox> note.jsx
+            <NoteList> note.jsx
+                <NoteItem /> note.jsx
+                ...
+                ...
+                ...
+            </NoteList>
+        </NoteBox>
+    </Wrapper>
+    <PopUp /> popUp.jsx: contains=> modular stuff depending on who's calling.
+</Layout>
+*/

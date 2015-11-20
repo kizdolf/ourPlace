@@ -2,10 +2,15 @@
 var webpack  = require('webpack');
 
 module.exports = {
-    entry: './public/scripts/main.jsx',
+    entry: [
+        './public/scripts/app.jsx',
+        // './public/scripts/layout.jsx',
+        // './public/scripts/music.jsx',
+        // './public/scripts/note.jsx'
+    ],
     devtool: 'source-map',
     output: {
-        filename: './public/scripts/bundle.js'
+        filename: './public/scripts/dist/bundle.js'
     },
     module: {
         loaders: [
@@ -19,6 +24,7 @@ module.exports = {
     externals: {
         'React': 'React',
         'ReactDOM': 'ReactDOM',
+        // 'react-router':'react-router',
         '$': 'jquery'
     },
     resolve: {
