@@ -19,7 +19,7 @@ var Menu = React.createClass({
 
 var Layout = React.createClass({
     url: "/api/music",
-    inter: 2000,
+    inter: 20000,
     getInitialState: function(){
         return {
             musics: [],
@@ -42,9 +42,10 @@ var Layout = React.createClass({
         clearInterval(this.load);
     },
     play: function(path, type, meta){
+        this.setState({path: path, type: type, current: meta});
         this.state.musics.forEach(function(music, i){
             if(music.path === path){
-                this.setState({path: path, type: type, current: meta, index: i});
+                this.setState({index: i});
                 return;
             }
         }.bind(this));
