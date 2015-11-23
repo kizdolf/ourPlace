@@ -1,7 +1,6 @@
 var React       = require('react'),
     $           = require('jquery');
 
-
 var Controls = React.createClass({
     render: function(){
         var img = (this.props.playing) ? 'img/ic_pause_black_24dp.png' : 'img/ic_play_arrow_black_24dp.png';
@@ -21,15 +20,9 @@ var Meta = React.createClass({
         return(
             <div className="metaPlaying">
                 <div className="curPlaying">
-                    <span  className="itemPlayingMeta">
-                        {this.props.song.title}
-                    </span>
-                    <span className="itemPlayingMeta">
-                        <i>From: </i>{(this.props.song.artist) ? this.props.song.artist[0] : ''}
-                    </span>
-                    <span className="itemPlayingMeta">
-                        <i>Album: </i>{this.props.song.album || ''}
-                    </span>
+                    <span  className="itemPlayingMeta">{this.props.song.title}</span>
+                    <span className="itemPlayingMeta"><i>From: </i>{(this.props.song.artist) ? this.props.song.artist[0] : ''}</span>
+                    <span className="itemPlayingMeta"><i>Album: </i>{this.props.song.album || ''}</span>
                 </div>
                 <img className="metaPlayingImg" src={'http://azerty.gq' + (this.props.song.picture || '/img/default_cover.png')} alt="cover"/>
             </div>
@@ -64,23 +57,25 @@ var TimeLine = React.createClass({
         this.canMoveAuto = false;
         var c = $('.curElapsed');
         var ht = $('html');
+        var timeElem = $('.timeLine');
+        var elaps = $('.Elapsed');
+        c.css('transition-duration', '0.5s');
         c.css('transform', 'scale(1.5)');
-        ht.bind('mouseup', function(e){
-            c.css('transform', 'scale(1)');
-            ht.unbind(e);
-        });
         ht.on('mousemove', function(e){
-            var timeElem = $('.timeLine');
-            var elaps = $('.Elapsed');
             var totW = timeElem.width();
             var curW = e.pageX - timeElem.offset().left;
             var newW = ~~curW * 100 / totW;
             if(newW < 0) newW = 0;
             if(newW > 100) newW = 100;
             elaps.width(newW + '%');
-            ht.bind('mouseup', function(){
+            ht.bind('mouseup', function(evt){
+                c.css('transform', 'scale(1)');
                 ht.unbind(e);
+                ht.unbind(evt);
+                ht.off(e);
                 this.canMoveAuto = true;
+                // avoid to much mess due to multi combo fracking click ...
+                setTimeout(function(){c.unbind(); c.off(); ht.unbind(); ht.off();},500);
             }.bind(this));
         }.bind(this));
     },
