@@ -25,7 +25,8 @@ var Layout = React.createClass({
             musics: [],
             type: '',
             path: '',
-            index: 0
+            index: 0,
+            current: {}
         };
     },
     getMusicFromAPI: function(){
@@ -40,19 +41,32 @@ var Layout = React.createClass({
     componentWillUnmount: function(){
         clearInterval(this.load);
     },
-    play: function(path, type){
-        this.setState({path: path, type: type});
+    play: function(path, type, meta){
+        this.state.musics.forEach(function(music, i){
+            if(music.path === path){
+                this.setState({path: path, type: type, current: meta, index: i});
+                return;
+            }
+        }.bind(this));
     },
     next: function(){
-
+        var n = (this.state.musics[this.state.index + 1]) ? this.state.musics[this.state.index + 1] :  this.state.musics[0];
+        this.play(n.path, n.type, n.meta);
     },
     prev: function(){
-
+        var n =(this.state.index > 0) ? this.state.musics[this.state.index - 1] : this.state.musics[this.state.musics.length - 1];
+        this.play(n.path, n.type, n.meta);
     },
     render: function(){
         return (
             <div>
-                <Player path={'http://azerty.gq' + this.state.path} type={this.state.type}/>
+                <Player
+                    path={'http://azerty.gq' + this.state.path}
+                    type={this.state.type}
+                    meta={this.state.current}
+                    next={this.next}
+                    prev={this.prev}
+                />
                 <Menu />
                     {
                         this.props.children &&
@@ -62,7 +76,7 @@ var Layout = React.createClass({
                                 play: this.play,
                                 prev: this.prev,
                                 next: this.next,
-                                musics: this.state.musics
+                                musics: this.state.musics,
                             }
                         )
                     }

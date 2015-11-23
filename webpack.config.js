@@ -8,7 +8,7 @@ module.exports = {
         // './public/scripts/music.jsx',
         // './public/scripts/note.jsx'
     ],
-    devtool: 'source-map',
+    // devtool: 'source-map',
     output: {
         filename: './public/scripts/dist/bundle.js'
     },

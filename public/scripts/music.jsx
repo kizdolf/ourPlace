@@ -3,7 +3,7 @@ var
 
 var MusicItem = React.createClass({
     play: function(){
-        this.props.onWishPlay(this.props.src, this.props.type);
+        this.props.onWishPlay(this.props.src, this.props.type, this.props.meta);
     },
     render: function(){
         return (
