@@ -31,5 +31,4 @@ databases/*
 minifyAngular.js
 app.js
 app.min.js
-public/scripts/bundle.js.map
-public/scripts/bundle.js
+public/scripts/dist
