@@ -2,7 +2,9 @@
 var React       = require('react'),
     Link        = require('react-router').Link,
     $           = require('jquery'),
-    Player      = require('./player.jsx').Player;
+    Player      = require('./player.jsx').Player,
+    Dropzone    = require('react-dropzone'),
+    request     = require('superagent');
 
 var Menu = React.createClass({
     render: function(){
@@ -17,8 +19,38 @@ var Menu = React.createClass({
     }
 });
 
+var Upload = React.createClass({
+    onDrop: function(files){
+        files.forEach(function(file) {
+            request.post(this.props.url)
+            .attach('file', file)
+            .on('progress', function(e){
+                console.log('done at ' + e.percent + ' %');
+            })
+            .on('error', function(err){
+                console.log(err);
+            })
+            .end(function(res){
+                console.log('res from request.');
+                console.log(res);
+            });
+        }.bind(this));
+        console.log(files);
+    },
+    render: function(){
+        return(
+            <div>
+                <Dropzone onDrop={this.onDrop}>
+                  <div>Try dropping some files here, or click to select files to upload.</div>
+                </Dropzone>
+            </div>
+        );
+    }
+});
+
 var Layout = React.createClass({
     url: "/api/music",
+    uploadAPI: "api/upload",
     inter: 20000,
     getInitialState: function(){
         return {
@@ -61,6 +93,7 @@ var Layout = React.createClass({
     render: function(){
         return (
             <div>
+                <Upload url={this.uploadAPI} />
                 <Player
                     path={'http://azerty.gq' + this.state.path}
                     type={this.state.type}
