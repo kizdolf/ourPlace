@@ -20,6 +20,21 @@ var Menu = React.createClass({
 });
 
 var Upload = React.createClass({
+    componentDidMount: function(){
+        $('html').on('dragenter', function(){
+            $('.dropZone').addClass('willDrop');
+        });
+        $('html').on('dragover', function(){
+            if(!$('.dropZone').hasClass('willDrop'))
+                $('.dropZone').addClass('willDrop');
+        });
+        $('.dropZone').on('dragleave', function(){
+            $('.dropZone').removeClass('willDrop');
+        });
+        $('.dropZone').on('drop', function(){
+            $('.dropZone').removeClass('willDrop');
+        });
+    },
     onDrop: function(files){
         files.forEach(function(file) {
             request.post(this.props.url)
@@ -40,8 +55,8 @@ var Upload = React.createClass({
     render: function(){
         return(
             <div>
-                <Dropzone onDrop={this.onDrop}>
-                  <div>Try dropping some files here, or click to select files to upload.</div>
+                <Dropzone onDrop={this.onDrop} className="dropZone">
+                  <div className="innerDrop">Drop stuff!</div>
                 </Dropzone>
             </div>
         );
