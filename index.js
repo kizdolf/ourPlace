@@ -49,7 +49,7 @@ var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
         if(!login.isLoggued(req)){
             res.sendFile(__dirname + '/login/index.html', {root : '/'});
             // req.session.logued = true;
-            next();
+            // next();
         }else
             next();
     })
