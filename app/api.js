@@ -11,7 +11,7 @@
 */
 
 /*TODO:
-    - path of the upload need to be changed depending on the file type. 
+    - path of the upload need to be changed depending on the file type.
     - make the api able to upload multiple file simultenaously.
 */
 var
@@ -27,12 +27,13 @@ var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 exports.main = (function(){
     var router      = express.Router();
     // Would it be better to externalise the route in a json file somewhere else?
-    router.post('/upload', upload.single('file'), function(req, res){
-        var file = req.file;
-        lib.handle(file, function(err, response){
-            //need of a loggin system... (accessible from the outside, with a query system would be great actually.)
-            if(err) res.json({err: err});
-            else res.json({done: response});
+    router.post('/upload', upload.any(), function(req, res){
+        req.files.forEach((file)=>{
+            lib.handle(file, (err, response)=>{
+                //need of a loggin system... (accessible from the outside, with a query system would be great actually.)
+                if(err) res.json({err: err});
+                else res.json({done: response});
+            });
         });
     });
 
