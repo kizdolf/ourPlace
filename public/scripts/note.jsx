@@ -1,15 +1,42 @@
 var
-    React       = require('react');
+    React       = require('react'),
+    $           = require('jquery');
+
+var Note = React.createClass({
+    render: function(){
+        return(
+            <li>
+                Note!
+            </li>
+        );
+    }
+});
 
 exports.NoteBox = React.createClass({
+    getInitialState: function(){
+        return {
+            notes: [],
+        };
+    },
+    getNotesFromAPI: function(){
+        $.get(this.props.noteAPI, function(data){
+            this.setState({notes: data});
+        }.bind(this));
+    },
+    componentDidMount: function(){
+        this.getNotesFromAPI();
+        this.load = setInterval(this.getNotesFromAPI, 25000);
+    },
     render: function(){
+        var mountNotes = this.state.notes.map((note)=>{
+            return(
+                <Note data={note} />
+            );
+        });
         return(
             <div>
                 <ul>
-                    <li>Note0</li>
-                    <li>Note1</li>
-                    <li>Note2</li>
-                    <li>Note3</li>
+                    {mountNotes}
                 </ul>
             </div>
         );
