@@ -138,7 +138,8 @@ Handler for a new file.
 Should be able to manage several type, not just music.
 */
 exports.handle = function(file, cb){
-    console.log(file.mimetype);
+    log.info('file to add:');
+    log.info(file);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         log.info('file ' + file.path + ' is to remove because it does not fit mimes types.');
         var path = __dirname + '/../' + file.path;
