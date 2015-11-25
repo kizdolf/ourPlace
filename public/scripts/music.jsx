@@ -82,7 +82,7 @@ var ItemMenu = React.createClass({
         }else{
             name = this.props.e.name;
         }
-        name = name.replace(' ', '-');
+        name = name.replace(/ /g, '-');
         console.log(name);
         dl.setAttribute('download', name);
         dl.click();
