@@ -84,7 +84,7 @@ var ItemMenu = React.createClass({
         }
         name = name.replace(' ', '-');
         console.log(name);
-        dl.setAttribute('download', this.props.e.name);
+        dl.setAttribute('download', name);
         dl.click();
         dl = null;
         this.props.closeMenu();
