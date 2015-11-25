@@ -106,7 +106,6 @@ exports.updateMeta = function(data){
     });
 };
 
-//delete a db item. Should delete the related file as well. It's stupid to not.
 exports.delete = function(name){
     if(name){
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
@@ -138,8 +137,6 @@ Handler for a new file.
 Should be able to manage several type, not just music.
 */
 exports.handle = function(file, cb){
-    log.info('file to add:');
-    log.info(file);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         log.info('file ' + file.path + ' is to remove because it does not fit mimes types.');
         var path = __dirname + '/../' + file.path;
@@ -158,17 +155,16 @@ exports.handle = function(file, cb){
                 };
                 var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
                     if(err){
-                        console.log(err);
+                        log.error(err);
                         cb(err, null);
                     }
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
-                        log.info('[!!ERROR] inserting obj');
-                        log.info(err);
+                        log.error(' inserting obj');
+                        log.error(err);
                         cb(err, null);
                     }else{
-                        //this log is bad.
                         log.info('obj inserted:',  res.cas);
                         exports.allSongs();
                         cb(null, true);
@@ -209,8 +205,8 @@ exports.allNotes = function(){
         notes       = [];
     bucket.query(q, function(err, res){
         if(err){
-            console.log('err requesting all Notes');
-            console.log(err);
+            console.error('err requesting all Notes');
+            console.error(err);
         }else{
             res.forEach(function(one){
                 one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');

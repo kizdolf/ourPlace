@@ -21,30 +21,38 @@ var Menu = React.createClass({
 
 var Upload = React.createClass({
     getInitialState: function(){
-        return {
-            pct: null
-        };
+        /*
+            should be able to store and update the state of all uploading data.
+            And do display it Nicely. Actually the div display the state of the uplaod should be a component.
+        */
+        return { pct: null };
     },
     componentDidMount: function(){
-        $('html').on('dragenter', function(){
-            $('.dropZone').addClass('willDrop');
+        var dZ = $('.dropZone'),
+            ht = $('html'),
+            rmClass = function(){
+                dZ.removeClass('willDrop');
+            },
+            putClass = function(){
+                dZ.addClass('willDrop');
+            };
+
+        ht.on({
+            dragenter: putClass,
+            dragover: function(){
+                if(!dZ.hasClass('willDrop'))
+                    putClass();
+            }
         });
-        $('html').on('dragover', function(){
-            if(!$('.dropZone').hasClass('willDrop'))
-                $('.dropZone').addClass('willDrop');
-        });
-        $('.dropZone').on('dragleave', function(){
-            $('.dropZone').removeClass('willDrop');
-        });
-        $('.dropZone').on('drop', function(){
-            $('.dropZone').removeClass('willDrop');
+        dZ.on({
+            dragleave: rmClass,
+            drop: rmClass
         });
     },
     onDrop: function(files){
         files.forEach(function(file) {
-            file.originalname = file.name;
             request.post(this.props.url)
-            .attach('file', file)
+            .attach('file', file, file.name)
             .on('progress', function(e){
                 this.setState({pct: e.percent});
             }.bind(this))
@@ -56,7 +64,6 @@ var Upload = React.createClass({
                 console.log(res);
             });
         }.bind(this));
-        console.log(files);
     },
     render: function(){
         return(
@@ -85,8 +92,13 @@ var Layout = React.createClass({
             current: {}
         };
     },
+    byDate: function(a, b){
+        if(a.date > b.date) return -1;
+        else return 1;
+    },
     getMusicFromAPI: function(){
         $.get(this.url, function(data){
+            data.music = data.music.sort(this.byDate);
             this.setState({musics: data.music});
         }.bind(this));
     },
