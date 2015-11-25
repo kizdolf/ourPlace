@@ -65,8 +65,8 @@ var getMetaData = function(path, cb){
                 pic = pic.toString('base64');
                 fs.writeFile(mainConf.coversPath + picName, pic, 'base64', function(err){
                     if(err){
-                        log.err('err wrinting img');
-                        log.err(err);
+                        log.error('err wrinting img');
+                        log.error(err);
                         cb(err, null);
                     }else{
                         meta.picture = '/' + mainConf.coversPath + picName;
@@ -98,8 +98,8 @@ exports.updateMeta = function(data){
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
                 if(err) {
-                    log.error('updating meta for ', name);
-                    log.error(err);
+                    log.info(' [!!ERROR] updating meta for ', name);
+                    log.info(err);
                 }else exports.allSongs();
             });
         }
@@ -164,8 +164,8 @@ exports.handle = function(file, cb){
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
-                        log.error(' inserting obj');
-                        log.error(err);
+                        log.info('[!!ERROR] inserting obj');
+                        log.info(err);
                         cb(err, null);
                     }else{
                         //this log is bad.
