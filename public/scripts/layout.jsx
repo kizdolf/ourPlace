@@ -65,7 +65,7 @@ var Upload = React.createClass({
 
 var Layout = React.createClass({
     url: "/api/music",
-    uploadAPI: "api/upload",
+    uploadAPI: "/api/upload",
     inter: 20000,
     getInitialState: function(){
         return {
@@ -110,7 +110,7 @@ var Layout = React.createClass({
             <div>
                 <Upload url={this.uploadAPI} />
                 <Player
-                    path={'http://azerty.gq' + this.state.path}
+                    path={this.state.path}
                     type={this.state.type}
                     meta={this.state.current}
                     next={this.next}
