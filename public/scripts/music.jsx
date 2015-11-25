@@ -71,9 +71,19 @@ var ItemMenu = React.createClass({
         });
     },
     download: function(){
-        console.log(this.props);
         var dl = document.createElement('a');
+        var name;
         dl.setAttribute('href', this.props.e.src);
+        if(this.props.e.meta.title){
+            name = this.props.e.meta.title + '_';
+            name += (this.props.e.meta.artist) ? this.props.e.meta.artist[0] : '';
+            var ext = this.props.e.name.split('.')[this.props.e.name.split('.').length - 1];
+            name += (ext.length === 3) ? '.' + ext : '.' + this.props.e.src.split('.')[this.props.e.src.split('.').length - 1];
+        }else{
+            name = this.props.e.name;
+        }
+        name = name.replace(' ', '-');
+        console.log(name);
         dl.setAttribute('download', this.props.e.name);
         dl.click();
         dl = null;
