@@ -20,6 +20,11 @@ var Menu = React.createClass({
 });
 
 var Upload = React.createClass({
+    getInitialState: function(){
+        return {
+            pct: null
+        };
+    },
     componentDidMount: function(){
         $('html').on('dragenter', function(){
             $('.dropZone').addClass('willDrop');
@@ -37,11 +42,12 @@ var Upload = React.createClass({
     },
     onDrop: function(files){
         files.forEach(function(file) {
+            file.originalname = file.name;
             request.post(this.props.url)
             .attach('file', file)
             .on('progress', function(e){
-                console.log('done at ' + e.percent + ' %');
-            })
+                this.setState({pct: e.percent});
+            }.bind(this))
             .on('error', function(err){
                 console.log(err);
             })
@@ -58,6 +64,9 @@ var Upload = React.createClass({
                 <Dropzone onDrop={this.onDrop} className="dropZone">
                   <div className="innerDrop">Drop stuff!</div>
                 </Dropzone>
+                <div className="uploadStatus">
+                    done at {this.state.pct} %.
+                </div>
             </div>
         );
     }
