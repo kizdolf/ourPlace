@@ -42,7 +42,7 @@
         @media (max-width: 770px){
             body{
                 margin: 0;
-                padding: 0;   
+                padding: 0;
             }
             #wrapper{
                 width: 100%;
@@ -61,7 +61,7 @@
                 height: 80px;
                 margin:10px 0;
             }
-       
+
         }
 
         </style>
@@ -82,24 +82,14 @@
         </div>
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script>
-            var
-                token       = '',
-                userName    = $('#username'),
-                password    = $('#password'),
-                logIn       = $('#logIn');
-
-                $.get('/tokenLogin', function(data){token  = data.token;});
-
-                $('html').keydown(function(e){
-                    if(e.which === 13) logIn.click();
+            var token = '', userName = $('#username'), password = $('#password'), logIn = $('#logIn');
+            $.get('/tokenLogin', function(data){token  = data.token;});
+            $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
+            logIn.click(function(){
+                $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
+                    if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.err.message);
                 });
-
-                logIn.click(function(){
-                    $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
-                        if(data.ok && data.ok === true) location.reload();
-                        else $('#erreur').html(data.err.message);
-                    });
-                });
+            });
         </script>
     </body>
 </html>
