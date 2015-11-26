@@ -198,21 +198,21 @@ exports.allSongs = function(){
 };
 
 //send all notes.
-exports.allNotes = function(){
+exports.allNotes = function(req, res){
     var ViewQuery   = couchbase.ViewQuery,
         bucket      = Cluster.openBucket(conf.filesBucket),
         q           = ViewQuery.from('listing', 'allNotes'),
         notes       = [];
-    bucket.query(q, function(err, res){
+    bucket.query(q, function(err, result){
         if(err){
             console.error('err requesting all Notes');
             console.error(err);
         }else{
-            res.forEach(function(one){
+            result.forEach(function(one){
                 one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');
                 notes.push(one.value);
             });
-            sock.notes(notes);
+            res.json(notes);
         }
     });
 };
