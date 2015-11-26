@@ -4,9 +4,13 @@ var
 
 var Note = React.createClass({
     render: function(){
+        var setContent = function(content){
+            return {__html: content};
+        };
         return(
-            <li>
-                Note!
+            <li className="oneNote">
+                <span className="date">{this.props.data.date}</span>
+                <div className="contentNote" dangerouslySetInnerHTML={setContent(this.props.data.content)} />
             </li>
         );
     }
@@ -30,12 +34,12 @@ exports.NoteBox = React.createClass({
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{
             return(
-                <Note data={note} />
+                <Note data={note} key={note.name}/>
             );
         });
         return(
-            <div>
-                <ul>
+            <div id="Notes">
+                <ul className="notes">
                     {mountNotes}
                 </ul>
             </div>
