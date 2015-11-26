@@ -55,10 +55,11 @@ var TimeLine = React.createClass({
     },
     mouseDown: function(){
         this.canMoveAuto = false;
-        var c = $('.curElapsed');
-        var ht = $('html');
-        var timeElem = $('.timeLine');
-        var elaps = $('.Elapsed');
+        var c           = $('.curElapsed'),
+            ht          = $('html'),
+            timeElem    = $('.timeLine'),
+            elaps       = $('.Elapsed');
+
         c.css('transition-duration', '0.5s');
         c.css('transform', 'scale(1.5)');
         ht.on('mousemove', function(e){
