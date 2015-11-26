@@ -1,6 +1,5 @@
 var
     React       = require('react'),
-    $           = require('jquery'),
     ItemMenu    = require('./smalls.jsx').ItemMenu;
 
 var MusicItem = React.createClass({

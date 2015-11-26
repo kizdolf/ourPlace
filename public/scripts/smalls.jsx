@@ -64,8 +64,16 @@ exports.ItemMenu = React.createClass({
         }.bind(this));
     },
     componentDidMount: function(){
-        $('#optsItem').css('top', this.props.e.e.y + 'px');
-        $('#optsItem').css('left', this.props.e.e.x + 'px');
+        var left = this.props.e.e.x;
+        var right = this.props.e.e.y;
+        /*
+            we nned to see if it goes outside the screen here,
+            and move it on the other side if it does.
+            (true for vertical and horizontal)
+            And move a bit from the button itself could be good as well.
+        */
+        $('#optsItem').css('top', right + 'px');
+        $('#optsItem').css('left', left + 'px');
     },
     render: function(){
         return(
