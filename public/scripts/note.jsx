@@ -2,6 +2,7 @@ var
     React       = require('react'),
     Medium      = require('react-medium-editor'),
     linker      = require('autolinker'),
+    ItemMenu    = require('./smalls.jsx').ItemMenu,
     moment      = require('moment'),
     $           = require('jquery');
 
@@ -9,6 +10,10 @@ require('react-medium-editor/node_modules/medium-editor/dist/css/medium-editor.c
 require('react-medium-editor/node_modules/medium-editor/dist/css/themes/default.css');
 
 var Note = React.createClass({
+    showMenu: function(e){
+        console.log(this.props);
+        this.props.showMenu({x: e.pageX, y: e.pageY}, this.props.data, this.props.data.name);
+    },
     render: function(){
         var setContent = function(content){
             return {__html: content};
@@ -20,6 +25,11 @@ var Note = React.createClass({
             <li className="oneNote">
                 <span className="date">{formatDate(this.props.data.date)}</span>
                 <div className="contentNote" dangerouslySetInnerHTML={setContent(this.props.data.content)} />
+                <img
+                    className="itemMenu toptop"
+                    src="img/ic_more_vert_black_24dp_1x.png"
+                    onClick={this.showMenu}
+                />
             </li>
         );
     }
@@ -42,7 +52,7 @@ var Editor = React.createClass({
             content: txt,
             date: Date.now()
         };
-        this.setState({text: 'Not sended!'});
+        this.setState({text: 'Note sended!'});
         this.props.addNote(note);
         $.post(this.props.apiAddNote, {note: note});
     },
@@ -69,6 +79,8 @@ exports.NoteBox = React.createClass({
     getInitialState: function(){
         return {
             notes: [],
+            toTop: {},
+            showMenu: false
         };
     },
     byValue: function(a, b){
@@ -92,10 +104,30 @@ exports.NoteBox = React.createClass({
     componentWillUnmount: function(){
         clearInterval(this.load);
     },
+    showMenu: function(e, meta, name, src){
+        this.setState({
+            toTop: {meta: meta, e: e, src:src, name: name},
+            showMenu: !this.state.showMenu}
+        );
+    },
+    closeMenu: function(){
+        this.setState({showMenu: false});
+    },
+    removed: function(name){
+        console.log(name + ' had beed removed');
+        var actuals = this.state.notes;
+        actuals.forEach((note, i)=>{
+            if(note.name === name){
+                actuals.splice(i, 1);
+                return;
+            }
+        });
+        this.setState({notes: actuals});
+    },
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{
             return(
-                <Note data={note} key={note.name}/>
+                <Note data={note} key={note.name} showMenu={this.showMenu}/>
             );
         });
         return(
@@ -108,7 +140,18 @@ exports.NoteBox = React.createClass({
                 <ul className="notes">
                     {mountNotes}
                 </ul>
+                {
+                    this.state.showMenu ?
+                        <ItemMenu
+                            e={this.state.toTop}
+                            closeMenu={this.closeMenu}
+                            type='note'
+                            removed={this.removed}
+                        />
+                    : null
+                }
             </div>
+
         );
     }
 });

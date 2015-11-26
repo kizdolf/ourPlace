@@ -40,8 +40,15 @@ exports.main = (function(){
     });
 
     router.post('/note', lib.addNote);
-
     router.get('/notes', lib.allNotes);
+
+    router.delete('/:name', function(req, res){
+        var name = req.params.name;
+        console.log('to remove: ' + name);
+        lib.delete(name, function(done){
+            res.json(done);
+        });
+    });
 
     router.get('/music', function(req, res){
         lib.allSongs().then(function(music){

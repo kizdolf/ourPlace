@@ -128,6 +128,17 @@ var Layout = React.createClass({
         var n =(this.state.index > 0) ? this.state.musics[this.state.index - 1] : this.state.musics[this.state.musics.length - 1];
         this.play(n.path, n.type, n.meta);
     },
+    removed: function(name){
+        console.log(name + ' had beed removed');
+        var actuals = this.state.musics;
+        actuals.forEach((music, i)=>{
+            if(music.name === name){
+                actuals.splice(i, 1);
+                return;
+            }
+        });
+        this.setState({musics: actuals});
+    },
     render: function(){
         return (
             <div>
@@ -148,6 +159,7 @@ var Layout = React.createClass({
                                 play: this.play,
                                 prev: this.prev,
                                 next: this.next,
+                                removed: this.removed,
                                 musics: this.state.musics,
                                 apiAddNote: this.apiAddNote
                             }

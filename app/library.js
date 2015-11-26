@@ -107,27 +107,35 @@ exports.updateMeta = function(data){
 };
 
 //delete a db item. Should delete the related file as well. It's stupid to not.
-exports.delete = function(name){
+exports.delete = function(name, cb){
     if(name){
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
             if(err){
                 console.log(err);
+                cb(false);
             }
         });
         Bucket.get(name, function(err, res){
             if(!err){
-                var path = __dirname + '/..' + res.value.path;
-                fs.access(path, function(err){
-                    if(!err) fs.unlinkSync(path);
-                });
+                if (res.value.path){
+                    log.info('deleting file: ' + res.value.path);
+                    var path = __dirname + '/..' + res.value.path;
+                    fs.access(path, function(err){
+                        if(!err) fs.unlinkSync(path);
+                    });
+                }
+            }else{
+                cb(false);
             }
         });
         Bucket.remove(name, function(err){
             if(err){
                 log.error('removing ', name);
                 log.error(err);
+                cb(false);
             }else{
-                exports.allSongs();
+                log.info('item ' + name + ' removed from database.');
+                cb(true);
             }
         });
     }
