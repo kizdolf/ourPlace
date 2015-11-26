@@ -106,6 +106,7 @@ exports.updateMeta = function(data){
     });
 };
 
+//delete a db item. Should delete the related file as well. It's stupid to not.
 exports.delete = function(name){
     if(name){
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
@@ -137,6 +138,8 @@ Handler for a new file.
 Should be able to manage several type, not just music.
 */
 exports.handle = function(file, cb){
+    log.info('file to add:');
+    log.info(file);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         log.info('file ' + file.path + ' is to remove because it does not fit mimes types.');
         var path = __dirname + '/../' + file.path;
@@ -155,16 +158,17 @@ exports.handle = function(file, cb){
                 };
                 var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
                     if(err){
-                        log.error(err);
+                        console.log(err);
                         cb(err, null);
                     }
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
-                        log.error(' inserting obj');
-                        log.error(err);
+                        log.info('[!!ERROR] inserting obj');
+                        log.info(err);
                         cb(err, null);
                     }else{
+                        //this log is bad.
                         log.info('obj inserted:',  res.cas);
                         exports.allSongs();
                         cb(null, true);
@@ -205,11 +209,11 @@ exports.allNotes = function(req, res){
         notes       = [];
     bucket.query(q, function(err, result){
         if(err){
-            console.error('err requesting all Notes');
-            console.error(err);
+            console.log('err requesting all Notes');
+            console.log(err);
         }else{
             result.forEach(function(one){
-                one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');
+                // one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');
                 notes.push(one.value);
             });
             res.json(notes);
@@ -218,7 +222,8 @@ exports.allNotes = function(req, res){
 };
 
 //add a note.
-exports.addNote = function(note){
+exports.addNote = function(req, res){
+    var note = req.body.note;
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
         if(err) console.log(err);
         else{
@@ -228,7 +233,7 @@ exports.addNote = function(note){
                     console.log(err);
                 }else{
                     console.log('obj inserted:'+ note.name);
-                    exports.allNotes();
+                    res.json({msg: 'note inserted.'});
                 }
             });
         }

@@ -39,6 +39,8 @@ exports.main = (function(){
         });
     });
 
+    router.post('/note', lib.addNote);
+
     router.get('/notes', lib.allNotes);
 
     router.get('/music', function(req, res){

@@ -84,6 +84,7 @@ var Layout = React.createClass({
     uploadAPI: "/api/upload",
     inter: 20000,
     notesUrl: "/api/notes",
+    apiAddNote: "/api/note",
     getInitialState: function(){
         return {
             musics: [],
@@ -148,6 +149,7 @@ var Layout = React.createClass({
                                 prev: this.prev,
                                 next: this.next,
                                 musics: this.state.musics,
+                                apiAddNote: this.apiAddNote
                             }
                         )
                     }
