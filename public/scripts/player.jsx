@@ -24,7 +24,7 @@ var Meta = React.createClass({
                     <span className="itemPlayingMeta"><i>From: </i>{(this.props.song.artist) ? this.props.song.artist[0] : ''}</span>
                     <span className="itemPlayingMeta"><i>Album: </i>{this.props.song.album || ''}</span>
                 </div>
-                <img className="metaPlayingImg" src={'http://azerty.gq' + (this.props.song.picture || '/img/default_cover.png')} alt="cover"/>
+                <img className="metaPlayingImg" src={this.props.song.picture || '/img/default_cover.png'} alt="cover"/>
             </div>
         );
     }

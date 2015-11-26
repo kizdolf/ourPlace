@@ -20,7 +20,7 @@ var MusicItem = React.createClass({
                         <span className="album"><i>Album: </i>{this.props.meta.album || ''}</span>
                     </div>
                     <div className="cover">
-                        <img src={'http://azerty.gq' + (this.props.meta.picture || '/img/default_cover.png')} alt="cover" className="cov"/>
+                        <img src={this.props.meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
                     </div>
                 </span>
                 <img
