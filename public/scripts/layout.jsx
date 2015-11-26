@@ -83,6 +83,7 @@ var Layout = React.createClass({
     url: "/api/music",
     uploadAPI: "/api/upload",
     inter: 20000,
+    notesUrl: "/api/notes",
     getInitialState: function(){
         return {
             musics: [],
@@ -142,7 +143,7 @@ var Layout = React.createClass({
                         this.props.children &&
                         React.cloneElement(this.props.children,
                             {
-
+                                noteAPI: this.notesUrl,
                                 play: this.play,
                                 prev: this.prev,
                                 next: this.next,

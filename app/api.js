@@ -39,6 +39,8 @@ exports.main = (function(){
         });
     });
 
+    router.get('/notes', lib.allNotes);
+
     router.get('/music', function(req, res){
         lib.allSongs().then(function(music){
             res.json({music : music});
