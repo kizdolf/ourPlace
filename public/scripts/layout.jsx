@@ -19,27 +19,51 @@ var Layout = React.createClass({
             type: '',
             path: '',
             index: 0,
-            current: {}
+            current: {},
+            playList: [],
+            shuffling: false
         };
     },
     byDate: function(a, b){
         if(a.date > b.date) return -1;
         else return 1;
     },
-    getMusicFromAPI: function(){
+    getMusicFromAPI: function(cb){
         $.get(this.url, function(data){
             data.music = data.music.sort(this.byDate);
             this.setState({musics: data.music});
+            if(cb) cb();
         }.bind(this));
     },
+    shuffle: function(bool){
+        var indexesOrder = this.state.playList;
+        if(this.state.shuffling){
+            this.setState({shuffling: false});
+            indexesOrder = [...Array(this.state.musics.length - 1).keys()];
+        }else{
+            this.setState({shuffling: true});
+            for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
+        }
+        console.log(indexesOrder);
+        this.setState({playList: indexesOrder});
+    },
     componentDidMount: function(){
-        this.getMusicFromAPI();
+        this.getMusicFromAPI(function(){
+            var indexesOrder = Array.from(Array(this.state.musics.length).keys());
+            this.setState({playList: indexesOrder});
+        }.bind(this));
         this.load = setInterval(this.getMusicFromAPI, this.inter);
     },
     componentWillUnmount: function(){
         clearInterval(this.load);
     },
     play: function(path, type, meta){
+        if(typeof path == 'undefined'){
+            var toPlay = this.state.musics[this.state.playList[this.state.index]];
+            path = toPlay.path;
+            type = toPlay.type;
+            meta = toPlay.meta;
+        }
         this.setState({path: path, type: type, current: meta});
         this.state.musics.forEach(function(music, i){
             if(music.path === path){
@@ -49,23 +73,36 @@ var Layout = React.createClass({
         }.bind(this));
     },
     next: function(){
-        var n = (this.state.musics[this.state.index + 1]) ? this.state.musics[this.state.index + 1] :  this.state.musics[0];
+        console.log(this.state.playList);
+        console.log(this.state.index);
+        console.log(this.state.playList[this.state.index]);
+        var n = (this.state.musics[this.state.playList[this.state.index + 1]]) ? 
+                    this.state.musics[this.state.playList[this.state.index + 1]]
+                : this.state.musics[this.state.playList[0]];
+        console.log(n);
         this.play(n.path, n.type, n.meta);
     },
     prev: function(){
-        var n =(this.state.index > 0) ? this.state.musics[this.state.index - 1] : this.state.musics[this.state.musics.length - 1];
+        var n =(this.state.index > 0) ? 
+                    this.state.musics[this.state.playList[this.state.index - 1]]
+                : this.state.musics[this.state.playList[this.state.playList.length - 1]];
         this.play(n.path, n.type, n.meta);
     },
     removed: function(name){
         console.log(name + ' had beed removed');
         var actuals = this.state.musics;
+        var indexes = this.state.playList;
         actuals.forEach((music, i)=>{
             if(music.name === name){
                 actuals.splice(i, 1);
+                indexes.forEach((index, key)=>{
+                    if(index === i)
+                        indexes.splice(key, 1);
+                });
                 return;
             }
         });
-        this.setState({musics: actuals});
+        this.setState({musics: actuals, playList: indexes});
     },
     render: function(){
         return (
@@ -77,6 +114,8 @@ var Layout = React.createClass({
                     meta={this.state.current}
                     next={this.next}
                     prev={this.prev}
+                    play={this.play}
+                    shuffle={this.shuffle}
                 />
                 <Menu />
                     {

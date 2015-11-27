@@ -9,7 +9,7 @@ var Controls = React.createClass({
                 <img src="img/ic_skip_previous_black_24dp.png" alt="prev" onClick={this.props.playPrev}/>
                 <img src={img} alt="pause_play" className="pause_play" onClick={this.props.changePlay}/>
                 <img src="img/ic_skip_next_black_24dp.png" alt="next" onClick={this.props.playNext}/>
-                <img src="img/ic_shuffle_black_24dp.png" alt="shuffle" onClick={this.props.changePlay}/>
+                <img src="img/ic_shuffle_black_24dp.png" alt="shuffle" onClick={this.props.shuffle}/>
             </div>
         );
     }
@@ -107,8 +107,10 @@ var Player = React.createClass({
     changePlay: function(){
         if(this.state.playing)
             this.player.pause();
-        else
+        else if(this.player.src !== '')
             this.player.play();
+        else
+            this.props.play();
     },
     componentDidMount: function(){
         this.player = new Audio();
@@ -163,6 +165,7 @@ var Player = React.createClass({
                     changePlay={this.changePlay}
                     playNext={this.props.next}
                     playPrev={this.props.prev}
+                    shuffle={this.props.shuffle}
                 />
                 <TimeLine
                     cur={this.state.currentTime}

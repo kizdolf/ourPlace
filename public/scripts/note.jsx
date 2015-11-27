@@ -58,7 +58,7 @@ var Editor = React.createClass({
     },
     render: function(){
         return(
-            <div className="editorNote">
+            <div className="oneNote">
                 <Medium
                 tag="pre"
                 text={this.state.text}
@@ -123,6 +123,7 @@ exports.NoteBox = React.createClass({
             }
         });
         this.setState({notes: actuals});
+        setTimeout(function(){this.getNotesFromAPI()}.bind(this), 2500);
     },
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{
@@ -132,12 +133,12 @@ exports.NoteBox = React.createClass({
         });
         return(
             <div id="Notes">
-                <Editor
-                    get={this.getNotesFromAPI}
-                    apiAddNote={this.props.apiAddNote}
-                    addNote={this.addNote}
-                />
                 <ul className="notes">
+                    <Editor
+                        get={this.getNotesFromAPI}
+                        apiAddNote={this.props.apiAddNote}
+                        addNote={this.addNote}
+                    />
                     {mountNotes}
                 </ul>
                 {
