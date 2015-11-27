@@ -6,7 +6,6 @@ var
     couchbase       = require('couchbase'),
     Cluster         = new couchbase.Cluster(conf.host),
     sock            = require('./socket'),
-    moment          = require('moment'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
