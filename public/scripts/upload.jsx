@@ -3,13 +3,26 @@ var React       = require('react'),
     $           = require('jquery'),
     request     = require('superagent');
 
+var Uploading = React.createClass({
+    render: function(){
+        var mountCurrent = Object.keys(this.props.now).map(function (key) {
+            return(
+                <li key={this.props.now[key].name}>
+                    <span className="tNow">{this.props.now[key].name} : </span><span className="pctNow">{this.props.now[key].pct}</span>
+                </li>
+            );
+        }.bind(this));
+        return(
+            <ul>
+                {mountCurrent}
+            </ul>
+        );
+    }
+});
+
 exports.Upload = React.createClass({
     getInitialState: function(){
-        /*
-            should be able to store and update the state of all uploading data.
-            And do display it Nicely. Actually the div display the state of the uplaod should be a component.
-        */
-        return { pct: null };
+        return { uploading: [] };
     },
     componentDidMount: function(){
         var dZ = $('.dropZone'),
@@ -34,19 +47,34 @@ exports.Upload = React.createClass({
         });
     },
     onDrop: function(files){
-        files.forEach(function(file) {
+        files.forEach(function(file, i) {
+            console.log('uploading ' + file.name);
+            var elem = {name: file.name, pct: 'Starting ...'};
+            var current = this.state.uploading;
+            current[file.name] = elem;
+            this.setState({ uploading: current });
             request.post(this.props.url)
             .attach('file', file, file.name)
             .on('progress', function(e){
-                this.setState({pct: e.percent});
+                var elem = {name: file.name, pct: parseInt(e.percent).toString() + '%'};
+                var current = this.state.uploading;
+                current[file.name] = elem;
+                this.setState({ uploading: current });
             }.bind(this))
             .on('error', function(err){
                 console.log(err);
             })
             .end(function(res){
+                var current = this.state.uploading;
+                current[file.name].pct = 'Finished.';
+                this.setState({ uploading: current });
+                setTimeout(function(){
+                    delete current[file.name];
+                    this.setState({ uploading: current });
+                }.bind(this), 3500);
                 console.log('res from request.');
                 console.log(res);
-            });
+            }.bind(this));
         }.bind(this));
     },
     render: function(){
@@ -55,9 +83,12 @@ exports.Upload = React.createClass({
                 <Dropzone onDrop={this.onDrop} className="dropZone">
                   <div className="innerDrop">Drop stuff!</div>
                 </Dropzone>
-                <div className="uploadStatus">
-                    done at {this.state.pct} %.
-                </div>
+                {Object.keys(this.state.uploading).length > 0 ?
+                    <div className="uploadStatus">
+                        <Uploading now={this.state.uploading} />
+                    </div>
+                : ''
+                }
             </div>
         );
     }
