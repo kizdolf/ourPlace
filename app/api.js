@@ -10,10 +10,6 @@
     But hey, there is'nt that much endpoints.
 */
 
-/*TODO:
-    - path of the upload need to be changed depending on the file type.
-    - make the api able to upload multiple file simultenaously.
-*/
 var
 express     = require('express'),
 multer      = require('multer'),
@@ -32,7 +28,6 @@ exports.main = (function(){
         req.files.forEach((file)=>{
             log.info(file);
             lib.handle(file, (err, response)=>{
-                //need of a loggin system... (accessible from the outside, with a query system would be great actually.)
                 if(err) res.json({err: err});
                 else res.json({done: response});
             });

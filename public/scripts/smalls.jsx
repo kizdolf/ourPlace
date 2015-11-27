@@ -1,5 +1,6 @@
 var
     React       = require('react'),
+    Link        = require('react-router').Link,
     $           = require('jquery');
 
 var OnTop = React.createClass({
@@ -98,6 +99,19 @@ exports.ItemMenu = React.createClass({
                     : null
                 }
             </span>
+        );
+    }
+});
+
+exports. Menu = React.createClass({
+    render: function(){
+        return (
+            <div className="WrapperMenu">
+                <ul className="links">
+                    <li className="oneLink"><Link to="/notes">Notes</Link></li>
+                    <li className="oneLink"><Link to="/">Music</Link></li>
+                </ul>
+            </div>
         );
     }
 });
