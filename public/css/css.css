@@ -5,8 +5,8 @@ body{
 .listMusic{
     list-style-type: none;
     margin: 0;
-    padding: 0;
     text-align: center;
+    padding: 0px 50px 0px 50px;
 }
 .btn-upload{
     background: #F98B36;
@@ -73,11 +73,12 @@ body{
     text-align: right;
 }
 
-@media (min-width: 640px){
+#app{
+    margin-top: 180px;
+    margin-bottom: 250px;
+}
 
-    #app{
-        margin-top: 150px;
-    }
+@media (min-width: 640px){
 
     #player{
         position: fixed;
@@ -89,7 +90,6 @@ body{
         z-index: 1000;
         box-shadow: 0px 0px 18px 0px white;
     }
-
 
     .ctrls{
         text-align: right;
@@ -130,16 +130,16 @@ body{
     }
 
     .itemMusic{
-        width: 400px;
-        height: 120px;
+        height: 100px;
         margin: 5px;
         cursor: pointer;
         background: #FFFFFF;
         display: inline-block;
         word-wrap: break-word;
-        padding: 2px;
+        padding: 0;
         box-shadow: 1px 1px 2px 0px #A2A2A2;
         position: relative;
+        width: auto;
     }
 
     .itemMusic:hover{
@@ -148,23 +148,25 @@ body{
 
     .Meta{
         height: 100%;
-        float: right;
-        padding-right: 9px;
-        max-width: 51%;
+        display: inline-block;
+        padding: 0;
+        /* max-width: 51%; */
+        margin-right: 10px;
     }
 
     .cover{
-        width: 39%;
-        float: left;
+        /* width: 39%; */
+        display: inline-block;
         height: 100%;
     }
 
     .cov{
-      height: auto;
-      max-height: 100%;
-      /* width: auto; */
-      max-width: 100%;
-      margin: 0 auto;
+        height: 100%;
+        /* width: auto; */
+        /* max-width: 100%; */
+        margin: 0;
+        margin-right: 8px;
+        padding: 0;
     }
 
     .metaPlayer{
@@ -250,13 +252,13 @@ body{
         background: rgba(255, 255, 255, 0.5);
     }
 
-
     .ctrls img {
         opacity: 0.4;
         margin-left: 2%;
         cursor: pointer;
         width: 20%;
     }
+
     .itemMusic{
         width: 100%;
         height: 150px;
@@ -312,13 +314,13 @@ body{
 .title, .artist{
     width: 100%;
     display: block;
-    font-weight: bold;
+    font-weight: bold; 
     min-height: 20px;
-    line-height: 21px;
+    /* line-height: 21px; */
     margin: 0;
-    font-size: 18px;
+    /* font-size: 18px; */
     padding: 0;
-    text-align: right;
+    /* text-align: right; */
 }
 
 .running{
@@ -470,7 +472,7 @@ body{
     height: 350px;
     max-width: 90vw;
     background: white;
-    float: left;
+    display: inline-block;
     margin: 10px;
     overflow: auto;
     position: relative;

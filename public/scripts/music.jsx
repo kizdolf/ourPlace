@@ -13,13 +13,13 @@ var MusicItem = React.createClass({
         return (
             <li className="itemMusic">
                 <span onClick={this.play}>
+                    <div className="cover">
+                        <img src={this.props.meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
+                    </div>
                     <div className="Meta">
                         <span className="title">{this.props.meta.title}</span>
                         <span className="artist"><i>From: </i>{(this.props.meta.artist) ? this.props.meta.artist[0] : ''}</span>
-                        <span className="album"><i>Album: </i>{this.props.meta.album || ''}</span>
-                    </div>
-                    <div className="cover">
-                        <img src={this.props.meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
+                        {(this.props.meta.album) ? <span className="album"><i>Album: </i>{this.props.meta.album}</span> : ''}
                     </div>
                 </span>
                 <img

@@ -97,8 +97,8 @@ exports.updateMeta = function(data){
             doc.value.meta.title = data.title;
             Bucket.replace(name, doc.value, function(err){
                 if(err) {
-                    log.info(' [!!ERROR] updating meta for ', name);
-                    log.info(err);
+                    log.error('updating meta for ', name);
+                    log.error(err);
                 }else exports.allSongs();
             });
         }
@@ -243,10 +243,10 @@ exports.addNote = function(req, res){
         else{
             Bucket.insert(note.name, note, function(err) {
                 if (err){
-                    console.log('err inserting obj');
-                    console.log(err);
+                    log.error('err inserting obj');
+                    log.error(err);
                 }else{
-                    console.log('obj inserted:'+ note.name);
+                    log.info('note inserted: '+ note.name);
                     res.json({msg: 'note inserted.'});
                 }
             });

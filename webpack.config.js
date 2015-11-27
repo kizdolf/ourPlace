@@ -4,11 +4,8 @@ var webpack  = require('webpack');
 module.exports = {
     entry: [
         './public/scripts/app.jsx',
-        // './public/scripts/layout.jsx',
-        // './public/scripts/music.jsx',
-        // './public/scripts/note.jsx'
     ],
-    // devtool: 'source-map',
+//    devtool: 'source-map',
     output: {
         filename: './public/scripts/dist/bundle.js'
     },
@@ -25,18 +22,17 @@ module.exports = {
     externals: {
         'React': 'React',
         'ReactDOM': 'ReactDOM',
-        // 'react-router':'react-router',
         '$': 'jquery'
     },
     resolve: {
         extensions: ['', '.js', '.jsx']
     }
-    // plugins: [
-    //     new webpack.optimize.UglifyJsPlugin({
-    //         minimze: true,
-    //         mangle: {
-    //             except: ['$super', '$', 'exports', 'require']
-    //         }
-    //     })
-    // ]
+  	/*plugins: [
+         new webpack.optimize.UglifyJsPlugin({
+             minimze: true,
+             mangle: {
+                 except: ['$super', '$', 'exports', 'require']
+             }
+         })
+    ]*/
 };
