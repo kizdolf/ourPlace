@@ -171,8 +171,15 @@ exports.handle = function(file, cb){
                 });
                 Bucket.insert(obj.name, obj, function(err, res) {
                     if (err){
-                        log.info('[!!ERROR] inserting obj');
-                        log.info(err);
+                        log.error('inserting obj');
+                        log.error(err);
+                        var path = __dirname + '/..' + obj.path;
+                        fs.access(path, function(err){
+                            if(!err){
+                                fs.unlinkSync(path);  
+                                log.error('file ' + path + ' had beed deleted.');
+                            } 
+                        });
                         cb(err, null);
                     }else{
                         //this log is bad.
