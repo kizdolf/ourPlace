@@ -24,9 +24,6 @@ exports.main = (function(){
     var router      = express.Router();
     // Would it be better to externalise the route in a json file somewhere else?
     router.post('/upload', upload.any(), function(req, res){
-        console.log("got upload:");
-        console.log(req.files);
-        log.info(req.files);
         req.files.forEach((file)=>{
             log.info(file);
             lib.handle(file, (err, response)=>{
