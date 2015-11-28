@@ -35,7 +35,7 @@ var Layout = React.createClass({
             if(cb) cb();
         }.bind(this));
     },
-    shuffle: function(bool){
+    shuffle: function(){
         var indexesOrder = this.state.playList;
         if(this.state.shuffling){
             this.setState({shuffling: false});
@@ -57,33 +57,34 @@ var Layout = React.createClass({
     componentWillUnmount: function(){
         clearInterval(this.load);
     },
-    play: function(path, type, meta){
+    play: function(path, type, meta, index){
         if(typeof path == 'undefined'){
             var toPlay = this.state.musics[this.state.playList[this.state.index]];
             path = toPlay.path;
             type = toPlay.type;
             meta = toPlay.meta;
+            index = toPlay.id;
         }
-        this.setState({path: path, type: type, current: meta});
-        this.state.musics.forEach(function(music, i){
-            if(music.path === path){
-                this.setState({index: i});
+        this.state.playList.forEach((item, key)=>{
+            if(item === index){
+                index = key;
                 return;
             }
-        }.bind(this));
+        });
+        this.setState({path: path, type: type, current: meta, index: index});
     },
     next: function(){
         console.log(this.state.playList);
         console.log(this.state.index);
         console.log(this.state.playList[this.state.index]);
-        var n = (this.state.musics[this.state.playList[this.state.index + 1]]) ? 
+        var n = (this.state.musics[this.state.playList[this.state.index + 1]]) ?
                     this.state.musics[this.state.playList[this.state.index + 1]]
                 : this.state.musics[this.state.playList[0]];
         console.log(n);
         this.play(n.path, n.type, n.meta);
     },
     prev: function(){
-        var n =(this.state.index > 0) ? 
+        var n =(this.state.index > 0) ?
                     this.state.musics[this.state.playList[this.state.index - 1]]
                 : this.state.musics[this.state.playList[this.state.playList.length - 1]];
         this.play(n.path, n.type, n.meta);
