@@ -4,7 +4,7 @@ var
 
 var MusicItem = React.createClass({
     play: function(){
-        this.props.onWishPlay(this.props.src, this.props.type, this.props.meta);
+        this.props.onWishPlay(this.props.src, this.props.type, this.props.meta, this.props.index);
     },
     showMenu: function(e){
         this.props.showOnTop({x: e.pageX, y: e.pageY}, this.props.meta, this.props.src, this.props.name);
@@ -54,6 +54,7 @@ exports.MusicBox = React.createClass({
             musicNodes = this.props.musics.map(function(music){
                 return (
                     <MusicItem
+                        index={music.id}
                         key={music.id}
                         meta={music.meta}
                         name={music.name}
