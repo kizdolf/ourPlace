@@ -4,7 +4,7 @@ var React       = require('react'),
 var Controls = React.createClass({
     render: function(){
         var imgP = (this.props.playing) ? 'img/ic_pause_black_24dp.png' : 'img/ic_play_arrow_black_24dp.png';
-        var imgS = (this.props.shuffle) ? 'img/ic_sort_black_24dp.png' : 'img/ic_shuffle_black_24dp.png';
+        var imgS = (this.props.shuffling) ? 'img/ic_sort_black_24dp.png' : 'img/ic_shuffle_black_24dp.png';
         return(
             <div className="ctrls">
                 <img src="img/ic_skip_previous_black_24dp.png" alt="prev" onClick={this.props.playPrev}/>
@@ -166,6 +166,7 @@ var Player = React.createClass({
                     playNext={this.props.next}
                     playPrev={this.props.prev}
                     shuffle={this.shuffle}
+                    shuffling={this.state.shuffle}
                 />
                 <TimeLine
                     cur={this.state.currentTime}
