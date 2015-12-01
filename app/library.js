@@ -176,9 +176,9 @@ exports.handle = function(file, cb){
                         var path = __dirname + '/..' + obj.path;
                         fs.access(path, function(err){
                             if(!err){
-                                fs.unlinkSync(path);  
+                                fs.unlinkSync(path);
                                 log.error('file ' + path + ' had beed deleted.');
-                            } 
+                            }
                         });
                         cb(err, null);
                     }else{
@@ -192,7 +192,10 @@ exports.handle = function(file, cb){
         });
     }
 };
-
+var byDate = function(a, b){
+    if(a.date > b.date) return -1;
+    else return 1;
+};
 exports.allSongs = function(){
     var files = [];
     var ViewQuery = couchbase.ViewQuery;
@@ -205,9 +208,12 @@ exports.allSongs = function(){
                 console.log(err);
                 rej(err);
             }else{
-                res.forEach(function(one, i){
-                    one.value.id = i;
+                res.forEach(function(one){
                     files.push(one.value);
+                });
+                files = files.sort(byDate);
+                files.forEach((f, i)=>{
+                    files[i].id = i;
                 });
                 ful(files);
             }

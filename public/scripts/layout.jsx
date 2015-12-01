@@ -65,29 +65,24 @@ var Layout = React.createClass({
             meta = toPlay.meta;
             index = toPlay.id;
         }
-        this.state.playList.forEach((item, key)=>{
-            if(item === index){
-                index = key;
-                return;
-            }
-        });
+        console.log('index in play = ' + index);
         this.setState({path: path, type: type, current: meta, index: index});
     },
     next: function(){
-        console.log(this.state.playList);
-        console.log(this.state.index);
-        console.log(this.state.playList[this.state.index]);
-        var n = (this.state.musics[this.state.playList[this.state.index + 1]]) ?
-                    this.state.musics[this.state.playList[this.state.index + 1]]
-                : this.state.musics[this.state.playList[0]];
-        console.log(n);
-        this.play(n.path, n.type, n.meta);
+        var list    = this.state.playList,
+            i       = this.state.index;
+
+        i = (i + 1 < list.length) ? (i + 1) : 0;
+        var n = this.state.musics[list[i]];
+        this.play(n.path, n.type, n.meta, i);
     },
     prev: function(){
-        var n =(this.state.index > 0) ?
-                    this.state.musics[this.state.playList[this.state.index - 1]]
-                : this.state.musics[this.state.playList[this.state.playList.length - 1]];
-        this.play(n.path, n.type, n.meta);
+        var list    = this.state.playList,
+            i       = this.state.index;
+
+        i = (i - 1 >= 0) ? (i - 1) : (list.length - 1);
+        var n = this.state.musics[list[i]];
+        this.play(n.path, n.type, n.meta, i);
     },
     removed: function(name){
         console.log(name + ' had beed removed');
