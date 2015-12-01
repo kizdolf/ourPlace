@@ -260,12 +260,12 @@ exports.addNote = function(req, res){
     });
 };
 
-exports.fromYoutube = function(url){
+exports.fromYoutube = function(url, cb){
     var dir = process.env.PWD + '/medias';
-    var opts = ' --add-metadata --no-warnings --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir ' + dir + ' ';
+    var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir ' + dir + ' ';
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
+    log.info(' dowloading from youtube url : ' + url);
     child_process.exec(exec, function(err, out){
-        sock.send('fromYoutube', {status: 2, msg: 'Download finish. Start to extract infos.'});
         var ret = JSON.parse(out);
         var obj = {
             name : ret.fulltitle,
@@ -279,18 +279,19 @@ exports.fromYoutube = function(url){
         };
         var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
             if(err){
-                console.log(err);
+                log.error(err);
+                cb(false);
             }
         });
         Bucket.insert(obj.name, obj, function(err, res) {
             if (err){
-                console.log('err inserting obj');
-                console.log(err);
+                log.error('err inserting obj');
+                log.error(err);
+                cb(false);
             }else{
-                sock.send('fromYoutube', {status: 1, msg: 'All went well. Music will apear soon.'});
-                //this log is bad.
                 log.info('obj inserted:'+ res.cas);
-                exports.allSongs();
+                log.info('extarct and saved from ' + url);
+                cb(true);
             }
         });
     });

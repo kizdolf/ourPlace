@@ -13,6 +13,7 @@ ReactDOM.render((
         <Route path="/" component={Layout}>
             <IndexRoute component={MusicBox} />
             <Route path="notes" component={NoteBox} />
+            <Route path="*" component={MusicBox} />
         </Route>
     </Router>
 ), document.getElementById('app'));
