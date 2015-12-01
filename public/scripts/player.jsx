@@ -151,6 +151,10 @@ var Player = React.createClass({
             });
         }
     },
+    shuffle : function(){
+        this.props.shuffle();
+        this.setState({shuffle : !this.state.shufle});
+    },
     move: function(desiredTime){
         if(this.player)
             this.player.currentTime = desiredTime;
@@ -166,7 +170,7 @@ var Player = React.createClass({
                     changePlay={this.changePlay}
                     playNext={this.props.next}
                     playPrev={this.props.prev}
-                    shuffle={this.props.shuffle}
+                    shuffle={this.shuffle}
                 />
                 <TimeLine
                     cur={this.state.currentTime}
