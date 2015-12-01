@@ -44,6 +44,13 @@ exports.main = (function(){
         });
     });
 
+    router.post('/fromYoutube', function(req, res){
+        var url = req.body.url;
+        lib.fromYoutube(url, (bool)=>{
+            res.json(bool);
+        });
+    });
+
     router.get('/music', function(req, res){
         lib.allSongs().then(function(music){
             res.json({music : music});

@@ -1,4 +1,3 @@
-
 var React       = require('react'),
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
@@ -44,7 +43,6 @@ var Layout = React.createClass({
             this.setState({shuffling: true});
             for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
         }
-        console.log(indexesOrder);
         this.setState({playList: indexesOrder});
     },
     componentDidMount: function(){
@@ -65,7 +63,6 @@ var Layout = React.createClass({
             meta = toPlay.meta;
             index = toPlay.id;
         }
-        console.log('index in play = ' + index);
         this.setState({path: path, type: type, current: meta, index: index});
     },
     next: function(){
