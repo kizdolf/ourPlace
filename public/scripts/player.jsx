@@ -3,13 +3,14 @@ var React       = require('react'),
 
 var Controls = React.createClass({
     render: function(){
-        var img = (this.props.playing) ? 'img/ic_pause_black_24dp.png' : 'img/ic_play_arrow_black_24dp.png';
+        var imgP = (this.props.playing) ? 'img/ic_pause_black_24dp.png' : 'img/ic_play_arrow_black_24dp.png';
+        var imgS = (this.props.shuffle) ? 'img/ic_sort_black_24dp.png' : 'img/ic_shuffle_black_24dp.png';
         return(
             <div className="ctrls">
                 <img src="img/ic_skip_previous_black_24dp.png" alt="prev" onClick={this.props.playPrev}/>
-                <img src={img} alt="pause_play" className="pause_play" onClick={this.props.changePlay}/>
+                <img src={imgP} alt="pause_play" className="pause_play" onClick={this.props.changePlay}/>
                 <img src="img/ic_skip_next_black_24dp.png" alt="next" onClick={this.props.playNext}/>
-                <img src="img/ic_shuffle_black_24dp.png" alt="shuffle" onClick={this.props.shuffle}/>
+                <img src={imgS} alt="shuffle" onClick={this.props.shuffle}/>
             </div>
         );
     }
