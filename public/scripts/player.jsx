@@ -133,12 +133,6 @@ var Player = React.createClass({
         this.audioSource = $('#audioSource');
     },
     componentDidUpdate: function(prev){
-        /*Something unfortunate here:
-            MusicList change is state each two seconds.
-            Changing this state also change the props here, even they remain the same.
-            e.g : before : 'coucou', after 'coucou'. DOM is not updated, props are. (thanks react)
-            So componentDidUpdate is called. But we don't want to touch to the audio element. So "if" ..
-        */
         if(prev.path != this.props.path){
             this.player.src = this.props.path;
             this.player.type = this.props.type;
@@ -153,7 +147,8 @@ var Player = React.createClass({
     },
     shuffle : function(){
         this.props.shuffle();
-        this.setState({shuffle : !this.state.shufle});
+        var s = !this.state.shuffle;
+        this.setState({shuffle : s});
     },
     move: function(desiredTime){
         if(this.player)
