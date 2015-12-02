@@ -36,10 +36,11 @@ exports.main = (function(){
     router.post('/note', lib.addNote);
     router.get('/notes', lib.allNotes);
 
-    router.delete('/:name', function(req, res){
-        var name = req.params.name;
-        console.log('to remove: ' + name);
-        lib.delete(name, function(done){
+    router.delete('/:type/:id', function(req, res){
+        console.log('delete!');
+        var type = req.params.type;
+        var id = req.params.id;
+        lib.delete(type, id, function(done){
             res.json(done);
         });
     });
