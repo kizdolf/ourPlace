@@ -25,6 +25,21 @@ exports.couch = {
     tokenBucket :'token'
 };
 
+exports.rethink = {
+    tables: {
+        user: 'users',
+        note: 'notes',
+        song: 'songs',
+        log: 'logs'
+    },
+    connect: {
+        db: 'ourPlace',
+        host: '149.202.44.123',
+        port: 28015,
+        authKey: 'public65dbENEMY'
+    }
+};
+
 /*Unused. Need to be rethink. Need to be store in a db as well. To make it updatable.*/
 exports.mimes = {
     'audio/mp3' : {

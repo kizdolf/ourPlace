@@ -3,9 +3,11 @@
 var
     mainConf        = require('./config').conf,
     conf            = require('./config').couch,
+    re              = require('./rethink.js'),
+    tbls            = require('./config').rethink.tables,
+    tools           = require('./tools.js'),
     couchbase       = require('couchbase'),
     Cluster         = new couchbase.Cluster(conf.host),
-    sock            = require('./socket'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
@@ -106,45 +108,28 @@ exports.updateMeta = function(data){
 };
 
 //delete a db item. Should delete the related file as well. It's stupid to not.
-exports.delete = function(name, cb){
-    if(name){
-        var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-            if(err){
-                console.log(err);
-                cb(false);
-            }
-        });
-        Bucket.get(name, function(err, res){
-            if(!err){
-                if (res.value.path){
-                    log.info('deleting file: ' + res.value.path);
-                    var path = __dirname + '/..' + res.value.path;
-                    fs.access(path, function(err){
-                        if(!err) fs.unlinkSync(path);
-                    });
-                }
-            }else{
-                cb(false);
-            }
-        });
-        Bucket.remove(name, function(err){
-            if(err){
-                log.error('removing ', name);
-                log.error(err);
-                cb(false);
-            }else{
-                log.info('item ' + name + ' removed from database.');
-                cb(true);
-            }
-        });
-    }
+exports.delete = function(type, id, cb){
+    var tbl = tbls[type];
+    console.log('going to delete on: ' + tbl);
+    re.rmById(tbl, id).then((res)=>{
+        var old = res.changes.old_val;
+        if (old.path){
+            var path = __dirname + '/..' + res.value.path;
+            tools.rm(path);
+        }
+        cb(true);
+    }).catch((e)=>{
+        log.error('error removing item from db');
+        log.error(e);
+        cb(false);
+    });
 };
 
 /*
 Handler for a new file.
 Should be able to manage several type, not just music.
 */
-exports.handle = function(file, cb){
+exports.handle = (file, cb)=>{
     log.info('file to add:');
     log.info(file);
     if(accepted_mimes.indexOf(file.mimetype) === -1){
@@ -163,30 +148,15 @@ exports.handle = function(file, cb){
                     type : file.mimetype,
                     meta : meta
                 };
-                var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-                    if(err){
-                        console.log(err);
-                        cb(err, null);
-                    }
-                });
-                Bucket.insert(obj.name, obj, function(err, res) {
-                    if (err){
-                        log.error('inserting obj');
-                        log.error(err);
-                        var path = __dirname + '/..' + obj.path;
-                        fs.access(path, function(err){
-                            if(!err){
-                                fs.unlinkSync(path);
-                                log.error('file ' + path + ' had beed deleted.');
-                            }
-                        });
-                        cb(err, null);
-                    }else{
-                        //this log is bad.
-                        log.info('obj inserted:',  res.cas);
-                        exports.allSongs();
-                        cb(null, true);
-                    }
+                re.insert(tbls.song, obj).then((res)=>{
+                    console.log(res);
+                    log.info('obj inserted:');
+                    cb(null, true);
+                }).catch((err)=>{
+                    tools.rm(__dirname + '/..' + obj.path);
+                    log.error('error inserting song');
+                    log.error(err);
+                    cb(err, null);
                 });
             }
         });
@@ -198,65 +168,41 @@ var byDate = function(a, b){
 };
 exports.allSongs = function(){
     var files = [];
-    var ViewQuery = couchbase.ViewQuery;
-    var bucket = Cluster.openBucket(conf.filesBucket);
-    var q = ViewQuery.from('listing', 'allNames');
     return new Promise(function(ful, rej){
-        bucket.query(q, function(err, res){
-            if(err){
-                console.log('err requesting all');
-                console.log(err);
-                rej(err);
-            }else{
-                res.forEach(function(one){
-                    files.push(one.value);
-                });
-                files = files.sort(byDate);
-                files.forEach((f, i)=>{
-                    files[i].id = i;
-                });
-                ful(files);
-            }
+        re.getAll(tbls.song).then((songs)=>{
+            files = songs.sort(byDate);
+            files.forEach((f, i)=>{files[i].id = i;});
+            ful(files);
+        }).catch((e)=>{
+            log.error('err requesting all');
+            log.error(e);
+            rej(e);
         });
     });
 };
 
 //send all notes.
 exports.allNotes = function(req, res){
-    var ViewQuery   = couchbase.ViewQuery,
-        bucket      = Cluster.openBucket(conf.filesBucket),
-        q           = ViewQuery.from('listing', 'allNotes'),
-        notes       = [];
-    bucket.query(q, function(err, result){
-        if(err){
-            console.log('err requesting all Notes');
-            console.log(err);
-        }else{
-            result.forEach(function(one){
-                // one.value.date = moment(one.value.date).format('ddd DD MMMM YYYY HH:mm');
-                notes.push(one.value);
-            });
-            res.json(notes);
-        }
+    re.getAll(tbls.note).then((notes)=>{
+        res.json(notes);
+    }).catch((e)=>{
+        log.error('err requesting all');
+        log.error(e);
+        res.json([]);
     });
 };
 
 //add a note.
 exports.addNote = function(req, res){
     var note = req.body.note;
-    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-        if(err) console.log(err);
-        else{
-            Bucket.insert(note.name, note, function(err) {
-                if (err){
-                    log.error('err inserting obj');
-                    log.error(err);
-                }else{
-                    log.info('note inserted: '+ note.name);
-                    res.json({msg: 'note inserted.'});
-                }
-            });
-        }
+    re.insert(tbls.note, note)
+    .then((r)=>{ //jshint ignore: line
+        log.info('note inserted: '+ note.name);
+        res.json({msg: 'note inserted.'});
+    }).catch((e)=>{
+        log.error('err inserting obj');
+        log.error(e);
+        res.json({msg: 'ERROR! note NOT inserted.'});
     });
 };
 

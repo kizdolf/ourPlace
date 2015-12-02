@@ -53,14 +53,17 @@ exports.ItemMenu = React.createClass({
         this.props.closeMenu();
     },
     delete: function(){
-        var name = this.props.e.name;
+        var id = this.props.e.id;
+        var type = this.props.e.type;
+        var url = '/api/' + type + '/' + id;
+        console.log('going to delete on ' + url);
         this.props.closeMenu();
         $.ajax({
             method: 'DELETE',
-            url : '/api/' + name,
+            url : url,
         }).done(function(msg){
             if(msg === true){
-                this.props.removed(name);
+                this.props.removed(id);
             }
         }.bind(this));
     },

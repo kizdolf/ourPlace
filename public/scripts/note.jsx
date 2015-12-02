@@ -12,7 +12,11 @@ require('react-medium-editor/node_modules/medium-editor/dist/css/themes/default.
 var Note = React.createClass({
     showMenu: function(e){
         console.log(this.props);
-        this.props.showMenu({x: e.pageX, y: e.pageY}, this.props.data, this.props.data.name);
+        this.props.showMenu(
+            {x: e.pageX, y: e.pageY},
+            this.props.data,
+            this.props.data.id
+        );
     },
     render: function(){
         var setContent = function(content){
@@ -46,9 +50,7 @@ var Editor = React.createClass({
     },
     send: function(){
         var txt = linker.link(this.state.text);
-        var d = Date.now();
         var note = {
-            name: 'ourNote' + d,
             content: txt,
             date: Date.now()
         };
@@ -94,6 +96,7 @@ exports.NoteBox = React.createClass({
     },
     addNote: function(note){
         var newNotes = this.state.notes;
+        note.id = note.date;
         newNotes.unshift(note);
         this.setState({notes: newNotes});
     },
@@ -104,31 +107,31 @@ exports.NoteBox = React.createClass({
     componentWillUnmount: function(){
         clearInterval(this.load);
     },
-    showMenu: function(e, meta, name, src){
+    showMenu: function(e, meta, id){
         this.setState({
-            toTop: {meta: meta, e: e, src:src, name: name},
-            showMenu: !this.state.showMenu}
-        );
+            toTop: {meta: meta, e: e, type:'note', id: id},
+            showMenu: !this.state.showMenu
+        });
     },
     closeMenu: function(){
         this.setState({showMenu: false});
     },
-    removed: function(name){
+    removed: function(id){
         console.log(name + ' had beed removed');
         var actuals = this.state.notes;
         actuals.forEach((note, i)=>{
-            if(note.name === name){
+            if(note.id === id){
                 actuals.splice(i, 1);
                 return;
             }
         });
         this.setState({notes: actuals});
-        setTimeout(function(){this.getNotesFromAPI()}.bind(this), 2500);
+        setTimeout(function(){this.getNotesFromAPI();}.bind(this), 2500);
     },
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{
             return(
-                <Note data={note} key={note.name} showMenu={this.showMenu}/>
+                <Note data={note} key={note.id} showMenu={this.showMenu}/>
             );
         });
         return(
