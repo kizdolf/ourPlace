@@ -47,13 +47,15 @@ var OnTop = React.createClass({
         }.bind(this));
         return (
             <div className="onTop">
-                <span className="closeOnTop" onClick={this.props.close}>X</span>
-                <div>
-                    {editNodes}
-                </div>
-                <div className="btnsSubOnTop">
-                    <button onClick={this.update}>OK</button>
-                    <button onClick={this.props.close}>Cancel</button>
+                <div className="wrapperOnTop">
+                    <span className="closeOnTop" onClick={this.props.close}>X</span>
+                    <div>
+                        {editNodes}
+                    </div>
+                    <div className="btnsSubOnTop">
+                        <button onClick={this.update}>OK</button>
+                        <button onClick={this.props.close}>Cancel</button>
+                    </div>
                 </div>
             </div>
         );
