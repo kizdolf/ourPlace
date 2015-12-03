@@ -17,28 +17,25 @@ var OnTop = React.createClass({
             var artist = (this.props.elem.meta.meta.artist) ? this.props.elem.meta.meta.artist[0] : '';
             editable = [
                 {name: "title", val: this.props.elem.meta.meta.title || ''},
-                {name:"album",val: this.props.elem.meta.meta.album || ''},
-                {name:"artist",val: artist}];
+                {name:"album", val: this.props.elem.meta.meta.album || ''},
+                {name:"artist", val: artist}];
         }
         this.setState({
             id: this.props.elem.id,
             type: this.props.elem.type,
             editable: editable
         });
-        console.log(this.state);
     },
     update: function(){
         var values = {};
         this.state.editable.forEach((o)=>{
-            var str = o.name;
-            values[str] = $('#' + str).val();
+            values[o.name] = $('#' + o.name).val();
         });
         this.props.update(values);
     },
     render: function(){
         var i = 0;
         var editNodes = this.state.editable.map(function(o){
-            console.log(o);
             return (
                 <div key={i++}>
                     <p>{o.name}</p> <input type="text" id={o.name} defaultValue={o.val}/>
@@ -49,10 +46,8 @@ var OnTop = React.createClass({
             <div className="onTop">
                 <div className="wrapperOnTop">
                     <span className="closeOnTop" onClick={this.props.close}>X</span>
-                    <h3>{this.props.elem.name}</h3>
-                    <div>
-                        {editNodes}
-                    </div>
+                    <h3>{this.props.elem.meta.name}</h3>
+                    <div>{editNodes}</div>
                     <div className="btnsSubOnTop">
                         <button onClick={this.update}>OK</button>
                         <button onClick={this.props.close}>Cancel</button>
@@ -86,20 +81,17 @@ exports.ItemMenu = React.createClass({
         // this.props.closeMenu();
     },
     download: function(){
-        var dl = document.createElement('a');
-        var name;
-        dl.setAttribute('href', this.props.e.meta.path);
-        if(this.props.e.meta.title){
-            name = this.props.e.meta.title + '_';
-            name += (this.props.e.meta.artist) ? this.props.e.meta.artist[0] : '';
-            var ext = this.props.e.name.split('.')[this.props.e.name.split('.').length - 1];
-            name += (ext.length === 3) ? '.' + ext : '.' + this.props.e.src.split('.')[this.props.e.src.split('.').length - 1];
+        var dl = document.createElement('a'), name, e = this.props.e;
+        dl.setAttribute('href', e.meta.path);
+        if(e.meta.title){
+            name = e.meta.title + '_';
+            name += (e.meta.artist) ? e.meta.artist[0] : '';
+            var ext = e.name.split('.')[e.name.split('.').length - 1];
+            name += (ext.length === 3) ? '.' + ext : '.' + e.src.split('.')[e.src.split('.').length - 1];
         }else{
-            name = this.props.e.meta.name;
+            name = e.meta.name;
         }
-        name = name.replace(/ /g, '-');
-        console.log(name);
-        dl.setAttribute('download', name);
+        dl.setAttribute('download', name.replace(/ /g, '-'));
         dl.click();
         dl = null;
         this.props.closeMenu();
@@ -123,17 +115,14 @@ exports.ItemMenu = React.createClass({
         var id = this.props.e.id;
         var type = this.props.e.type;
         var url = '/api/update/' + type + '/' + id;
+        $.post(url, data);
         this.props.closeMenu();
-        $.post(url, data, function(msg){
-            console.log(msg);
-        }.bind(this));
-
     },
     componentDidMount: function(){
         var left = this.props.e.e.x;
         var right = this.props.e.e.y;
         /*
-            we nned to see if it goes outside the screen here,
+            we need to see if it goes outside the screen here,
             and move it on the other side if it does.
             (true for vertical and horizontal)
             And move a bit from the button itself could be good as well.
