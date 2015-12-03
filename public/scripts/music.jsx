@@ -18,8 +18,9 @@ var MusicItem = React.createClass({
     render: function(){
         var meta = this.props.song.meta;
         var name = this.props.song.name;
+        var clss = this.props.now ? 'itemMusic current': 'itemMusic';
         return (
-            <li className="itemMusic">
+            <li className={clss}>
                 <span onClick={this.play}>
                     <div className="cover">
                         <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
@@ -117,14 +118,9 @@ exports.MusicBox = React.createClass({
             var i = 0;
             musicNodes = this.props.musics.map(function(music){
                 if(typeof music.toShow === 'undefined' || music.toShow === true){
+                    var currentlyPlaying = (i == this.props.index) ? true: false;
                     return (
-                        <MusicItem
-                            index={i++}
-                            key={music.id}
-                            song={music}
-                            onWishPlay={this.props.play}
-                            showOnTop={this.showOnTop}
-                        />
+                        <MusicItem index={i++} key={music.id} song={music} onWishPlay={this.props.play} showOnTop={this.showOnTop} now={currentlyPlaying}/>
                     );
                 }
             }.bind(this));
@@ -137,16 +133,7 @@ exports.MusicBox = React.createClass({
             <ul classNammusice="listMusic">
                     {musicNodes}
                 </ul>
-                {
-                    this.state.showMenu ?
-                        <ItemMenu
-                            e={this.state.toTop}
-                            closeMenu={this.closeMenu}
-                            type='song'
-                            removed={this.props.removed}
-                        />
-                    : ''
-                }
+                { this.state.showMenu ? <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='song' removed={this.props.removed} /> : '' }
             </div>
         );
     }

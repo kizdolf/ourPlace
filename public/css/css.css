@@ -654,6 +654,7 @@ body{
 
 .uploadStatus ul {
     list-style-type: none;
+    padding: 0;
 }
 
 .uploadStatus ul li {
