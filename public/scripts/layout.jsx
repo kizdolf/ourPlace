@@ -122,7 +122,7 @@ var Layout = React.createClass({
                                 removed: this.removed,
                                 musics: this.state.musics,
                                 apiAddNote: this.apiAddNote,
-                                indexPlaying: this.state.index
+                                indexPlaying: this.state.playList[this.state.index]
                             }
                         )
                     }
