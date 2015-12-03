@@ -9,6 +9,10 @@ r.connect(cnf.connect, (e, con)=>{
     else c = con;
 });
 
+var getCon = ()=>{
+    return c;
+};
+
 var insert = (tblName, json)=>{
     return new Promise((full, rej)=>{
         var reQL = r.table(tblName).insert(json);
@@ -47,7 +51,7 @@ var rmById = (tblName, id)=>{
     });
 };
 
-// re.update(tbl, id, changes).then((res)=>{
+// re.update(tbl, id, changesindex).then((res)=>{
 var update = (tblName, id, obj)=>{
     return new Promise((ful, rej)=>{
         r.table(tblName).get(id).update(obj)
@@ -63,5 +67,6 @@ module.exports = {
     insert: insert,
     getAll: getAll,
     rmById: rmById,
-    update: update
+    update: update,
+    getCon: getCon
 };

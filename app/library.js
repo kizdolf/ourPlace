@@ -27,6 +27,8 @@ var
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
+require('./DBlisteners.js');
+
 var deleteAllFromBucket = function(){  // jshint ignore:line
     var ViewQuery = couchbase.ViewQuery;
     var bucket = Cluster.openBucket(conf.filesBucket);
