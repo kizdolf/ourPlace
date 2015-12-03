@@ -34,6 +34,7 @@ var Meta = React.createClass({
 var TimeLine = React.createClass({
     canMoveAuto : true,
     prettytime: function(time){
+        time = ~~time;
         var minutes = Math.floor(time / 60);
         var seconds = time % 60;
         var pad_left = function(string,pad,length) {
