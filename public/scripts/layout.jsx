@@ -121,7 +121,8 @@ var Layout = React.createClass({
                                 next: this.next,
                                 removed: this.removed,
                                 musics: this.state.musics,
-                                apiAddNote: this.apiAddNote
+                                apiAddNote: this.apiAddNote,
+                                indexPlayin: this.state.index
                             }
                         )
                     }

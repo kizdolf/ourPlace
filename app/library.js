@@ -68,7 +68,7 @@ var getMetaData = function(path, cb){
                     if(err){
                         log.error('err wrinting img');
                         log.error(err);
-                        cb(err, null);
+                        cb(null, {});
                     }else{
                         meta.picture = '/' + mainConf.coversPath + picName;
                         cb(null, meta);
