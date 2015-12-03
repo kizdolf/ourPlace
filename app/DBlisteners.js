@@ -1,24 +1,28 @@
 'use strict';
 
 var r = require('rethinkdb'),
-    cnf = require('./config.js').rethink;
+    cnf = require('./config.js').rethink,
 
-var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+log = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 
-r.connect(cnf.connect)
-.then((c)=>{
-    for(let tbl of cnf.tables){
-        r.table(tbl).changes().run(c, listenChange);
-    }
-})
-.catch((e)=>{
-    console.log(e);
-});
 
-var listenChange = (er, cursor)=>{
-    if(!er){
-        cursor.each((doc)=>{
-            console.log(doc);
-        });
-    }
+listenChangeNote = (er, cursor)=>{
+    cursor.each((e, val)=>{
+        console.log(val);
+    });
+},
+listenChangeSong = (er, cursor)=>{
+    cursor.each((e, val)=>{
+        console.log(val);
+    });
 };
+
+r.connect(cnf.connect, (e, c)=>{
+    if(e){
+        console.log('erreur=>catch for changes');
+        console.log(e);
+    }else{
+        r.table(cnf.tables.note).changes().run(c, listenChangeNote);
+        r.table(cnf.tables.song).changes().run(c, listenChangeSong);
+    }
+});
