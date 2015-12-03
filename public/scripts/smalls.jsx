@@ -49,6 +49,7 @@ var OnTop = React.createClass({
             <div className="onTop">
                 <div className="wrapperOnTop">
                     <span className="closeOnTop" onClick={this.props.close}>X</span>
+                    <h3>{this.props.elem.name}</h3>
                     <div>
                         {editNodes}
                     </div>
