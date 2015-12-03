@@ -55,8 +55,8 @@ var Editor = React.createClass({
             date: Date.now()
         };
         this.setState({text: 'Note sended!'});
-        this.props.addNote(note);
         $.post(this.props.apiAddNote, {note: note});
+        this.props.addNote(note);
     },
     render: function(){
         return(
