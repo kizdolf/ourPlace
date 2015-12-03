@@ -5,22 +5,29 @@ var
 
 var MusicItem = React.createClass({
     play: function(){
-        this.props.onWishPlay(this.props.src, this.props.type, this.props.meta, this.props.index);
+        var src = this.props.song.path, type = this.props.song.type, meta = this.props.song.meta;
+        this.props.onWishPlay(src, type, meta, this.props.index);
     },
     showMenu: function(e){
-        this.props.showOnTop({x: e.pageX, y: e.pageY}, this.props.meta, this.props.src, this.props.name);
+        this.props.showOnTop(
+            {x: e.pageX, y: e.pageY},
+            this.props.song,
+            this.props.song.id
+        );
     },
     render: function(){
+        var meta = this.props.song.meta;
+        var name = this.props.song.name;
         return (
             <li className="itemMusic">
                 <span onClick={this.play}>
                     <div className="cover">
-                        <img src={this.props.meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
+                        <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
                     </div>
                     <div className="Meta">
-                        <span className="title">{this.props.meta.title}</span>
-                        <span className="artist"><i>From: </i>{(this.props.meta.artist) ? this.props.meta.artist[0] : ''}</span>
-                        {(this.props.meta.album) ? <span className="album"><i>Album: </i>{this.props.meta.album}</span> : ''}
+                        <span className="title">{(meta.title) ? meta.title : name}</span>
+                        <span className="artist"><i>From: </i>{(meta.artist) ? meta.artist[0] : ''}</span>
+                        {(meta.album) ? <span className="album"><i>Album: </i>{meta.album}</span> : ''}
                     </div>
                 </span>
                 <img
@@ -76,9 +83,9 @@ exports.MusicBox = React.createClass({
             showMenu: false
         };
     },
-    showOnTop: function(e, meta, src, name){
+    showOnTop: function(e, meta, id){
         this.setState({
-            toTop: {meta: meta, e: e, src:src, name: name},
+            toTop: {meta: meta, e: e, type:'song', id: id},
             showMenu : !this.state.showMenu
         });
     },
@@ -107,16 +114,14 @@ exports.MusicBox = React.createClass({
     render: function(){
         var musicNodes;
         if(this.props.musics.length > 0){
+            var i = 0;
             musicNodes = this.props.musics.map(function(music){
                 if(typeof music.toShow === 'undefined' || music.toShow === true){
                     return (
                         <MusicItem
-                            index={music.id}
+                            index={i++}
                             key={music.id}
-                            meta={music.meta}
-                            name={music.name}
-                            src={music.path}
-                            type={music.type}
+                            song={music}
                             onWishPlay={this.props.play}
                             showOnTop={this.showOnTop}
                         />
@@ -129,7 +134,7 @@ exports.MusicBox = React.createClass({
                 <InputBox
                     search={this.search}
                 />
-                <ul className="listMusic">
+            <ul classNammusice="listMusic">
                     {musicNodes}
                 </ul>
                 {
@@ -137,7 +142,7 @@ exports.MusicBox = React.createClass({
                         <ItemMenu
                             e={this.state.toTop}
                             closeMenu={this.closeMenu}
-                            type='music'
+                            type='song'
                             removed={this.props.removed}
                         />
                     : null

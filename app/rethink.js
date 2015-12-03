@@ -47,8 +47,21 @@ var rmById = (tblName, id)=>{
     });
 };
 
+// re.update(tbl, id, changes).then((res)=>{
+var update = (tblName, id, obj)=>{
+    return new Promise((ful, rej)=>{
+        r.table(tblName).get(id).update(obj)
+        .run(c, (e, r)=>{
+            if(e) rej(e);
+            else ful(r);
+        });
+    });
+};
+
+
 module.exports = {
     insert: insert,
     getAll: getAll,
-    rmById: rmById
+    rmById: rmById,
+    update: update
 };
