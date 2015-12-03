@@ -118,7 +118,7 @@ exports.MusicBox = React.createClass({
             var i = 0;
             musicNodes = this.props.musics.map(function(music){
                 if(typeof music.toShow === 'undefined' || music.toShow === true){
-                    var currentlyPlaying = (i == this.props.index) ? true: false;
+                    var currentlyPlaying = (i == this.props.indexPlaying) ? true: false;
                     return (
                         <MusicItem index={i++} key={music.id} song={music} onWishPlay={this.props.play} showOnTop={this.showOnTop} now={currentlyPlaying}/>
                     );

@@ -45,7 +45,7 @@ var TimeLine = React.createClass({
         this.cur = this.prettytime(this.props.cur);
         this.total = this.prettytime(this.props.total);
         if(this.canMoveAuto)
-            this.width = ~~this.props.cur * 100 / this.props.total;
+            this.width = this.props.cur * 100 / this.props.total;
     },
     changeTime: function(e){
         var timeElem = $('.timeLine');
@@ -66,7 +66,7 @@ var TimeLine = React.createClass({
         ht.on('mousemove', function(e){
             var totW = timeElem.width();
             var curW = e.pageX - timeElem.offset().left;
-            var newW = ~~curW * 100 / totW;
+            var newW = curW * 100 / totW;
             if(newW < 0) newW = 0;
             if(newW > 100) newW = 100;
             elaps.width(newW + '%');
@@ -116,10 +116,10 @@ var Player = React.createClass({
     componentDidMount: function(){
         this.player = new Audio();
         this.player.onloadedmetadata = function(){
-            this.setState({totalTime: ~~this.player.duration});
+            this.setState({totalTime: this.player.duration});
         }.bind(this);
         this.player.ontimeupdate = function(){
-            this.setState({currentTime: ~~this.player.currentTime});
+            this.setState({currentTime: this.player.currentTime});
         }.bind(this);
         this.player.onpause = function(){
             this.setState({playing: false});
