@@ -107,6 +107,28 @@ exports.updateMeta = function(data){
     });
 };
 
+exports.update = (req, res)=>{
+    var tbl = tbls[req.params.type];
+    var id = req.params.id;
+    var changes = req.body;
+    var obj;
+    if(req.params.type == 'song'){
+        obj = {meta:{
+            'artist': [changes.artist],
+            'album': changes.album,
+            'title': changes.title
+        }};
+    }
+    re.update(tbl, id, obj).then((response)=>{
+        log.info(id + ' on ' + tbl + ' was updated.');
+        res.json(response);
+    }).catch((e)=>{
+        log.error('updating ' + id + ' on ' + tbl);
+        log.error(e);
+        res.json(e);
+    });
+};
+
 //delete a db item. Should delete the related file as well. It's stupid to not.
 exports.delete = function(type, id, cb){
     var tbl = tbls[type];
@@ -171,7 +193,9 @@ exports.allSongs = function(){
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
             files = songs.sort(byDate);
-            files.forEach((f, i)=>{files[i].id = i;});
+            // files.forEach((f, i)=>{
+            //     files[i].id = i;
+            // });
             ful(files);
         }).catch((e)=>{
             log.error('err requesting all');

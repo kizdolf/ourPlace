@@ -45,6 +45,8 @@ exports.main = (function(){
         });
     });
 
+    router.post('/update/:type/:id', lib.update);
+
     router.post('/fromYoutube', function(req, res){
         var url = req.body.url;
         lib.fromYoutube(url, (bool)=>{

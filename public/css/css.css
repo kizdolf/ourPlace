@@ -314,7 +314,7 @@ body{
 .title, .artist{
     width: 100%;
     display: block;
-    font-weight: bold; 
+    font-weight: bold;
     min-height: 20px;
     /* line-height: 21px; */
     margin: 0;
@@ -416,8 +416,8 @@ body{
     top: 0;
     right: 0;
     background: rgba(227, 234, 249, 0.75);
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
     z-index: 99999;
     padding: 10%;
 }
@@ -650,4 +650,3 @@ body{
     z-index: 1001;
     box-shadow: 1px 1px 5px -2px black;
 }
-
