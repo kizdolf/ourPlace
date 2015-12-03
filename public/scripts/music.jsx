@@ -145,7 +145,7 @@ exports.MusicBox = React.createClass({
                             type='song'
                             removed={this.props.removed}
                         />
-                    : null
+                    : ''
                 }
             </div>
         );
