@@ -6,12 +6,14 @@ var
     IndexRoute  = require('react-router').IndexRoute,
     Layout      = require('./layout.jsx').Layout,
     NoteBox     = require('./note.jsx').NoteBox,
+    RssBox     = require('./rss.jsx').RssBox,
     MusicBox    = require('./music.jsx').MusicBox;
 
 ReactDOM.render((
     <Router>
         <Route path="/" component={Layout}>
             <IndexRoute component={MusicBox} />
+            <Route path="rss" component={RssBox} />
             <Route path="notes" component={NoteBox} />
             <Route path="*" component={MusicBox} />
         </Route>

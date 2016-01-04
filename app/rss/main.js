@@ -11,22 +11,31 @@ var feeds = [
     'http://rss.nouvelobs.com/c/32581/fe.ed/www.sciencesetavenir.fr/high-tech/rss.xml'
 ];
 
+var nbFeeds = feeds.length;
+var done = 0;
+
 var getRss = (req, res)=>{
-    var articles = {};
-    feeds.forEach((url)=>{
-        feed(url, (e, ul)=>{
-            if(e){
-                console.log(e);
-            }else{
-                ul.forEach((li)=>{
-                    if(!articles[li.feed.name])
-                        articles[li.feed.name] = [];
-                    articles[li.feed.name].push(li);
-                });
-            }
+    if(done === 0){
+        var articles = {};
+        feeds.forEach((url)=>{
+            feed(url, (e, ul)=>{
+                done++;
+                if(e){
+                    console.log(e);
+                }else{
+                    ul.forEach((li)=>{
+                        if(!articles[li.feed.name])
+                            articles[li.feed.name] = [];
+                        articles[li.feed.name].push(li);
+                    });
+                }
+                if(done == nbFeeds){
+                    done = 0;
+                    res.json(articles);
+                }
+            });
         });
-    });
-    res.json(articles);
+    }
 };
 
 module.exports = {
