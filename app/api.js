@@ -16,7 +16,9 @@ multer      = require('multer'),
 externSession   = require('./externSession'),
 upload      = multer({dest: 'medias/'}),
 login       = require('./login'),
-lib         = require('./library');
+lib         = require('./library'),
+feed        = require('./app/rss/main');
+
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
@@ -107,6 +109,8 @@ exports.main = (function(){
             res.json({err: 'not allowed'});
         }
     });
+
+    router.get('/rss', feed.getRss);
 
     return router;
 })();
