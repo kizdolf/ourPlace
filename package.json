@@ -22,6 +22,7 @@
     "couchbase": "^2.1.2",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
+    "feed-read": "0.0.1",
     "ffmetadata": "^1.3.0",
     "history": "^1.13.1",
     "jquery": "^2.1.4",
