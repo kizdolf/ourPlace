@@ -116,6 +116,7 @@ var Player = React.createClass({
     },
     componentDidMount: function(){
         this.player = new Audio();
+        this.player.volume = 0.7;
         this.player.onloadedmetadata = function(){
             this.setState({totalTime: this.player.duration});
         }.bind(this);
