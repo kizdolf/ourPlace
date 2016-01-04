@@ -153,12 +153,12 @@ body{
         height: 100%;
         float: right;
         padding: 0;
-        max-width: 51%; 
+        max-width: 51%;
         margin-right: 10px;
     }
 
     .cover{
-        width: 39%; 
+        width: 39%;
         float: left;
         height: 100%;
     }
@@ -723,4 +723,22 @@ body{
 }
 .wrapperOnTop p{
     display: inline-block;
+}
+
+#rss{
+    margin: 20px;
+}
+
+.oneFeed{
+    height: 150px;
+    overflow: hidden;
+}
+.feed{
+    background: rgba(0, 0, 0, 0.11);
+}
+.full{
+    height: auto !important;
+}
+.oneArticle{
+
 }

@@ -17,7 +17,7 @@ externSession   = require('./externSession'),
 upload      = multer({dest: 'medias/'}),
 login       = require('./login'),
 lib         = require('./library'),
-feed        = require('./app/rss/main');
+feed        = require('./rss/main');
 
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
