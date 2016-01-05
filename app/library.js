@@ -238,7 +238,7 @@ exports.fromYoutube = function(url, cb){
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
     log.info(' dowloading from youtube url : ' + url);
     child_process.exec(exec, function(err, out){
-        if(!err){
+        if(!err || err.killed === false){
             var ret = JSON.parse(out);
             var obj = {
                 name : ret.fulltitle,
@@ -250,22 +250,16 @@ exports.fromYoutube = function(url, cb){
                     picture : mainConf.mediaPath + '/' +  ret.id + '.jpg'
                 }
             };
-            var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-                if(err){
-                    log.error(err);
-                    cb(false);
-                }
-            });
-            Bucket.insert(obj.name, obj, function(err, res) {
-                if (err){
-                    log.error('err inserting obj');
-                    log.error(err);
-                    cb(false);
-                }else{
-                    log.info('obj inserted:'+ res.cas);
-                    log.info('extarct and saved from ' + url);
-                    cb(true);
-                }
+
+            re.insert(tbls.song, obj).then((res)=>{
+                console.log(res);
+                log.info('obj inserted:');
+                cb(true);
+            }).catch((err)=>{
+                tools.rm(__dirname + '/..' + obj.path);
+                log.error('error inserting song');
+                log.error(err);
+                cb(false);
             });
         }else{
             log.error(' with youtube-dl!');

@@ -8,7 +8,7 @@ var
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
-exports.generateToken = function(name, cb){
+var generateToken = function(name, cb){
     var token = randToken.generate(16);
     var Bucket = Cluster.openBucket(conf.tokenBucket, function(err){
         if(err){
@@ -34,7 +34,7 @@ exports.generateToken = function(name, cb){
     });
 };
 
-exports.tokenIsGood = function(token, cb){
+var tokenIsGood = function(token, cb){
     var Bucket = Cluster.openBucket(conf.tokenBucket, function(err){
         if(err){
             console.log(err);
@@ -50,7 +50,7 @@ exports.tokenIsGood = function(token, cb){
     });
 };
 
-exports.getPath = function(name, cb){
+var getPath = function(name, cb){
     var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
         if(err){
             console.log(err);
@@ -66,7 +66,7 @@ exports.getPath = function(name, cb){
     });
 };
 
-exports.delToken = function(token){
+var delToken = function(token){
     console.log('remove token ' + token);
     var Bucket = Cluster.openBucket(conf.tokenBucket, function(err){
         if(err){
@@ -78,4 +78,31 @@ exports.delToken = function(token){
             log.error(err);
         }
     });
+};
+
+var play = function(req, res){
+    var token = req.params.token;
+    tokenIsGood(token, function(err, name){
+        if(!err) {
+            log.info('allow playing for ', name);
+            req.session.logued = true;
+            if(!req.session.nbLeft && req.session.nbLeft !== 0)
+                req.session.nbLeft = 5;
+            req.session.canPlay = true;
+            req.session.name = name;
+            res.sendFile(__dirname + '/play/index.html', {root: '/'});
+        }else{
+            res.json({err : 'not allowed.'});
+            log.info('cannot play it anymore.');
+        }
+    });
+};
+
+
+module.exports = {
+    generateToken: generateToken,
+    tokenIsGood: tokenIsGood,
+    getPath: getPath,
+    delToken: delToken,
+    play: play,
 };
