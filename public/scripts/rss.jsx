@@ -29,7 +29,6 @@ var Feed = React.createClass({
     }
 });
 
-
 exports.RssBox = React.createClass({
     urlApi: '/api/rss',
     getRssFromAPI: function(){
