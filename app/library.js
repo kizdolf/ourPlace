@@ -29,27 +29,6 @@ var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 require('./DBlisteners.js');
 
-var deleteAllFromBucket = function(){  // jshint ignore:line
-    var ViewQuery = couchbase.ViewQuery;
-    var bucket = Cluster.openBucket(conf.filesBucket);
-    var q = ViewQuery.from('listing', 'allNames');
-    bucket.query(q, function(err, res){
-        if(err){
-            log.error('err deleting something');
-            log.error(err);
-        }else{
-            res.forEach(function(one){
-                fs.unlinkSync(__dirname + '/..' + res.value.path);
-                bucket.remove(one.key, function(){
-                    console.log('removed ' + one.key);
-                });
-            });
-        }
-    });
-};
-//Uncomment this to delete all docs in bucket.
-// deleteAllFromBucket();
-
 /*
 Retrieve metadata from a file. Files are not always easy with that,
 so in case of error an empty object is returned. The app continue to run.
@@ -86,29 +65,6 @@ var getMetaData = function(path, cb){
 
 //update some metadata fields. it DOES NOT Write them in the file.
 //TODO: write the new metadata IN the file AND in the db.
-exports.updateMeta = function(data){
-    var name = data.name;
-    var Bucket = Cluster.openBucket(conf.filesBucket, function(err){
-        if(err){
-            log.error('openBucket failed ');
-            log.error(err);
-        }
-    });
-    Bucket.get(name, function(err, doc){
-        if(!err){
-            doc.value.meta.artist = data.artist;
-            doc.value.meta.album = data.album;
-            doc.value.meta.title = data.title;
-            Bucket.replace(name, doc.value, function(err){
-                if(err) {
-                    log.error('updating meta for ', name);
-                    log.error(err);
-                }else exports.allSongs();
-            });
-        }
-    });
-};
-
 exports.update = (req, res)=>{
     var tbl = tbls[req.params.type];
     var id = req.params.id;
@@ -173,8 +129,7 @@ exports.handle = (file, cb)=>{
                     meta : meta
                 };
                 re.insert(tbls.song, obj).then((res)=>{
-                    console.log(res);
-                    log.info('obj inserted:');
+                    log.info('obj inserted:', res);
                     cb(null, true);
                 }).catch((err)=>{
                     tools.rm(__dirname + '/..' + obj.path);
@@ -195,9 +150,6 @@ exports.allSongs = function(){
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
             files = songs.sort(byDate);
-            // files.forEach((f, i)=>{
-            //     files[i].id = i;
-            // });
             ful(files);
         }).catch((e)=>{
             log.error('err requesting all');
@@ -251,8 +203,7 @@ exports.fromYoutube = function(url, cb){
                 }
             };
 
-            re.insert(tbls.song, obj).then((res)=>{
-                console.log(res);
+            re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line
                 log.info('obj inserted:');
                 cb(true);
             }).catch((err)=>{

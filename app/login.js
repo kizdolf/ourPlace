@@ -2,33 +2,24 @@
 
 var 
     randToken   = require('rand-token'),
-    couchbase   = require('couchbase'),
     pass        = require('password-hash'),
-    conf        = require('./config').couch,
+    tbls        = require('./config').rethink.tables,
     isDev       = require('./config').conf.devMode,
     path        = require('path'),
-    Cluster     = new couchbase.Cluster(conf.host);
+    re          = require('./rethink');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 var userExist = function(pseudo, password){
-    return new Promise(function(ful, rej){  
-        var Bucket = Cluster.openBucket(conf.users, function(err){
-            if(err){
-                rej(err);
-            }
-        });
-        Bucket.get(pseudo, function(err, doc){
-            if(err){
-                rej(err);
-            }else{
-                var user = doc.value;
-                if(user.pseudo === pseudo && pass.verify(password, user.password)){
-                    ful(true);
-                }else{
-                    rej({message : 'wrong password'});
-                }
-            }
+    return new Promise(function(ful, rej){
+        var tbl = tbls.user;
+        re.getSome(tbl, {pseudo: pseudo}).then(function(res){
+            if(res.length === 0) rej({message : 'wrong pseudo'});
+            if(pass.verify(password, res[0].password)) ful(true);
+            else rej({message : 'wrong password'});
+        }).catch(function(err){
+            log.error(err);
+            rej({message : 'error'});
         });
     });
 };
@@ -67,45 +58,33 @@ var isLoggued = function(req){
 
 var isRoot = function(req){
     return new Promise(function(ful, rej){
-        var Bucket = Cluster.openBucket(conf.users, function(err){
-            if(err) {
-                rej(false);
-            }
-        });
-        Bucket.get(req.session.pseudo, function(err, doc){
-            if(err) rej(err);
-            else{
-                var user = doc.value;
-                if(user.root && user.root === true) {
-                    ful(true);
-                }
-                else {
-                    ful(false);
-                }
-            }
+        var tbl = tbls.user;
+        re.getSome(tbl, {pseudo: req.sessionpseudo}).then(function(res){
+            if(res.length === 0) rej({message : 'pseudo not founded'});
+            if(res[0].root && res[0].root === true) ful(true);
+            else ful(false);
+        }).catch(function(err){
+            log.error(err);
+            rej({message : 'error'});
         });
     });
 };
 
 var createUser = function(pseudo, password){
-    var hash = pass.generate(password);
-    var o = {
+    var hash = pass.generate(password),
+    o = {
         pseudo : pseudo,
-        password: hash
-    };
-    var Bucket = Cluster.openBucket(conf.users, function(err){
-        if(err){
-            console.log(err); 
-        }else{
-            Bucket.insert(o.pseudo, o, function(err, res) {
-                if (err){
-                    console.log('err inserting obj');
-                    console.log(err);
-                }else{
-                    console.log('obj inserted: ' + res.cas);
-                }
-            });
-        }
+        password: hash,
+        played: [],
+        root: false
+    },
+    tbl = tbls.user;
+    re.insert(tbl, o).then((res)=>{
+        log.info('user ' + pseudo + ' was created: ');
+        log.info(res);
+    }).catch((err)=>{
+        log.error('error creating user ' + pseudo);
+        log.error(err);
     });
 };
 
