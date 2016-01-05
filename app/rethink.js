@@ -2,23 +2,56 @@ var r   = require('rethinkdb'),
     cnf = require('./config.js').rethink;
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
-var c;
+var c = null;
 
-r.connect(cnf.connect, (e, con)=>{
+/*insure connection*/
+var p = r.connect(cnf.connect, (e, con)=>{
     if(e) log.error(e);
     else c = con;
 });
-
+ 
+/*helpers*/
 var getCon = ()=>{
-    return c;
+    p.then((c)=>{
+        return c;
+    });
 };
 
+var reqlToArray = (reQL, cb)=>{
+    p.then((c)=>{
+        reQL.run(c, (err, cursor)=>{
+            if(err) cb(err, null);
+            else {
+                cursor.toArray((e, r)=>{
+                    if(e) cb(e, null);
+                    else cb(null, r);
+                });
+            }
+        });
+    });
+};
+
+/*exports*/
 var insert = (tblName, json)=>{
     return new Promise((full, rej)=>{
         var reQL = r.table(tblName).insert(json);
-        reQL.run(c, (err, res)=>{
+        p.then((c)=>{
+            reQL.run(c, (err, res)=>{
+                if(err) rej(err);
+                else full(res);
+            });
+        });
+    });
+};
+
+
+var getSome = (tblName, predicate, some)=>{
+    if (!some) some = 1;
+    return new Promise((ful, rej)=>{
+        var reQL = r.table(tblName).filter(predicate).limit(some);
+        reqlToArray(reQL, (err, res)=>{
             if(err) rej(err);
-            else full(res);
+            else ful(res);
         });
     });
 };
@@ -26,38 +59,34 @@ var insert = (tblName, json)=>{
 var getAll = (tblName)=>{
     return new Promise((ful, rej)=>{
         var reQL = r.table(tblName);
-        reQL.run(c, (err, cursor)=>{
+        reqlToArray(reQL, (err, res)=>{
             if(err) rej(err);
-            else {
-                cursor.toArray((e, r)=>{
-                    if(e) rej(e);
-                    else ful(r);
-                });
-            }
+            else ful(res);
         });
     });
 };
 
 var rmById = (tblName, id)=>{
     return new Promise((ful, rej)=>{
-        r.table(tblName).get(id).delete({
-            durability: "soft",
-            returnChanges: true
-        })
-        .run(c, (e, r)=>{
-            if(e) rej(e);
-            else ful(r);
+        p.then((c)=>{
+            r.table(tblName).get(id).delete({
+                durability: 'soft',
+                returnChanges: true
+            }).run(c, (e, r)=>{
+                if(e) rej(e);
+                else ful(r);
+            });
         });
     });
 };
 
-// re.update(tbl, id, changesindex).then((res)=>{
 var update = (tblName, id, obj)=>{
     return new Promise((ful, rej)=>{
-        r.table(tblName).get(id).update(obj)
-        .run(c, (e, r)=>{
-            if(e) rej(e);
-            else ful(r);
+        p.then((c)=>{
+            r.table(tblName).get(id).update(obj).run(c, (e, r)=>{
+                if(e) rej(e);
+                else ful(r);
+            });
         });
     });
 };
@@ -68,5 +97,6 @@ module.exports = {
     getAll: getAll,
     rmById: rmById,
     update: update,
-    getCon: getCon
+    getCon: getCon,
+    getSome: getSome
 };
