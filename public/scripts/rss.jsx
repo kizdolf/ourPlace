@@ -14,7 +14,7 @@ var Feed = React.createClass({
         var mountArticles = this.props.feed.articles.map((article)=>{
             return(
                 <li key={i++} className="oneArticle">
-                    <a href={article.link}>{article.title}</a><br/>
+                    <a href={article.link} target="_blank">{article.title}</a><br/>
                     <span className="content" dangerouslySetInnerHTML={this.createMarkup(article.content)}>
                     </span>
                 </li>

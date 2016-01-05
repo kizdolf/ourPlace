@@ -5,6 +5,8 @@ var
     couchbase   = require('couchbase'),
     pass        = require('password-hash'),
     conf        = require('./config').couch,
+    isDev       = require('./config').conf.devMode,
+    path        = require('path'),
     Cluster     = new couchbase.Cluster(conf.host);
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
@@ -31,7 +33,7 @@ var userExist = function(pseudo, password){
     });
 };
 
-exports.getToken = function(req, res){
+var getToken = function(req, res){
     var sess = req.session;
     var newToken = randToken.generate(16);
     sess.token = newToken;
@@ -39,7 +41,7 @@ exports.getToken = function(req, res){
     res.json({token: newToken});
 };
 
-exports.login = function(req, res, next){
+var login = function(req, res, next){
     var sess = req.session;
     var params = req.body;
     if(sess.token !== params.token){
@@ -59,11 +61,11 @@ exports.login = function(req, res, next){
     }
 };
 
-exports.isLoggued = function(req){
+var isLoggued = function(req){
     return req.session.logued;
 };
 
-exports.isRoot = function(req){
+var isRoot = function(req){
     return new Promise(function(ful, rej){
         var Bucket = Cluster.openBucket(conf.users, function(err){
             if(err) {
@@ -85,7 +87,7 @@ exports.isRoot = function(req){
     });
 };
 
-exports.createUser = function(pseudo, password){
+var createUser = function(pseudo, password){
     var hash = pass.generate(password);
     var o = {
         pseudo : pseudo,
@@ -107,5 +109,26 @@ exports.createUser = function(pseudo, password){
     });
 };
 
+var shouldLogin = function(req, res, next){
+    if(!isLoggued(req)){
+        if(!isDev)
+            res.sendFile(path.join(__dirname, '..', 'login', 'index.html'), {root : '/'});
+        else{
+            req.session.logued = true;
+            next();
+        }
+    }else
+        next();
+};
+
 /*create some users:*/
 // createUser('smia', 'smia');
+
+module.exports = {
+    getToken: getToken,
+    login: login,
+    isLoggued: isLoggued,
+    isRoot: isRoot,
+    createUser: createUser,
+    shouldLogin: shouldLogin,
+};

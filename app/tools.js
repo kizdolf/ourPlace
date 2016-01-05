@@ -12,7 +12,12 @@ var rm = (path)=>{
     });
 };
 
+var thisIs404 = function(req, res){
+    //TODO: Send a 404 page. Or redirect somewhere.
+    res.json({msg: '404'});
+};
 
 module.exports = {
-    rm: rm
+    rm: rm,
+    thisIs404: thisIs404
 };
