@@ -3,6 +3,8 @@
 > Node.js / angular application as a small but personnal cloud. Under development. 
 
 
+> Update : Say bye to couchbase, Hi to rethinkdb. I love this stuff. that's a huge change. As well front side is now React.js
+
 ### What's here already? 
 
 * Music: Upload it, play it, edit it.
@@ -40,41 +42,3 @@ Unique token for the invitation, unique token at each login.
 * Streaming managment. As the moment a user start to listen a song, I would like to store in the user device the whole playlist (at least the x nexts songs) to allow the user to listen music when network is down. And to retrieve this data even after a reload of the page. 
 * Add a bit of social. By that I mean a chat at least. But if a chat it is, it's a chat without keeping data. I don't want to store people message in a databse. Or we store them encrypted. With no way to decrypt them. 
 * Https.
-
-
-# Installation: 
-1) Git clone somewhere. 
-
-2) npm install 
-
-3) edit config 
-
-4) Couchbase views: 
-* Bucket name: fileForUs
-* views :
-```
-	name: listing
-	views: allNames, allNotes, allSongs.
-
-	allNames :
-	function (doc, meta) {
-		if(doc.name.indexOf('ourNote') === -1)
-			emit(meta.id, doc);
-	}
-
-	allNotes: 
-	function (doc, meta) {
-    	if(doc.name.indexOf('ourNote') !== -1)
-			emit(meta.id, doc);
-	}
-
-	allSongs: (useless, unused...)
-	function (doc, meta) {
-  		if(doc.type === "audio/mp3")
-    		emit(meta.id, doc);
-	}
-```
-5) launch it. 
-- directly: node index 
-- via forever: forever start index.js 
-- via a other tools: rtfm
