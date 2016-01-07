@@ -39,7 +39,8 @@ exports.rethink = {
         user: 'users',
         note: 'notes',
         song: 'songs',
-        log: 'logs'
+        log: 'logs',
+        live: 'live'
     },
     connect: {
         db: 'ourPlace',

@@ -19,6 +19,7 @@ login       = require('./login'),
 lib         = require('./library'),
 feed        = require('./rss/main');
 
+var s = require('./socket')();
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
@@ -30,7 +31,10 @@ exports.main = (function(){
             log.info(file);
             lib.handle(file, (err, response)=>{
                 if(err) res.json({err: err});
-                else res.json({done: response});
+                else {
+                    s.send(response, req.session, true);
+                    res.json({done: response});
+                }
             });
         });
     });
@@ -43,6 +47,7 @@ exports.main = (function(){
         var type = req.params.type;
         var id = req.params.id;
         lib.delete(type, id, function(done){
+            s.send(done, req.session, true);
             res.json(done);
         });
     });
@@ -52,6 +57,7 @@ exports.main = (function(){
     router.post('/fromYoutube', function(req, res){
         var url = req.body.url;
         lib.fromYoutube(url, (bool)=>{
+            s.send(true, req.session, true);
             res.json(bool);
         });
     });

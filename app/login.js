@@ -6,6 +6,7 @@ var
     tbls        = require('./config').rethink.tables,
     isDev       = require('./config').conf.devMode,
     path        = require('path'),
+    moment      = require('moment'),
     re          = require('./rethink');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
@@ -25,35 +26,44 @@ var userExist = function(pseudo, password){
 };
 
 var getToken = function(req, res){
-    var sess = req.session;
+    var id = req.session.id;
     var newToken = randToken.generate(16);
-    sess.token = newToken;
-    sess.logued = false;
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    req.session.date = new Date();
+    req.session.token = newToken;
+    req.session.sid = id;
+    req.session.ip = ip;
+    req.session.logued = false;
+    req.session.countActions = 0;
+    req.session.lastAction = new Date();
     res.json({token: newToken});
 };
 
 var login = function(req, res, next){
-    var sess = req.session;
     var params = req.body;
-    if(sess.token !== params.token){
+    if(params.token !== req.session.token){
         next();
     }else{
-        userExist(params.userName, params.password)
-        .then(function(ok){
+        userExist(params.userName, params.password).then(function(ok){
             log.info(params.userName + ' just logued.');
-            sess.logued = true;
-            sess.pseudo = params.userName;
-            sess.date = new Date();
-            sess.token = null;
-            res.json({ok : ok});
+            req.session.logued = true;
+            req.session.pseudo = params.userName;
+            req.session.date = new Date();
+            req.session.token = null;
+            req.session.lastAction = new Date();
+            res.json({ok : true});
         }).catch(function(err){
             res.json({ok: false, err: err});
         });
     }
 };
 
-var isLoggued = function(req){
-    return req.session.logued;
+var isLoggued = function(req, cb){
+    if(!req.session.logued){
+        return cb(false);
+    }else{
+        return cb(true);
+    }
 };
 
 var isRoot = function(req){
@@ -89,15 +99,12 @@ var createUser = function(pseudo, password){
 };
 
 var shouldLogin = function(req, res, next){
-    if(!isLoggued(req)){
-        if(!isDev)
-            res.sendFile(path.join(__dirname, '..', 'login', 'index.html'), {root : '/'});
-        else{
-            req.session.logued = true;
-            next();
-        }
-    }else
-        next();
+    isLoggued(req, (loggued)=>{
+        if(!loggued){
+            if(!isDev) res.sendFile(path.join(__dirname, '..', 'login', 'index.html'), {root : '/'});
+            else next();
+        }else next();
+    });
 };
 
 /*create some users:*/

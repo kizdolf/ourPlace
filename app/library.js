@@ -29,6 +29,7 @@ var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 require('./DBlisteners.js');
 
+var s = require('./socket')();
 /*
 Retrieve metadata from a file. Files are not always easy with that,
 so in case of error an empty object is returned. The app continue to run.
@@ -79,6 +80,7 @@ exports.update = (req, res)=>{
     }
     re.update(tbl, id, obj).then((response)=>{
         log.info(id + ' on ' + tbl + ' was updated.');
+        s.send(obj, req.session, true);
         res.json(response);
     }).catch((e)=>{
         log.error('updating ' + id + ' on ' + tbl);
@@ -90,7 +92,6 @@ exports.update = (req, res)=>{
 //delete a db item. Should delete the related file as well. It's stupid to not.
 exports.delete = function(type, id, cb){
     var tbl = tbls[type];
-    console.log('going to delete on: ' + tbl);
     re.rmById(tbl, id).then((res)=>{
         var old = res.changes.old_val;
         if (old.path){
@@ -176,6 +177,7 @@ exports.addNote = function(req, res){
     re.insert(tbls.note, note)
     .then((r)=>{ //jshint ignore: line
         log.info('note inserted: '+ note.name);
+        s.send(note, req.session, true);
         res.json({msg: 'note inserted.'});
     }).catch((e)=>{
         log.error('err inserting obj');

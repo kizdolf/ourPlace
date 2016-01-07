@@ -1,37 +1,30 @@
 'use strict';
 
-var
-conf        = require('./config').socket,
-io          = require('socket.io')(conf.socketPort),
-lib         = require('./library'),
-moment      = require('moment'),
-user;
-var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
-/*This my whole stats system. How many pepole are online?*/
-var liveUsers = 0;
+    var 
+        conf        = require('./config').socket,
+        io          = require('socket.io')(conf.socketPort),
+        ios         = require('socket.io-express-session');
 
-io.on('connection', function(socket){
-    liveUsers++;
-    log.info('live users : ' , liveUsers);
-    log.info('new user IP: ', socket.handshake.address);
+    var sockets  = {};
 
-    //used to broadcast essentially. users should be stored in a session to make the app able to select who
-    // to talk too.
-    user = {
-        id: socket.id,
-        socket: socket
+module.exports = function(app, session){
+
+    var module = {};
+
+    if(app && session){
+        io.use(ios(session));
+        io.on('connection', function(socket){
+            socket.handshake.session.sokId = socket.id;
+            socket.handshake.session.save();
+            sockets[socket.id] = socket;
+        });
+    }
+
+    module.send = (what, whom, abroad)=>{
+        var sok = (abroad && !!abroad) ? io : sockets[whom.sokId];
+        sok.emit('update', what);
     };
 
-    //send what we have, when the user want it.
-    //minus one user. You'll be much missed.
-    socket.on('disconnect', function() {
-        liveUsers--;
-        log.info('live users : ' , liveUsers.toString());
-    });
-
-    socket.on('fromYoutube', function(url){
-        log.info('From youtube : ' , url);
-        lib.fromYoutube(url);
-    });
-});
+    return module;
+};

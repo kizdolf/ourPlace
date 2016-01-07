@@ -56,6 +56,18 @@ var getSome = (tblName, predicate, some)=>{
     });
 };
 
+var delSome = (tblName, predicate)=>{
+    return new Promise((ful, rej)=>{
+        var reQL = r.table(tblName).filter(predicate).delete();
+        p.then((c)=>{
+            reQL.run(c, (err, res)=>{
+                if(err) rej(err);
+                else ful(res);
+            });
+        });
+    });
+};
+
 var getAll = (tblName)=>{
     return new Promise((ful, rej)=>{
         var reQL = r.table(tblName);
@@ -98,5 +110,6 @@ module.exports = {
     rmById: rmById,
     update: update,
     getCon: getCon,
-    getSome: getSome
+    getSome: getSome,
+    delSome: delSome
 };
