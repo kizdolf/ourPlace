@@ -4,14 +4,13 @@ var React       = require('react'),
     Menu        = require('./smalls.jsx').Menu,
     Upload      = require('./upload.jsx').Upload;
 
-
-
 var Layout = React.createClass({
-    url: "/api/music",
-    uploadAPI: "/api/upload",
-    inter: 20000,
-    notesUrl: "/api/notes",
-    apiAddNote: "/api/note",
+    url: '/api/music',
+    uploadAPI: '/api/upload',
+    inter: 1000,
+    notesUrl: '/api/notes',
+    apiAddNote: '/api/note',
+    socketHost: 'http://azerty.gq:9091',
     getInitialState: function(){
         return {
             musics: [],
@@ -50,10 +49,16 @@ var Layout = React.createClass({
             var indexesOrder = Array.from(Array(this.state.musics.length).keys());
             this.setState({playList: indexesOrder});
         }.bind(this));
-        this.load = setInterval(this.getMusicFromAPI, this.inter);
+        // this.load = setInterval(this.getMusicFromAPI, this.inter);
+        this.socket = io(this.socketHost);
+        this.socket.on('update', function(data){
+            console.log('received update');
+            this.getMusicFromAPI();
+        }.bind(this));
     },
     componentWillUnmount: function(){
-        clearInterval(this.load);
+        // clearInterval(this.load);
+        this.socket.on('update', function(data){});
     },
     play: function(path, type, meta, index){
         if(typeof path == 'undefined'){

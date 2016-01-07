@@ -1,19 +1,22 @@
 'use strict';
 
+global.count = 0;
+
 var r = require('rethinkdb'),
     cnf = require('./config.js').rethink,
 
 log = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 
+socket = require('./socket')(),
 
 listenChangeNote = (er, cursor)=>{
     cursor.each((e, val)=>{
-        console.log(val);
+        // socket.send(val);
     });
 },
 listenChangeSong = (er, cursor)=>{
     cursor.each((e, val)=>{
-        console.log(val);
+        // socket.send(val);
     });
 };
 

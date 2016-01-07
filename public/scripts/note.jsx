@@ -78,6 +78,7 @@ var Editor = React.createClass({
 });
 
 exports.NoteBox = React.createClass({
+    socketHost: 'http://azerty.gq:9091',
     getInitialState: function(){
         return {
             notes: [],
@@ -102,10 +103,15 @@ exports.NoteBox = React.createClass({
     },
     componentDidMount: function(){
         this.getNotesFromAPI();
-        this.load = setInterval(this.getNotesFromAPI, 25000);
+        this.socket = io(this.socketHost);
+        this.socket.on('update', function(data){
+            this.getNotesFromAPI();
+        }.bind(this));
+        // this.load = setInterval(this.getNotesFromAPI, 1000);
     },
     componentWillUnmount: function(){
-        clearInterval(this.load);
+        this.socket.on('update', function(data){});
+        // clearInterval(this.load);
     },
     showMenu: function(e, meta, id){
         this.setState({
@@ -126,7 +132,7 @@ exports.NoteBox = React.createClass({
             }
         });
         this.setState({notes: actuals});
-        setTimeout(function(){this.getNotesFromAPI();}.bind(this), 2500);
+        // setTimeout(function(){this.getNotesFromAPI();}.bind(this), 2500);
     },
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{

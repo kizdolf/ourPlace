@@ -12,21 +12,37 @@ var
     express     = require('express'),
     bodyParser  = require('body-parser'),
     conf        = require('./app/config').conf,
+    confRe      = require('./app/config').rethink,
     api         = require('./app/api'),
     login       = require('./app/login'),
     tools       = require('./app/tools'),
-    externSession = require('./app/externSession'),
-    session     = require('express-session');
+    externSession = require('./app/externSession');
 
-    require('./app/socket');
+    var session = require('express-session'),
+    RDBStore    = require('session-rethinkdb')(session);
+    const options = {
+        servers: [confRe.connect],
+        clearInterval: 5000, 
+        table: 'session' 
+    };
+    var store = new RDBStore(options); 
+    var Session = session({
+        secret: 'somethinglikeBllaaaaaahhh',
+        resave: false,
+        saveUninitialized: true,
+        store: store
+    });
 
-    express()
+    var app =  express();
+
+    app
+    .use(Session)
     //externs middlewares
-    .use(session(conf.sessionCnf))
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
     //some cases
     .use(conf.pathPlay, externSession.play)
+    //login
     .use(conf.pathTokenLogin, login.getToken)
     .use(conf.pathLogin, login.login)
     .use(login.shouldLogin)
@@ -41,3 +57,5 @@ var
     //ready for requests.
     //TODO: add log.
     .listen(conf.mainPort);
+
+    require('./app/socket')(app, Session, store);

@@ -87,6 +87,7 @@
             $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
             logIn.click(function(){
                 $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
+                    console.log(data);
                     if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.err.message);
                 });
             });
