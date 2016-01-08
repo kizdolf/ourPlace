@@ -23,7 +23,7 @@ module.exports = function(app, session){
 
             socket.on('play', (data)=>{
                 //the fucked-up obj as second param is just too emulate the request part the function need.
-                user.played(data.id, {session:{pseudo: socket.handshake.session.pseudo}});
+                user.played(data.id, {session: socket.handshake.session});
             });
         });
     }

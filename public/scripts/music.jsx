@@ -16,6 +16,7 @@ var MusicItem = React.createClass({
         );
     },
     render: function(){
+        // console.log(this.props.song.played);
         var meta = this.props.song.meta;
         var name = this.props.song.name;
         var clss = this.props.now ? 'itemMusic current': 'itemMusic';
