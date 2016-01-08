@@ -15,9 +15,12 @@ var userExist = function(pseudo, password){
     return new Promise(function(ful, rej){
         var tbl = tbls.user;
         re.getSome(tbl, {pseudo: pseudo}).then(function(res){
-            if(res.length === 0) rej({message : 'wrong pseudo'});
-            if(pass.verify(password, res[0].password)) ful(res[0]);
-            else rej({message : 'wrong password'});
+            if(res.length === 0)
+                rej({message : 'wrong pseudo'});
+            else if(pass.verify(password, res[0].password))
+                ful(res[0]);
+            else
+                rej({message : 'wrong password'});
         }).catch(function(err){
             log.error(err);
             rej({message : 'error'});
@@ -44,9 +47,11 @@ var login = function(req, res, next){
     if(params.token !== req.session.token){
         next();
     }else{
-        userExist(params.userName, params.password).then(function(user){
+        userExist(params.userName, params.password)
+        .then(function(user){
+            console.log(user.id);
             log.info(params.userName + ' just logued.');
-            req.session.id = user.id;
+            req.session.uuid = user.id;
             req.session.logued = true;
             req.session.pseudo = params.userName;
             req.session.date = new Date();

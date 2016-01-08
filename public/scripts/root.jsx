@@ -16,8 +16,10 @@ var User = React.createClass({
             url: '/api/root/' + id,
             type: 'DELETE',
             success: (ret)=>{
-                console.log(ret);
-                if(ret !== false) this.props.refresh();
+                if(!ret.err) this.props.refresh();
+                else{
+                    $('#msg').html(ret.err);
+                }
             }
         });
     },
@@ -38,7 +40,6 @@ exports.RootBox = React.createClass({
     },
     amIRoot: function(cb){
         $.get('/api/root/amI', (res)=>{
-            console.log(res);
             cb(res);
         });
     },
