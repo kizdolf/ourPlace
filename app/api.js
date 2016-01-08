@@ -33,6 +33,7 @@ exports.main = (function(){
             lib.handle(file, (err, response)=>{
                 if(err) res.json({err: err});
                 else {
+                    user.own(req.session.uuid, response);
                     s.send(response, req.session, true);
                     res.json({done: response});
                 }

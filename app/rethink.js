@@ -11,9 +11,9 @@ var p = r.connect(cnf.connect, (e, con)=>{
 });
  
 /*helpers*/
-var getCon = ()=>{
+var getCon = (cb)=>{
     p.then((c)=>{
-        return c;
+        cb(c);
     });
 };
 
