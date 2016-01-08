@@ -93,12 +93,16 @@ var rootDelete = (req, res)=>{
     login.isRoot(req).then(function(isIt){
         if(isIt){
             var id = req.params.id;
-            re.rmById(tbls.user, id).then((resp)=>{
-                resp = resp;
-                res.json(true);
-            }).catch((e)=>{
-                log.error('error delete from root', req.session, e);
-            });
+            if(id == req.session.uuid){
+                res.json({err: 'this is you. I will not allow you to delete yourself...'});
+            }else{
+                re.rmById(tbls.user, id).then((resp)=>{
+                    resp = resp;
+                    res.json(true);
+                }).catch((e)=>{
+                    log.error('error delete from root', req.session, e);
+                });
+            }
         }else{
             log.info('trying to access root DELETE function without being root:', req.session);
         }
