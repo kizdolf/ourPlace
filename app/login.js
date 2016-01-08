@@ -69,7 +69,8 @@ var isLoggued = function(req, cb){
 var isRoot = function(req){
     return new Promise(function(ful, rej){
         var tbl = tbls.user;
-        re.getSome(tbl, {pseudo: req.sessionpseudo}).then(function(res){
+        var pseudo = req.session.pseudo;
+        re.getSome(tbl, {pseudo: pseudo}).then(function(res){
             if(res.length === 0) rej({message : 'pseudo not founded'});
             if(res[0].root && res[0].root === true) ful(true);
             else ful(false);

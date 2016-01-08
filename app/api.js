@@ -17,6 +17,7 @@ externSession   = require('./externSession'),
 upload      = multer({dest: 'medias/'}),
 login       = require('./login'),
 lib         = require('./library'),
+user        = require('./user'),
 feed        = require('./rss/main');
 
 var s = require('./socket')();
@@ -68,15 +69,8 @@ exports.main = (function(){
         });
     });
 
-    router.get('/amiroot', function(req, res){
-        login.isRoot(req).then(function(isIt){
-            if(!!isIt){
-                res.json(true);
-            }else{
-                res.json(false);
-            }
-        });
-    });
+    router.get('/root/:first/:second?', user.root);
+
     router.post('/getToken', function(req, res){
         log.info('Create token for ', req.body.name);
          externSession.generateToken(req.body.name, function(err, token){
