@@ -2,12 +2,10 @@
 
 var
     mainConf        = require('./config').conf,
-    conf            = require('./config').couch,
     re              = require('./rethink.js'),
     tbls            = require('./config').rethink.tables,
     tools           = require('./tools.js'),
-    couchbase       = require('couchbase'),
-    Cluster         = new couchbase.Cluster(conf.host),
+    user            = require('./user'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
@@ -178,6 +176,7 @@ exports.addNote = function(req, res){
     .then((r)=>{ //jshint ignore: line
         log.info('note inserted: '+ note.name);
         s.send(note, req.session, true);
+        user.own(req.session.uuid, r);
         res.json({msg: 'note inserted.'});
     }).catch((e)=>{
         log.error('err inserting obj');

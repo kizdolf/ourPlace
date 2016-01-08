@@ -52,7 +52,6 @@ var Layout = React.createClass({
         // this.load = setInterval(this.getMusicFromAPI, this.inter);
         this.socket = io(this.socketHost);
         this.socket.on('update', function(data){
-            console.log('received update');
             this.getMusicFromAPI();
         }.bind(this));
     },
@@ -67,6 +66,10 @@ var Layout = React.createClass({
             type = toPlay.type;
             meta = toPlay.meta;
             index = toPlay.id;
+        }
+        var sng = this.state.musics[index];
+        if(sng){
+            this.socket.emit('play', {id: sng.id});
         }
         this.setState({path: path, type: type, current: meta, index: index});
     },

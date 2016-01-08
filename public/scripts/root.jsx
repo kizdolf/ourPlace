@@ -78,7 +78,7 @@ exports.RootBox = React.createClass({
             );
         });
         return (
-            <div>
+            <div className="rootStuff">
                 <h2>Root stuff. yup</h2>
                 <span id="msg"></span>
                 <div>

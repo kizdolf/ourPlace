@@ -1,5 +1,5 @@
 body{
-    background: rgba(224, 224, 224, 0.52) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
 }
 
 .listMusic{
@@ -135,7 +135,7 @@ body{
         height: 100px;
         margin: 5px;
         cursor: pointer;
-        background: #FFFFFF;
+        background: #FFE8BE;
         display: inline-block;
         word-wrap: break-word;
         padding: 0;
@@ -146,7 +146,7 @@ body{
     }
 
     .itemMusic:hover{
-        background: rgba(67, 179, 84, 0.4);
+        background: rgb(244, 244, 244);
     }
 
     .Meta{
@@ -734,11 +734,15 @@ body{
     overflow: hidden;
 }
 .feed{
-    background: rgba(0, 0, 0, 0.11);
+    background: rgba(255, 255, 255, 0.81);
 }
 .full{
     height: auto !important;
 }
 .oneArticle{
 
+}
+
+.rootStuff{
+    background: rgba(255, 255, 255, 0.81);
 }

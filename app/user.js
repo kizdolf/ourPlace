@@ -12,9 +12,11 @@ var
 
 var played = (id, req)=>{
     var pseudo = req.session.pseudo;
-    var c = re.getCon();
-    r.table(tbls.user).filter({pseudo: pseudo}).update({played: r.row('played').append(id)})
-    .run(c);
+    re.getCon((c)=>{
+        r.table(tbls.user).filter({pseudo: pseudo})
+        .update({played: r.row('played').append(id)})
+        .run(c);
+    });
 };
 
 var root = (req, res)=>{
@@ -112,9 +114,18 @@ var rootDelete = (req, res)=>{
     });
 };
 
+/*A finir, pour savoir qui à mis quoi où..*/
+var own = (id, resp)=>{
+    var objId;
+    if(resp.generated_keys){
+        objId = resp.generated_keys;
+    }
+};
+
 module.exports = {
     played: played,
     root: root,
     rootPost: rootPost,
-    rootDelete: rootDelete
+    rootDelete: rootDelete,
+    own: own
 };

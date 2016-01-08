@@ -3,6 +3,7 @@
 
     var 
         conf        = require('./config').socket,
+        user        = require('./user'),
         io          = require('socket.io')(conf.socketPort),
         ios         = require('socket.io-express-session');
 
@@ -15,9 +16,15 @@ module.exports = function(app, session){
     if(app && session){
         io.use(ios(session));
         io.on('connection', function(socket){
+
             socket.handshake.session.sokId = socket.id;
             socket.handshake.session.save();
             sockets[socket.id] = socket;
+
+            socket.on('play', (data)=>{
+                //the fucked-up obj as second param is just too emulate the request part the function need.
+                user.played(data.id, {session:{pseudo: socket.handshake.session.pseudo}});
+            });
         });
     }
 
