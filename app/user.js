@@ -12,9 +12,13 @@ var
 
 var played = (id, req)=>{
     var pseudo = req.session.pseudo;
+    var idUser = req.session.uuid;
     re.getCon((c)=>{
         r.table(tbls.user).filter({pseudo: pseudo})
         .update({played: r.row('played').append(id)})
+        .run(c);
+        r.table(tbls.song).get(id)
+        .update({played: r.row('played').add(1).default(1)})
         .run(c);
     });
 };
