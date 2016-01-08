@@ -1,7 +1,7 @@
 'use strict';
 
 exports.conf = {
-    mainPort: 9090, //  this is 80 in production
+    mainPort: 80, //  this is 80 in production
     webDir: 'public', //   which directory should we serve for the front end?
     mediaDir: 'medias', //   which directory should we serve for the medias?
     mediaPath: '/medias', //    on which path?
