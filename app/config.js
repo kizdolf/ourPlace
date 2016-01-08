@@ -44,7 +44,7 @@ exports.rethink = {
     },
     connect: {
         db: 'ourPlace',
-        host: '149.202.44.123',
+        host: 'localhost',
         port: 28015,
         authKey: 'public65dbENEMY'
     }
