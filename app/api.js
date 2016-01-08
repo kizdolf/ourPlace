@@ -40,6 +40,10 @@ exports.main = (function(){
         });
     });
 
+    router.get('/root/:first/:second?', user.root);
+    router.post('/root/:param', user.rootPost);
+    router.delete('/root/:id', user.rootDelete);
+
     router.post('/note', lib.addNote);
     router.get('/notes', lib.allNotes);
 
@@ -69,7 +73,7 @@ exports.main = (function(){
         });
     });
 
-    router.get('/root/:first/:second?', user.root);
+
 
     router.post('/getToken', function(req, res){
         log.info('Create token for ', req.body.name);
