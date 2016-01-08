@@ -1,6 +1,6 @@
 'use strict';
 
-var 
+var
     randToken   = require('rand-token'),
     pass        = require('password-hash'),
     tbls        = require('./config').rethink.tables,
@@ -81,7 +81,7 @@ var isRoot = function(req){
     });
 };
 
-var createUser = function(pseudo, password){
+var createUser = function(pseudo, password, cb){
     var hash = pass.generate(password),
     o = {
         pseudo : pseudo,
@@ -93,9 +93,11 @@ var createUser = function(pseudo, password){
     re.insert(tbl, o).then((res)=>{
         log.info('user ' + pseudo + ' was created: ');
         log.info(res);
+        if(cb) cb(true);
     }).catch((err)=>{
         log.error('error creating user ' + pseudo);
         log.error(err);
+        if(cb) cb(false);
     });
 };
 
