@@ -131,6 +131,7 @@ var Player = React.createClass({
         }.bind(this);
         this.player.onended = function(){
             this.props.next();
+            this.props.addPlayed();
         }.bind(this);
         this.audioSource = $('#audioSource');
     },

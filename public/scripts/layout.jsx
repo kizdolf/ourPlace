@@ -67,10 +67,6 @@ var Layout = React.createClass({
             meta = toPlay.meta;
             index = toPlay.id;
         }
-        var sng = this.state.musics[index];
-        if(sng){
-            this.socket.emit('play', {id: sng.id});
-        }
         this.setState({path: path, type: type, current: meta, index: index});
     },
     next: function(){
@@ -105,6 +101,10 @@ var Layout = React.createClass({
         });
         this.setState({musics: actuals, playList: indexes});
     },
+    addPlayed: function(){
+        var sng = this.state.musics[this.state.playList[this.state.index - 1]];
+        if(sng) this.socket.emit('play', {id: sng.id});
+    },
     render: function(){
         return (
             <div>
@@ -115,6 +115,7 @@ var Layout = React.createClass({
                     meta={this.state.current}
                     next={this.next}
                     prev={this.prev}
+                    addPlayed={this.addPlayed}
                     play={this.play}
                     shuffle={this.shuffle}
                 />

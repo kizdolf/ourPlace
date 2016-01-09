@@ -89,12 +89,13 @@ exports.RootBox = React.createClass({
         return (
             <div className="rootStuff">
                 <h2>Root stuff. yup</h2>
+                <button className="btn btn-default btn-sm" onClick={this.refresh}>Refresh</button>
                 <span id="msg"></span>
                 <div>
                     <p>Create user here:</p>
                     <input type="text" placeholder="Pseudo" id="pseudo"/>
                     <input type="text" placeholder="Password" id="pass"/>
-                    <button onClick={this.create}>Create</button>
+                    <button className="btn btn-default btn-sm" onClick={this.create}>Create</button>
                 </div>
                 <ul>
                     {mountUsers}
