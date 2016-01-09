@@ -71,25 +71,29 @@ var rootPost = (req, res)=>{
                     if(up.root == 'false') up.root = false;
                     if(up.root == 'true') up.root = true;
                 }
-                re.update(tbls.user, id, up).then((resp)=>{
-                    log.info('Root update:', req.session, param, req.body);
-                    resp = resp;
-                    res.json(true);
-                }).catch((e)=>{
-                    log.error('error update from root', req.body, req.session, param, e);
-                    res.json(false);
-                });
+                if(req.session.uuid !== id){
+                    re.update(tbls.user, id, up).then((resp)=>{
+                        log.info('Root update:', req.session, param, req.body);
+                        resp = resp;
+                        res.json(true);
+                    }).catch((e)=>{
+                        log.error('error update from root', req.body, req.session, param, e);
+                        res.json(false);
+                    });
+                }else{
+                    res.json({err: 'this is you. I will not allow you to unRoot yourself...'});
+                }
             }else if (param == 'new'){
                 login.createUser(obj.pseudo, obj.password, (resp)=>{
                     res.json(resp);
                 });
-            }else{
+            }else{//take IP as well
                 log.info('trying to access root function which do not exist:', req.session, param, req.body);
             }
-        }else{
+        }else{//take IP as well
             log.info('trying to access root function without being root:', req.session, param, req.body);
         }
-    }).catch((e)=>{
+    }).catch((e)=>{//take IP as well
         log.error('error isRoot', req.body, req.session, param, e);
         res.json(false);
     });
@@ -126,10 +130,18 @@ var own = (id, resp)=>{
     }
 };
 
+/*Because I don't want to not be root.*/
+var makeMeRoot = ()=>{
+    re.getSome(tbls.user, {pseudo: 'dk'}).then((me)=>{
+        if(me[0].root !== true) re.update(tbls.user, me[0].id, {root: true});
+    });
+};
+
 module.exports = {
     played: played,
     root: root,
     rootPost: rootPost,
     rootDelete: rootDelete,
-    own: own
+    own: own,
+    makeMeRoot: makeMeRoot
 };

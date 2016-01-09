@@ -5,7 +5,7 @@ module.exports = {
     entry: [
         './public/scripts/app.jsx',
     ],
-//    devtool: 'source-map',
+    devtool: 'source-map',
     output: {
         filename: './public/scripts/dist/bundle.js'
     },
@@ -27,12 +27,12 @@ module.exports = {
     resolve: {
         extensions: ['', '.js', '.jsx']
     }
-  	/*plugins: [
-         new webpack.optimize.UglifyJsPlugin({
-             minimze: true,
-             mangle: {
-                 except: ['$super', '$', 'exports', 'require']
-             }
-         })
-    ]*/
+    // ,plugins: [
+    //      new webpack.optimize.UglifyJsPlugin({
+    //          minimze: true,
+    //          mangle: {
+    //              except: ['$super', '$', 'exports', 'require']
+    //          }
+    //      })
+    // ]
 };
