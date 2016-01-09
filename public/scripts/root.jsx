@@ -8,6 +8,9 @@ var User = React.createClass({
         var id = this.props.data.id;
         $.post('/api/root/update', {id: id, update: {root: newStatus}}, (ret)=>{
             if(ret !== false) this.props.refresh();
+            if(ret.err){
+                $('#msg').html(ret.err);
+            }
         });
     },
     delete: function(){
@@ -26,9 +29,15 @@ var User = React.createClass({
     render: function(){
         return(
             <li>
-                <b>{this.props.data.pseudo} </b>
-                is root? : {this.props.data.root ? 'Yes' : 'No' }<br/> <button onClick={this.switchRoot}>Switch root status</button><br/>
-            <button onClick={this.delete}>Delete</button>
+                <h3>{this.props.data.pseudo}</h3>
+                <b>Played tracks: {this.props.data.played}</b>
+                <p>
+                    is root status? : {this.props.data.root ? 'Yes' : 'No' }
+                    <button className="btn btn-default btn-sm" onClick={this.switchRoot}>
+                        Switch status
+                    </button>
+                </p>
+                <button className="btn btn-warning btn-sm" onClick={this.delete}>Delete</button>
             </li>
         );
     }

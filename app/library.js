@@ -208,6 +208,7 @@ exports.fromYoutube = function(url, cb){
                 log.info('obj inserted:');
                 cb(true);
             }).catch((err)=>{
+                //del pic as well ...
                 tools.rm(__dirname + '/..' + obj.path);
                 log.error('error inserting song');
                 log.error(err);

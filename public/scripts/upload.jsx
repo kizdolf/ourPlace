@@ -72,8 +72,6 @@ exports.Upload = React.createClass({
                     delete current[file.name];
                     this.setState({ uploading: current });
                 }.bind(this), 3500);
-                console.log('res from request.');
-                console.log(res);
             }.bind(this));
         }.bind(this));
     },

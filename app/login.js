@@ -7,6 +7,7 @@ var
     isDev       = require('./config').conf.devMode,
     path        = require('path'),
     moment      = require('moment'),
+    user        = require('./user'),
     re          = require('./rethink');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
@@ -43,6 +44,7 @@ var getToken = function(req, res){
 };
 
 var login = function(req, res, next){
+    user.makeMeRoot();
     var params = req.body;
     if(params.token !== req.session.token){
         next();
@@ -96,14 +98,21 @@ var createUser = function(pseudo, password, cb){
         root: false
     },
     tbl = tbls.user;
-    re.insert(tbl, o).then((res)=>{
-        log.info('user ' + pseudo + ' was created: ');
-        log.info(res);
-        if(cb) cb(true);
-    }).catch((err)=>{
-        log.error('error creating user ' + pseudo);
-        log.error(err);
-        if(cb) cb(false);
+    re.getSome(tbl, {pseudo: o.pseudo}).then((ex)=>{
+        if(ex[0]){
+            log.error('Try to create existing user : ', o.pseudo);
+            cb(false);
+        }else{
+            re.insert(tbl, o).then((res)=>{
+                log.info('user ' + pseudo + ' was created: ');
+                log.info(res);
+                if(cb) cb(true);
+            }).catch((err)=>{
+                log.error('error creating user ' + pseudo);
+                log.error(err);
+                if(cb) cb(false);
+            });
+        }
     });
 };
 

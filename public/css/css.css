@@ -739,4 +739,6 @@ body{
 
 .rootStuff{
     background: rgba(255, 255, 255, 0.81);
+    margin: 6%;
+    padding: 15px;
 }
