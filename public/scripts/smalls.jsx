@@ -1,6 +1,7 @@
 var
     React       = require('react'),
     Link        = require('react-router').Link,
+    linker      = require('autolinker'),
     $           = require('jquery');
 
 var OnTop = React.createClass({
@@ -13,12 +14,16 @@ var OnTop = React.createClass({
     },
     componentDidMount: function(){
         var editable;
-        if(this.props.elem.type === "song"){
+        if(this.props.elem.type === 'song'){
             var artist = (this.props.elem.meta.meta.artist) ? this.props.elem.meta.meta.artist[0] : '';
             editable = [
-                {name: "title", val: this.props.elem.meta.meta.title || ''},
-                {name:"album", val: this.props.elem.meta.meta.album || ''},
-                {name:"artist", val: artist}];
+                {name: 'title', val: this.props.elem.meta.meta.title || ''},
+                {name:'album', val: this.props.elem.meta.meta.album || ''},
+                {name:'artist', val: artist}];
+        }else if (this.props.elem.type === 'note'){
+            editable = [{
+                name: 'note', val: this.props.elem.meta.content, type: 'textarea'
+            }];
         }
         this.setState({
             id: this.props.elem.id,
@@ -29,18 +34,32 @@ var OnTop = React.createClass({
     update: function(){
         var values = {};
         this.state.editable.forEach((o)=>{
-            values[o.name] = $('#' + o.name).val();
+            if(o.type == 'text')
+                values[o.name] = $('#' + o.name).val();
+            else{
+                var txt = linker.link($('#' + o.name).html());
+                values[o.name] = txt;
+            }
         });
         this.props.update(values);
     },
     render: function(){
+        var setContent = function(content){
+            return {__html: content};
+        };
         var i = 0;
         var editNodes = this.state.editable.map(function(o){
-            return (
+            var type = (o.type) ? o.type : 'text';
+            if(type == 'text'){
+                return(
                 <div key={i++}>
-                    <p>{o.name}</p> <input type="text" id={o.name} defaultValue={o.val}/>
-                </div>
-            );
+                    <p>{o.name}</p> <input type={type} id={o.name} defaultValue={o.val}/>
+                </div>);
+            }else{
+                return(<div key={i++}>
+                    <p>{o.name}</p> <pre contentEditable="true" id={o.name} dangerouslySetInnerHTML={setContent(o.val)}></pre>
+                </div>);
+            }
         }.bind(this));
         return (
             <div className="onTop">
@@ -100,7 +119,6 @@ exports.ItemMenu = React.createClass({
         var id = this.props.e.id;
         var type = this.props.e.type;
         var url = '/api/' + type + '/' + id;
-        console.log('going to delete on ' + url);
         this.props.closeMenu();
         $.ajax({
             method: 'DELETE',
