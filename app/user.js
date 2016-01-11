@@ -7,8 +7,9 @@ var
     r               = require('rethinkdb'),
     tbls            = require('./config').rethink.tables,
     tools           = require('./tools.js'),
-    login           = require('./login.js'),
     log             = require('simple-node-logger').createSimpleFileLogger('infos.log');
+
+    var lo = tools.lo;
 
 var played = (id, req)=>{
     var pseudo = req.session.pseudo;
@@ -24,9 +25,10 @@ var played = (id, req)=>{
 };
 
 var root = (req, res)=>{
-    var isRoot;
-    login.isRoot(req).then(function(isIt){
-        isRoot = isIt;
+    var login = require('./login');
+
+    login.isRoot(req).then((isIt)=>{
+        var isRoot = isIt;
         if(!isRoot){
             res.json(false);
         }else{
@@ -51,6 +53,10 @@ var root = (req, res)=>{
                         res.json(ls);
                     });
                 }else res.json(false);
+            }else if (first == 'logs'){
+                re.getAll(tbls.log).then((logs)=>{
+                    res.json(logs);
+                });
             }else{
                 res.json(false);
             }
@@ -60,6 +66,7 @@ var root = (req, res)=>{
 };
 
 var rootPost = (req, res)=>{
+    var login = require('./login');
     var param = req.params.param;
     var obj = req.body;
     login.isRoot(req).then(function(isIt){
@@ -74,10 +81,12 @@ var rootPost = (req, res)=>{
                 if(req.session.uuid !== id){
                     re.update(tbls.user, id, up).then((resp)=>{
                         log.info('Root update:', req.session, param, req.body);
+                        lo.info('Root update:', {param: req.body, byWho: req.session.uuid});
                         resp = resp;
                         res.json(true);
                     }).catch((e)=>{
-                        log.error('error update from root', req.body, req.session, param, e);
+                        log.error('error update from root', req.body, req.session.uuid, param, e);
+                        lo.error('error update from root', {param: req.body, byWho: req.session.uuid, error: e});
                         res.json(false);
                     });
                 }else{
@@ -100,6 +109,7 @@ var rootPost = (req, res)=>{
 };
 
 var rootDelete = (req, res)=>{
+    var login = require('./login');
     login.isRoot(req).then(function(isIt){
         if(isIt){
             var id = req.params.id;

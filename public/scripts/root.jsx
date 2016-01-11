@@ -1,5 +1,6 @@
 var
     React       = require('react'),
+    moment      = require('moment'),
     $           = require('jquery');
 
 var User = React.createClass({
@@ -45,7 +46,7 @@ var User = React.createClass({
 
 exports.RootBox = React.createClass({
     getInitialState: function(){
-        return {users: [] };
+        return {users: [], logs: [] };
     },
     amIRoot: function(cb){
         $.get('/api/root/amI', (res)=>{
@@ -59,12 +60,24 @@ exports.RootBox = React.createClass({
     },
     refresh: function(){
         this.getAllUsers();
+        this.getLogs();
     },
     componentDidMount: function(){
         this.amIRoot((amI)=>{
             if(!amI) window.location.href = '/';
             this.getAllUsers();
+            this.getLogs();
         });
+    },
+    byDate: function(a, b){
+        if(a.when > b.when) return -1;
+        else return 1;
+    },
+    getLogs: function(){
+        $.get('/api/root/logs', function(logs){
+            logs = logs.sort(this.byDate);
+            this.setState({logs: logs});
+        }.bind(this));
     },
     create: function(){
         var pseudo = $('#pseudo').val();
@@ -86,6 +99,15 @@ exports.RootBox = React.createClass({
                 <User data={user} key={user.id} refresh={this.refresh}/>
             );
         });
+        var mountLogs = this.state.logs.map((log)=>{
+            return(
+                <div key={log.id} className="oneLog">
+                    <span><b>{log.log}</b></span>  |  
+                    <span>{moment(log.when).format("dddd, MMMM Do YYYY, h:mm:ss a")}</span>
+                    <pre className="code">{JSON.stringify(log, null, '\t')}</pre>
+                </div>
+            );
+        });
         return (
             <div className="rootStuff">
                 <h2>Root stuff. yup</h2>
@@ -100,6 +122,9 @@ exports.RootBox = React.createClass({
                 <ul>
                     {mountUsers}
                 </ul>
+                <hr/><h3>Logs en base:</h3><button className="btn btn-default btn-sm" onClick={this.refresh}>refresh</button>
+                <div id="logs">{mountLogs}</div>
+
             </div>
         );
     }
