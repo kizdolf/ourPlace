@@ -208,15 +208,16 @@ exports.fromYoutube = function(url, cb){
                 log.info('obj inserted:');
                 cb(true);
             }).catch((err)=>{
-                //del pic as well ...
                 tools.rm(__dirname + '/..' + obj.path);
+                tools.rm(__dirname + '/..' + obj.meta.picture);
                 log.error('error inserting song');
                 log.error(err);
-                cb(false);
+                cb(err);
             });
         }else{
             log.error(' with youtube-dl!');
             log.error(err);
+            cb(err);
         }
     });
 };

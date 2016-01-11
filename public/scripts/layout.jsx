@@ -1,4 +1,4 @@
-var React       = require('react'),
+    var React       = require('react'),
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
     Menu        = require('./smalls.jsx').Menu,
@@ -36,23 +36,44 @@ var Layout = React.createClass({
     shuffle: function(){
         var indexesOrder = this.state.playList;
         if(this.state.shuffling){
+            console.log(indexesOrder[this.state.index]);
             this.setState({shuffling: false});
             indexesOrder = [...Array(this.state.musics.length - 1).keys()];
+            console.log(this.state.index);
         }else{
             this.setState({shuffling: true});
             for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
+            indexesOrder.forEach(function(ind, key){
+                if(ind == this.state.index){
+                    console.log('new index is ' + key);
+                    this.setState({index: key});
+                }
+            }.bind(this));
         }
         this.setState({playList: indexesOrder});
+
     },
     componentDidMount: function(){
         this.getMusicFromAPI(function(){
             var indexesOrder = Array.from(Array(this.state.musics.length).keys());
             this.setState({playList: indexesOrder});
         }.bind(this));
-        // this.load = setInterval(this.getMusicFromAPI, this.inter);
         this.socket = io(this.socketHost);
         this.socket.on('update', function(data){
             this.getMusicFromAPI();
+        }.bind(this));
+        this.rootKeyCode();
+    },
+    rootKeyCode: function(){
+        var down = [];
+        $(document).keydown(function(e) {
+            down[e.keyCode] = true;
+        }).keyup(function(e) {
+            if (down[18] && down[13]) {
+                console.log(window.location.href);
+                window.location.href = '#/root';
+            }
+            down[e.keyCode] = false;
         }.bind(this));
     },
     componentWillUnmount: function(){
@@ -60,14 +81,20 @@ var Layout = React.createClass({
         this.socket.on('update', function(data){});
     },
     play: function(path, type, meta, index){
-        if(typeof path == 'undefined'){
-            var toPlay = this.state.musics[this.state.playList[this.state.index]];
-            path = toPlay.path;
-            type = toPlay.type;
-            meta = toPlay.meta;
-            index = toPlay.id;
-        }
-        this.setState({path: path, type: type, current: meta, index: index});
+        if(typeof index === 'undefined')
+            index = 0;
+
+        var toPlay = this.state.musics[this.state.playList[index]];
+        this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
+    },
+    forcePlay: function(index){
+        var toPlay = this.state.musics[index];
+        this.state.playList.forEach((i, key)=>{
+            if(i == index){
+                this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
+                return;
+            }
+        });
     },
     next: function(){
         var list    = this.state.playList,
@@ -105,6 +132,9 @@ var Layout = React.createClass({
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
         if(sng) this.socket.emit('play', {id: sng.id});
     },
+    switchPause: function(){
+        console.log('not done..');
+    },
     render: function(){
         return (
             <div>
@@ -126,7 +156,9 @@ var Layout = React.createClass({
                             {
                                 noteAPI: this.notesUrl,
                                 play: this.play,
+                                forcePlay: this.forcePlay,
                                 prev: this.prev,
+                                switchPause: this.switchPause,
                                 next: this.next,
                                 removed: this.removed,
                                 musics: this.state.musics,

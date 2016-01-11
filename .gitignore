@@ -27,6 +27,7 @@ build/Release
 node_modules
 
 medias/*
+medias/
 databases/*
 minifyAngular.js
 app.js
