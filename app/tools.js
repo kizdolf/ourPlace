@@ -19,10 +19,6 @@ var thisIs404 = (req, res)=>{
     res.json({msg: '404'});
 };
 
-/*J'ai la flemme, la grosse flemme.
-    Bref. j'ai envie de log en base, accessible, sur lesquels on puisse construire une api.
-    et la j'ai la flemme. flemme de le construire et flemme d'aller regarder des modules. Pourtant y'en a des biens...
-*/
 var lo = ()=>{
     var logIt = (level, log, attachment)=>{
         var toLog = {
@@ -50,5 +46,5 @@ var lo = ()=>{
 module.exports = {
     rm: rm,
     thisIs404: thisIs404,
-    lo: lo
+    lo: lo()
 };
