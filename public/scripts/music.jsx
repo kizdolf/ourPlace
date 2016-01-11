@@ -5,8 +5,7 @@ var
 
 var MusicItem = React.createClass({
     play: function(){
-        var src = this.props.song.path, type = this.props.song.type, meta = this.props.song.meta;
-        this.props.onWishPlay(src, type, meta, this.props.index);
+        this.props.onWishPlay(this.props.index);
     },
     showMenu: function(e){
         this.props.showOnTop(
@@ -49,17 +48,15 @@ var InputBox = React.createClass({
         });
     },
     sendFromYT: function(){
-        var url = ($('#inYT').val());
-        console.log('url == ' + url);
-        if(url.match(/^http(s?):\/\/(?:www\.)?youtube.com\/watch\?(?=.*v=\w+)(?:\S+)?$/)){
-            console.log('url match!');
-            $.post('/api/fromYoutube', {url: url}, (data)=>{
-                console.log('resp for youtube:');
-                console.log(data);
-            });
-        }else{
-            console.log('url DO NOT match!');
-        }
+        var url = ($('#inYT').val()).split('&')[0];
+        $('#inYT').val('');
+        $('#addMusBtn').html('Uploading...');
+        $.post('/api/fromYoutube', {url: url}, (data)=>{
+            $('#addMusBtn').html('Done!');
+            setTimeout(()=>{
+                $('#addMusBtn').html('Add a other one.');
+            }, 1500);
+        });
     },
     search: function(e){
         var v = e.target.value;
@@ -68,11 +65,23 @@ var InputBox = React.createClass({
     },
     render: function(){
         return(
-            <div className="inputBox">
-                <input className="search" type="text" placeholder="Search something" onChange={this.search} value={this.state.search} />
-                <button onClick={this.clear}>Clear</button>
-                <input  id="inYT" className="add" type="text" placeholder="Paste a You Tube url here."/>
-                <button onClick={this.sendFromYT}>Add the music!</button>
+            <div className="inputBox row">
+                <div className="col-lg-3">
+                    <div className="input-group">
+                        <input className="search form-control" type="text" placeholder="Search something" onChange={this.search} value={this.state.search} />
+                        <span className="input-group-btn">
+                            <button onClick={this.clear} className="btn btn-default" type="button">Clear</button>
+                        </span>
+                    </div>
+                </div>
+                <div className="col-lg-3">
+                    <div className="input-group">
+                        <input  id="inYT" className="add form-control" type="text" placeholder="Paste a You Tube url here."/>
+                        <span className="input-group-btn">
+                            <button onClick={this.sendFromYT} id="addMusBtn" className="btn btn-default" type="button">Add the music!</button>
+                        </span>
+                    </div>
+                </div>
             </div>
         );
     }
@@ -113,6 +122,18 @@ exports.MusicBox = React.createClass({
         });
         this.forceUpdate();
     },
+    componentDidMount: function(){
+        $(document).keyup(function(e) {
+            if(e.keyCode == 32){
+                e.preventDefault();
+                this.props.switchPause();
+            }else if(e.keyCode == 39 ){
+                this.props.next();
+            }else if(e.keyCode == 37){
+                this.props.prev();
+            }
+        }.bind(this));
+    },
     render: function(){
         var musicNodes;
         if(this.props.musics.length > 0){
@@ -121,7 +142,13 @@ exports.MusicBox = React.createClass({
                 if(typeof music.toShow === 'undefined' || music.toShow === true){
                     var currentlyPlaying = (i == this.props.indexPlaying) ? true: false;
                     return (
-                        <MusicItem index={i++} key={music.id} song={music} onWishPlay={this.props.play} showOnTop={this.showOnTop} now={currentlyPlaying}/>
+                        <MusicItem 
+                            index={i++}
+                            key={music.id}
+                            song={music}
+                            onWishPlay={this.props.forcePlay}
+                            showOnTop={this.showOnTop}
+                            now={currentlyPlaying}/>
                     );
                 }
             }.bind(this));
