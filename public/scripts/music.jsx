@@ -124,16 +124,22 @@ exports.MusicBox = React.createClass({
     },
     componentDidMount: function(){
         $(document).keyup(function(e) {
-            if(e.keyCode == 32){
-                e.preventDefault();
-                this.props.switchPause();
-            }else if(e.keyCode == 39 ){
+            if(e.keyCode == 39 ){
                 this.props.next();
             }else if(e.keyCode == 37){
                 this.props.prev();
             }
         }.bind(this));
+        // this.getRightMenu();
     },
+    // getRightMenu: function(){
+    //     $('#music').mousedown(function(e){ 
+    //         if( e.button == 2 ) { 
+    //             console.log('trigger menu');
+    //             console.log($($(e.target)[0]));
+    //         }
+    //     });
+    // },
     render: function(){
         var musicNodes;
         if(this.props.musics.length > 0){

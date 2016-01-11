@@ -1,5 +1,7 @@
 var fs = require('fs');
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+var re = require('./rethink'),
+    tbls = require('./config').rethink.tables;
 
 var rm = (path)=>{
     fs.access(path, (err)=>{
@@ -22,26 +24,25 @@ var thisIs404 = (req, res)=>{
     et la j'ai la flemme. flemme de le construire et flemme d'aller regarder des modules. Pourtant y'en a des biens...
 */
 var lo = ()=>{
-    var logBase = {
-        when : Date.now(),
-        level : '',
-        log: '',
-        attachment: {}
+    var logIt = (level, log, attachment)=>{
+        var toLog = {
+            when : Date.now(),
+            timestamp: ~~(new Date() / 1000),
+            level : level,
+            log: log,
+            attachment: attachment
+        };
+        re.insert(tbls.log, toLog);
     };
     return{
         error: (log, attachment)=>{
-            var l = {
-                when : Date.now(),
-                level : 'ERREUR',
-                log: log,
-                attachment: attachment
-            };
+            logIt('error', log, attachment);
         },
         info: (log, attachment)=>{
-
+            logIt('info', log, attachment);
         },
         debug: (log, attachment)=>{
-
+            logIt('debug', log, attachment);
         }
     };
 };
