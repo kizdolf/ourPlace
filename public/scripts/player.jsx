@@ -134,6 +134,14 @@ var Player = React.createClass({
             this.props.addPlayed();
         }.bind(this);
         this.audioSource = $('#audioSource');
+        $(document).keydown(function(e) {
+            var tag = e.target.tagName.toLowerCase();
+            if(e.keyCode == 32 && tag != 'input' && tag != 'textarea' && tag != 'pre'){
+                e.preventDefault();
+                this.changePlay();
+                return false;
+            }
+        }.bind(this));
     },
     componentDidUpdate: function(prev){
         if(prev.path != this.props.path){

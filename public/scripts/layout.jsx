@@ -132,9 +132,6 @@ var Layout = React.createClass({
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
         if(sng) this.socket.emit('play', {id: sng.id});
     },
-    switchPause: function(){
-        console.log('not done..');
-    },
     render: function(){
         return (
             <div>
@@ -158,7 +155,6 @@ var Layout = React.createClass({
                                 play: this.play,
                                 forcePlay: this.forcePlay,
                                 prev: this.prev,
-                                switchPause: this.switchPause,
                                 next: this.next,
                                 removed: this.removed,
                                 musics: this.state.musics,
