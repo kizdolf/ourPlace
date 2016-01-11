@@ -21,7 +21,7 @@ var MusicItem = React.createClass({
         var clss = this.props.now ? 'itemMusic current': 'itemMusic';
         return (
             <li className={clss}>
-                <span onClick={this.play}>
+                <span onClick={this.play} className="clickable">
                     <div className="cover">
                         <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
                     </div>
@@ -123,11 +123,32 @@ exports.MusicBox = React.createClass({
         this.forceUpdate();
     },
     componentDidMount: function(){
-        $(document).keyup(function(e) {
+        $(document).keydown(function(e) {
             if(e.keyCode == 39 ){
                 this.props.next();
             }else if(e.keyCode == 37){
                 this.props.prev();
+            }else if(e.keyCode == 40){
+                e.preventDefault();
+                //down
+                var current = $('.current');
+                var pos = current.position();
+                var y = pos.top + (parseInt(current.css('marginTop')) * 3) + current.height();
+                var x = pos.left + parseInt(current.css('marginLeft'));
+                var down = $(document.elementFromPoint(x, y))[0];
+                down.closest('.clickable').click();
+                return false;
+            }else if(e.keyCode == 38){
+                e.preventDefault();
+                //up
+                var current = $('.current');
+                var pos = current.position();
+                var y = pos.top - (parseInt(current.css('marginTop'))) - current.height();
+                var x = pos.left + parseInt(current.css('marginLeft'));
+                console.log({x: x, y:y});
+                var down = $(document.elementFromPoint(x, y))[0];
+                down.closest('.clickable').click();
+                return false;
             }
         }.bind(this));
         // this.getRightMenu();

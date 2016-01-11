@@ -75,6 +75,10 @@ exports.update = (req, res)=>{
             'album': changes.album,
             'title': changes.title
         }};
+    }else if (req.params.type == 'note'){
+        obj = {
+            'content' : changes.note
+        };
     }
     re.update(tbl, id, obj).then((response)=>{
         log.info(id + ' on ' + tbl + ' was updated.');

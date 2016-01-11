@@ -11,7 +11,6 @@ require('react-medium-editor/node_modules/medium-editor/dist/css/themes/default.
 
 var Note = React.createClass({
     showMenu: function(e){
-        console.log(this.props);
         this.props.showMenu(
             {x: e.pageX, y: e.pageY},
             this.props.data,
