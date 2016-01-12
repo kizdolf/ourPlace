@@ -2,7 +2,15 @@
 
 var feed = require('feed-read');
 
+//https://www.nasa.gov/content/nasa-rss-feeds
 var feeds = [
+    'https://www.nasa.gov/rss/dyn/breaking_news.rss',
+    'https://www.nasa.gov/rss/dyn/lg_image_of_the_day.rss',
+    'https://blogs.nasa.gov/stationreport/feed/',
+    'https://www.nasa.gov/rss/dyn/onthestation_rss.rss',
+    'https://www.nasa.gov/rss/dyn/mission_pages/kepler/news/kepler-newsandfeatures-RSS.rss',
+    'https://www.nasa.gov/rss/dyn/chandra_images.rss',
+    'https://www.nasa.gov/rss/dyn/shuttle_station.rss',
     'https://reflets.info/feed/',
     'http://www.numerama.com/feed/',
     'http://www.futura-sciences.com/rss/espace/actualites.xml',
