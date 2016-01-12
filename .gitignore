@@ -36,3 +36,4 @@ public/scripts/dist
 rethinkdb_data/
 app/dbConf.js
 .git.bfg-report/
+..bfg-report/
