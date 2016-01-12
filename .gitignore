@@ -34,5 +34,5 @@ app.js
 app.min.js
 public/scripts/dist
 rethinkdb_data/
-app/config.js
+app/dbConf.js
 .git.bfg-report/
