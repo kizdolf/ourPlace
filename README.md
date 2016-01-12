@@ -2,6 +2,30 @@
 
 > Node / React / Rethinkdb application as a small but personnal cloud. Under development. 
 
+###__NOTE__ 
+> This repository was private, was meant to stay private. But hey, it's now public. I tried to supress critical files from repo, but it's not as easy as it look. So the tool (wonderfull) : https://rtyley.github.io/bfg-repo-cleaner/ was more than helpful.
+Maybe there is somewhere some traces of database password and stuff, I changed them all anyway. 
+
+*before running it:*
+
+ * create app/dbConf.js file, populate like that:  
+ 
+```
+'use strict';
+
+exports.connect =  {
+    db: 'dbName',
+    host: 'localhost',
+    port: 28015,
+    authKey: 'yourSuperSecretKey'
+};
+
+```
+
+ * Check this to know a bit more: https://www.rethinkdb.com/docs/security/
+ * create the tables on rethinkDB. list in app/config.js => exports.rethink.tables.
+
+
 **Using what else?**
 
  * socket.io : to pass some data, to know when to call the api
