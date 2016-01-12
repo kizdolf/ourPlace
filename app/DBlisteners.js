@@ -4,6 +4,7 @@ global.count = 0;
 
 var r = require('rethinkdb'),
     cnf = require('./config.js').rethink,
+    dbCnf = require('./dbConf.js'),
 
 log = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 
@@ -20,7 +21,7 @@ listenChangeSong = (er, cursor)=>{
     });
 };
 
-r.connect(cnf.connect, (e, c)=>{
+r.connect(dbCnf.connect, (e, c)=>{
     if(e){
         console.log('erreur=>catch for changes');
         console.log(e);

@@ -12,7 +12,7 @@ var
     express     = require('express'),
     bodyParser  = require('body-parser'),
     conf        = require('./app/config').conf,
-    confRe      = require('./app/config').rethink,
+    confRe      = require('./app/dbConf'),
     api         = require('./app/api'),
     login       = require('./app/login'),
     tools       = require('./app/tools'),
