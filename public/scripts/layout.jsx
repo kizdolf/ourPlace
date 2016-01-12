@@ -59,7 +59,7 @@ var Layout = React.createClass({
             this.setState({playList: indexesOrder});
         }.bind(this));
         this.socket = io(this.socketHost);
-        this.socket.on('update', function(data){
+        this.socket.on('update', function(data){ //jshint ignore: line
             this.getMusicFromAPI();
         }.bind(this));
         this.rootKeyCode();
