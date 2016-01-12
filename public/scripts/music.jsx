@@ -51,7 +51,7 @@ var InputBox = React.createClass({
         var url = ($('#inYT').val()).split('&')[0];
         $('#inYT').val('');
         $('#addMusBtn').html('Uploading...');
-        $.post('/api/fromYoutube', {url: url}, (data)=>{
+        $.post('/api/fromYoutube', {url: url}, (data)=>{ //jshint ignore:line
             $('#addMusBtn').html('Done!');
             setTimeout(()=>{
                 $('#addMusBtn').html('Add a other one.');
@@ -124,38 +124,40 @@ exports.MusicBox = React.createClass({
     },
     componentDidMount: function(){
         $(document).keydown(function(e) {
-            if(e.keyCode == 39 ){
-                this.props.next();
-            }else if(e.keyCode == 37){
-                this.props.prev();
-            }else if(e.keyCode == 40){
-                e.preventDefault();
-                //down
+            var tag = e.target.tagName.toLowerCase();
+            if(tag != 'input' && tag != 'textarea' && tag != 'pre'){
                 var current = $('.current');
-                var pos = current.position();
-                var y = pos.top + (parseInt(current.css('marginTop')) * 3) + current.height();
-                var x = pos.left + parseInt(current.css('marginLeft'));
-                var down = $(document.elementFromPoint(x, y))[0];
-                down.closest('.clickable').click();
-                return false;
-            }else if(e.keyCode == 38){
-                e.preventDefault();
-                //up
-                var current = $('.current');
-                var pos = current.position();
-                var y = pos.top - (parseInt(current.css('marginTop'))) - current.height();
-                var x = pos.left + parseInt(current.css('marginLeft'));
-                console.log({x: x, y:y});
-                var down = $(document.elementFromPoint(x, y))[0];
-                down.closest('.clickable').click();
-                return false;
+                var pos = current.offset();
+                var y, x;
+                if(e.keyCode == 39 ){
+                    this.props.next();
+                }else if(e.keyCode == 37){
+                    this.props.prev();
+                }else if(e.keyCode == 40){
+                    e.preventDefault();
+                    //down
+                    y = pos.top + (parseInt(current.css('marginTop')) * 3) + current.height();
+                    x = pos.left + parseInt(current.css('marginLeft'));
+                    var down = $(document.elementFromPoint(x, y))[0];
+                    down.closest('.clickable').click();
+                    return false;
+                }else if(e.keyCode == 38){
+                    e.preventDefault();
+                    //up
+                    y = pos.top - (parseInt(current.css('marginTop'))) - current.height();
+                    x = pos.left + parseInt(current.css('marginLeft'));
+                    console.log({x: x, y:y});
+                    var up = $(document.elementFromPoint(x, y))[0];
+                    up.closest('.clickable').click();
+                    return false;
+                }
             }
         }.bind(this));
         // this.getRightMenu();
     },
     // getRightMenu: function(){
-    //     $('#music').mousedown(function(e){ 
-    //         if( e.button == 2 ) { 
+    //     $('#music').mousedown(function(e){
+    //         if( e.button == 2 ) {
     //             console.log('trigger menu');
     //             console.log($($(e.target)[0]));
     //         }
@@ -169,7 +171,7 @@ exports.MusicBox = React.createClass({
                 if(typeof music.toShow === 'undefined' || music.toShow === true){
                     var currentlyPlaying = (i == this.props.indexPlaying) ? true: false;
                     return (
-                        <MusicItem 
+                        <MusicItem
                             index={i++}
                             key={music.id}
                             song={music}
