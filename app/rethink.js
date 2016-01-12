@@ -95,7 +95,7 @@ var rmById = (tblName, id)=>{
 var update = (tblName, id, obj)=>{
     return new Promise((ful, rej)=>{
         p.then((c)=>{
-            r.table(tblName).get(id).update(obj).run(c, (e, r)=>{
+            r.table(tblName).get(id).update(obj, {durability: 'hard'}).run(c, (e, r)=>{
                 if(e) rej(e);
                 else ful(r);
             });

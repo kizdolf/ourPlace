@@ -40,6 +40,13 @@ var
     //externs middlewares
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
+    //log alllll of it
+    .use((req, res, next)=>{
+        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        var route = req.originalUrl;
+        tools.lo.info('request:', {ip: ip, route: route, method: req.method});
+        next();
+    })
     //some cases
     .use(conf.pathPlay, externSession.play)
     //login

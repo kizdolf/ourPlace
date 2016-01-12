@@ -38,7 +38,7 @@ var Layout = React.createClass({
         if(this.state.shuffling){
             console.log(indexesOrder[this.state.index]);
             this.setState({shuffling: false});
-            indexesOrder = [...Array(this.state.musics.length - 1).keys()];
+            indexesOrder =  Array.from(Array(this.state.musics.length - 1).keys());
             console.log(this.state.index);
         }else{
             this.setState({shuffling: true});

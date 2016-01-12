@@ -9,7 +9,7 @@ Maybe there is somewhere some traces of database password and stuff, I changed t
 *before running it:*
 
  * create app/dbConf.js file, populate like that:  
- 
+
 ```
 'use strict';
 
@@ -25,6 +25,7 @@ exports.connect =  {
  * Check this to know a bit more: https://www.rethinkdb.com/docs/security/
  * create the tables on rethinkDB. list in app/config.js => exports.rethink.tables.
 
+it should be accessible visible here: http://azerty.gq 
 
 **Using what else?**
 
