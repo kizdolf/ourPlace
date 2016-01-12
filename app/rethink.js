@@ -1,15 +1,15 @@
 var r   = require('rethinkdb'),
-    cnf = require('./config.js').rethink;
+    conCnf = require('./dbConf');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 var c = null;
 
-/*insure connection*/
-var p = r.connect(cnf.connect, (e, con)=>{
+/*insure connection*/ 
+var p = r.connect(conCnf.connect, (e, con)=>{
     if(e) log.error(e);
     else c = con;
 });
- 
+
 /*helpers*/
 var getCon = (cb)=>{
     p.then((c)=>{

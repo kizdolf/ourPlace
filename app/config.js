@@ -41,12 +41,6 @@ exports.rethink = {
         song: 'songs',
         log: 'logs',
         live: 'live'
-    },
-    connect: {
-        db: 'ourPlace',
-        host: 'localhost',
-        port: 28015,
-        authKey: 'public65dbENEMY'
     }
 };
 
