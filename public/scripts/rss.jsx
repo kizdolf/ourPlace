@@ -49,7 +49,7 @@ exports.RssBox = React.createClass({
     },
     componentDidMount: function(){
         this.getRssFromAPI();
-        this.load = setInterval(this.getRssFromAPI, 25000);
+        // this.load = setInterval(this.getRssFromAPI, 25000);
     },
     render: function(){
         var i =0;
