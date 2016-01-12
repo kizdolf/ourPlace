@@ -81,7 +81,7 @@ exports.update = (req, res)=>{
         };
     }
     re.update(tbl, id, obj).then((response)=>{
-        log.info(id + ' on ' + tbl + ' was updated.');
+        log.info(id + ' on ' + tbl + ' was updated.', response);
         s.send(obj, req.session, true);
         res.json(response);
     }).catch((e)=>{
