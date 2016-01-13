@@ -17,9 +17,9 @@ var OnTop = React.createClass({
         if(this.props.elem.type === 'song'){
             var artist = (this.props.elem.meta.meta.artist) ? this.props.elem.meta.meta.artist[0] : '';
             editable = [
-                {name: 'title', val: this.props.elem.meta.meta.title || ''},
-                {name:'album', val: this.props.elem.meta.meta.album || ''},
-                {name:'artist', val: artist}];
+                {name: 'title', val: this.props.elem.meta.meta.title || '', type: 'text'},
+                {name:'album', val: this.props.elem.meta.meta.album || '', type: 'text'},
+                {name:'artist', val: artist, type: 'text'}];
         }else if (this.props.elem.type === 'note'){
             editable = [{
                 name: 'note', val: this.props.elem.meta.content, type: 'textarea'
@@ -100,14 +100,23 @@ exports.ItemMenu = React.createClass({
         // this.props.closeMenu();
     },
     download: function(){
-        var dl = document.createElement('a'), name, e = this.props.e;
-        dl.setAttribute('href', e.meta.path);
-        if(e.meta.title){
-            name = e.meta.title + '_';
-            name += (e.meta.artist) ? e.meta.artist[0] : '';
-            var ext = e.name.split('.')[e.name.split('.').length - 1];
+        var dl = document.createElement('a'), name;
+        var song = this.props.e.meta;
+        var meta = song.meta;
+        dl.setAttribute('href', song.path);
+        console.log(song);
+        console.log(meta);
+        if(meta.title){
+            name = meta.title + '_';
+            name += (meta.artist) ? meta.artist[0] : '';
+            var ext = e.meta.name.split('.')[e.meta.name.split('.').length - 1];
+            console.log(ext);
+            if(ext.length !== 3){
+                ext = song.path.split('.')[song.path.split('.').length - 1];
+            }
             name += (ext.length === 3) ? '.' + ext : '.' + e.src.split('.')[e.src.split('.').length - 1];
         }else{
+            console.log('NON e.meta.title');
             name = e.meta.name;
         }
         dl.setAttribute('download', name.replace(/ /g, '-'));
