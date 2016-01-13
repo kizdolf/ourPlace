@@ -2,6 +2,7 @@
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
     Menu        = require('./smalls.jsx').Menu,
+    Visualizer  = require('./songViszu.jsx').Visualizer,
     Upload      = require('./upload.jsx').Upload;
 
 var Layout = React.createClass({
@@ -78,7 +79,7 @@ var Layout = React.createClass({
     },
     componentWillUnmount: function(){
         // clearInterval(this.load);
-        this.socket.on('update', function(data){});
+        this.socket.on('update', function(data){}); //jshint ignore:line
     },
     play: function(path, type, meta, index){
         if(typeof index === 'undefined')
@@ -146,6 +147,7 @@ var Layout = React.createClass({
                     play={this.play}
                     shuffle={this.shuffle}
                 />
+                <Visualizer url={this.state.musics[this.state.playList[this.state.index - 1]].path} />
                 <Menu />
                     {
                         this.props.children &&
