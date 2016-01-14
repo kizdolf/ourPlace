@@ -65,7 +65,7 @@ var InputBox = React.createClass({
     },
     render: function(){
         return(
-            <div className="inputBox row">
+            <div className="inputBox">
                 <div className="col-lg-3">
                     <div className="input-group">
                         <input className="search form-control" type="text" placeholder="Search something" onChange={this.search} value={this.state.search} />
