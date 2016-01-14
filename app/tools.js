@@ -28,7 +28,10 @@ var lo = ()=>{
             log: log,
             attachment: attachment
         };
-        re.insert(tbls.log, toLog);
+        if(level === 'request')
+            re.insert(tbls.request, toLog);
+        else
+            re.insert(tbls.log, toLog);
     };
     return{
         error: (log, attachment)=>{
@@ -39,7 +42,10 @@ var lo = ()=>{
         },
         debug: (log, attachment)=>{
             logIt('debug', log, attachment);
-        }
+        },
+        request: (log, attachment)=>{
+            logIt('request', log, attachment);
+        },
     };
 };
 

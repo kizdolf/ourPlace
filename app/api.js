@@ -11,14 +11,14 @@
 */
 
 var
-express     = require('express'),
-multer      = require('multer'),
+express         = require('express'),
+multer          = require('multer'),
 externSession   = require('./externSession'),
-upload      = multer({dest: 'medias/'}),
-login       = require('./login'),
-lib         = require('./library'),
-user        = require('./user'),
-feed        = require('./rss/main');
+upload          = multer({dest: 'medias/'}),
+login           = require('./login'),
+lib             = require('./library'),
+user            = require('./user'),
+feed            = require('./rss/main');
 
 var s = require('./socket')();
 
@@ -26,7 +26,7 @@ var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 exports.main = (function(){
     var router      = express.Router();
-    // Would it be better to externalise the route in a json file somewhere else?
+    // Would it be better to externalise the route(s) in a json file somewhere else?
     router.post('/upload', upload.any(), function(req, res){
         req.files.forEach((file)=>{
             log.info(file);

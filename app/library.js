@@ -24,6 +24,7 @@ var
 
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+var lo = tools.lo;
 
 require('./DBlisteners.js');
 
@@ -81,12 +82,11 @@ exports.update = (req, res)=>{
         };
     }
     re.update(tbl, id, obj).then((response)=>{
-        log.info(id + ' on ' + tbl + ' was updated.', response);
+        lo.info('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj});
         s.send(obj, req.session, true);
         res.json(response);
     }).catch((e)=>{
-        log.error('updating ' + id + ' on ' + tbl);
-        log.error(e);
+        lo.error('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj, error: e});
         res.json(e);
     });
 };
@@ -132,7 +132,7 @@ exports.handle = (file, cb)=>{
                     meta : meta
                 };
                 re.insert(tbls.song, obj).then((res)=>{
-                    log.info('obj inserted:', res);
+                    lo.info('insert', {tbl: tbls.song, obj: obj, response: res});
                     cb(null, true);
                 }).catch((err)=>{
                     tools.rm(__dirname + '/..' + obj.path);
@@ -205,7 +205,8 @@ exports.fromYoutube = function(url, cb){
                 type : mime.lookup(ret._filename),
                 meta : {
                     picture : mainConf.mediaPath + '/' +  ret.id + '.jpg'
-                }
+                },
+                urlOrigin: url
             };
 
             re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line

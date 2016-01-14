@@ -40,7 +40,8 @@ exports.rethink = {
         note: 'notes',
         song: 'songs',
         log: 'logs',
-        live: 'live'
+        live: 'live',
+        request: 'logRequests'
     }
 };
 

@@ -118,6 +118,7 @@ var rootDelete = (req, res)=>{
             }else{
                 re.rmById(tbls.user, id).then((resp)=>{
                     resp = resp;
+                    lo.info('Root delete:', {idDeleted: id, byWho: req.session.uuid});
                     res.json(true);
                 }).catch((e)=>{
                     log.error('error delete from root', req.session, e);

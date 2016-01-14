@@ -44,7 +44,7 @@ var
     .use((req, res, next)=>{
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         var route = req.originalUrl;
-        tools.lo.info('request:', {ip: ip, route: route, method: req.method});
+        tools.lo.request('request:', {ip: ip, route: route, method: req.method});
         next();
     })
     //some cases
