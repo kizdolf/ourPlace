@@ -18,6 +18,14 @@ var
     tools       = require('./app/tools'),
     externSession = require('./app/externSession');
 
+    /*   HTTPS    */
+    var fs          = require('fs'),
+        http        = require('http'),
+        https       = require('https'),
+        privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
+        certificate = fs.readFileSync(confRe.https.certificate, 'utf8');
+    var credentials = {key: privateKey, cert: certificate};
+
     var session = require('express-session'),
     RDBStore    = require('session-rethinkdb')(session);
     const options = {
@@ -40,12 +48,18 @@ var
     //externs middlewares
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
-    //log alllll of it
+    /*
+        Each request need to be loggued,
+        as well I want to force https. Here it is.
+    */
     .use((req, res, next)=>{
         var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
         var route = req.originalUrl;
         tools.lo.request('request:', {ip: ip, route: route, method: req.method});
-        next();
+        if(req.secure)
+            next();
+        else
+            res.redirect('https://' + req.headers.host + req.url);
     })
     //some cases
     .use(conf.pathPlay, externSession.play)
@@ -60,9 +74,15 @@ var
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong path
-    .use(tools.thisIs404)
+    .use(tools.thisIs404);
     //ready for requests.
     //TODO: add log.
-    .listen(conf.mainPort);
+    // .listen(conf.mainPort);
 
     require('./app/socket')(app, Session, store);
+
+    var httpServer = http.createServer(app);
+    var httpsServer = https.createServer(credentials, app);
+
+    httpServer.listen(conf.mainPort);
+    httpsServer.listen(conf.httpsPort);

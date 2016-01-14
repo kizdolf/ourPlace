@@ -8,7 +8,7 @@ Maybe there is somewhere some traces of database password and stuff, I changed t
 
 *before running it:*
 
- * create app/dbConf.js file, populate like that:  
+ * create app/dbConf.js file, populate like that:  *true, the name is not corresponding exactly, I know...*
 
 ```
 'use strict';
@@ -18,6 +18,11 @@ exports.connect =  {
     host: 'localhost',
     port: 28015,
     authKey: 'yourSuperSecretKey'
+};
+
+exports.https = {
+    privKey: '/path/to/your/key/privkey.pem',
+    certificate: '/path/to/your/cert/cert.pem'
 };
 
 ```

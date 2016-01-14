@@ -11,7 +11,7 @@ var Layout = React.createClass({
     inter: 1000,
     notesUrl: '/api/notes',
     apiAddNote: '/api/note',
-    socketHost: 'http://azerty.gq:9091',
+    socketHost: '//azerty.gq:9091',
     getInitialState: function(){
         return {
             musics: [],

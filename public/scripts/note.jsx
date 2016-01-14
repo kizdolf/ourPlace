@@ -77,7 +77,7 @@ var Editor = React.createClass({
 });
 
 exports.NoteBox = React.createClass({
-    socketHost: 'http://azerty.gq:9091',
+    socketHost: '//azerty.gq:9091',
     getInitialState: function(){
         return {
             notes: [],

@@ -2,6 +2,7 @@
 
 exports.conf = {
     mainPort: 80, //  this is 80 in production
+    httpsPort: 443, // but will be redirect here, because security and stuff
     webDir: 'public', //   which directory should we serve for the front end?
     mediaDir: 'medias', //   which directory should we serve for the medias?
     mediaPath: '/medias', //    on which path?
