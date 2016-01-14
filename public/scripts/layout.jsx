@@ -147,7 +147,6 @@ var Layout = React.createClass({
                     play={this.play}
                     shuffle={this.shuffle}
                 />
-                <Visualizer url={this.state.musics[this.state.playList[this.state.index - 1]].path} />
                 <Menu />
                     {
                         this.props.children &&
@@ -165,6 +164,7 @@ var Layout = React.createClass({
                             }
                         )
                     }
+                <Visualizer url={this.state.musics[this.state.playList[this.state.index - 1]]} />
             </div>
         );
     }

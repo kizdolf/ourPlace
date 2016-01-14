@@ -26,9 +26,9 @@ var MusicItem = React.createClass({
                         <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
                     </div>
                     <div className="Meta">
+                        <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
                         <span className="title">{(meta.title) ? meta.title : name}</span>
-                        <span className="artist"><i>From: </i>{(meta.artist) ? meta.artist[0] : ''}</span>
-                        {(meta.album) ? <span className="album"><i>Album: </i>{meta.album}</span> : ''}
+                        {(meta.album) ? <span className="album"><i>{meta.album}</i></span> : ''}
                     </div>
                 </span>
                 <img
