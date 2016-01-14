@@ -4,7 +4,7 @@ global.count = 0;
 
 var r = require('rethinkdb'),
     cnf = require('./config.js').rethink,
-    dbCnf = require('./dbConf.js'),
+    dbCnf = require('./criticalConf.js'),
 
 log = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 

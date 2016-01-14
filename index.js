@@ -12,7 +12,7 @@ var
     express     = require('express'),
     bodyParser  = require('body-parser'),
     conf        = require('./app/config').conf,
-    confRe      = require('./app/dbConf'),
+    confRe      = require('./app/criticalConf'),
     api         = require('./app/api'),
     login       = require('./app/login'),
     tools       = require('./app/tools'),
@@ -23,8 +23,9 @@ var
         http        = require('http'),
         https       = require('https'),
         privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
+        ca          = fs.readFileSync(confRe.https.chain, 'utf8'),
         certificate = fs.readFileSync(confRe.https.certificate, 'utf8');
-    var credentials = {key: privateKey, cert: certificate};
+    var credentials = {key: privateKey, cert: certificate, ca: ca };
 
     var session = require('express-session'),
     RDBStore    = require('session-rethinkdb')(session);

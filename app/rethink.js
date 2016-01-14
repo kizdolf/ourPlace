@@ -1,5 +1,5 @@
 var r   = require('rethinkdb'),
-    conCnf = require('./dbConf');
+    conCnf = require('./criticalConf');
 
 var _r = require('rethinkdbdash')(conCnf.connect);
 
