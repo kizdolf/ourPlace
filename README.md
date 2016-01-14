@@ -8,7 +8,7 @@ Maybe there is somewhere some traces of database password and stuff, I changed t
 
 *before running it:*
 
- * create app/dbConf.js file, populate like that:  *true, the name is not corresponding exactly, I know...*
+ * create app/criticalConf.js file, populate it like that:
 
 ```
 'use strict';
@@ -22,7 +22,8 @@ exports.connect =  {
 
 exports.https = {
     privKey: '/path/to/your/key/privkey.pem',
-    certificate: '/path/to/your/cert/cert.pem'
+    certificate: '/path/to/your/cert/cert.pem',
+    chain : '/path/to/your/chain/chain.pem'
 };
 
 ```
@@ -30,7 +31,7 @@ exports.https = {
  * Check this to know a bit more: https://www.rethinkdb.com/docs/security/
  * create the tables on rethinkDB. list in app/config.js => exports.rethink.tables.
 
-it should be accessible visible here: http://azerty.gq 
+it should be accessible visible here: http://azerty.gq   (*but it require a login, which you have to ask me personnaly.*)
 
 **Using what else?**
 
@@ -45,7 +46,7 @@ it should be accessible visible here: http://azerty.gq
 * Music: Upload it, play it, edit it.
 * Notes: Because I needed it badly. 
 * Rss: under light construction. 
-* Usuable from a mobile.
+* Usuable from a mobile. (even if not optimal)
 * Nothing more. See the next section for the rest. 
 
 ### What's will be here? 
@@ -53,7 +54,7 @@ it should be accessible visible here: http://azerty.gq
 
 * Accounts: **[DONE]**
 This deserve a bit of explaination I suppose. I want to be able to share everything uploaded on the cloud. But not to everyone. So I don't want to allow people to log-on. Just log-in. Only the Admin should be able to send invitations, and only people with invitations should be able to log-in. Then why not allow some members to invite?  (_idea_)
-[_NOT done_]So. An invite system. Token based. With the smallest account managment possible: pseudo/password/profilPicture/id. 
+[**_NOT done_**]So. An invite system. Token based. With the smallest account managment possible: pseudo/password/profilPicture/id. 
 Unique token for the invitation, unique token at each login.
 
 * Music: 
