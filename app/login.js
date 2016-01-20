@@ -6,7 +6,6 @@ var
     tbls        = require('./config').rethink.tables,
     isDev       = require('./config').conf.devMode,
     path        = require('path'),
-    moment      = require('moment'),
     user        = require('./user'),
     re          = require('./rethink');
 

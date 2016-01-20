@@ -7,7 +7,7 @@
     for different kind. (eg: a submodule for users, one for documents, one for login/logout, etc.)
 
     Until then everything id handled here.
-    But hey, there is'nt that much endpoints.
+    But hey, there is'nt that much endpoints. (for now at least)
 */
 
 var

@@ -1,7 +1,7 @@
 'use strict';
 
 
-    var 
+    var
         conf        = require('./config').socket,
         user        = require('./user'),
         io          = require('socket.io')(conf.socketPort),
@@ -22,7 +22,6 @@ module.exports = function(app, session){
             sockets[socket.id] = socket;
 
             socket.on('play', (data)=>{
-                //the fucked-up obj as second param is just too emulate the request part the function need.
                 user.played(data.id, {session: socket.handshake.session});
             });
         });

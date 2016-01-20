@@ -23,39 +23,48 @@ var
     ];
 
 
+//simple logger is going to disappear. I want log in a db.
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 var lo = tools.lo;
 
 require('./DBlisteners.js');
 
 var s = require('./socket')();
+
+//extract and save picture. if extract failed just delete pic without blocking process.
+var extractPicture = (meta, path, cb)=>{
+    var pic     = new Buffer(meta.picture[0].data),
+        picName = path.split('/')[1] + '.' + meta.picture[0].format;
+    pic = pic.toString('base64');
+    fs.writeFile(mainConf.coversPath + picName, pic, 'base64', (err)=>{
+        if(err){
+            log.error('err wrinting img');
+            log.error(err);
+            delete meta.picture;
+            cb(meta);
+        }else{
+            meta.picture = '/' + mainConf.coversPath + picName;
+            cb(meta);
+        }
+    });
+};
+
 /*
 Retrieve metadata from a file. Files are not always easy with that,
 so in case of error an empty object is returned. The app continue to run.
 */
-var getMetaData = function(path, cb){
-    mm(fs.createReadStream(path), function(err, meta){
+var getMetaData = (path, cb)=>{
+    mm(fs.createReadStream(path), (err, meta)=>{
         if(err){
             log.error('err getting Metadata. Continuing with empty meta.');
             log.error(err);
-            cb(null, {});
+            cb(null, {}); //do not let 0 metaData prevent the song to be listened.
         }else{
-            //extract and save picture, need to be in it's own function.
             if(meta.picture[0] && meta.picture[0].data){
-                var pic     = new Buffer(meta.picture[0].data),
-                    picName = path.split('/')[1] + '.' + meta.picture[0].format;
-                pic = pic.toString('base64');
-                fs.writeFile(mainConf.coversPath + picName, pic, 'base64', function(err){
-                    if(err){
-                        log.error('err wrinting img');
-                        log.error(err);
-                        cb(null, {});
-                    }else{
-                        meta.picture = '/' + mainConf.coversPath + picName;
-                        cb(null, meta);
-                    }
+                extractPicture(meta, path, (meta)=>{
+                    cb(null, meta);
                 });
-            }else{
+            }else{ //if no picture in file, the prop need to be cleared.
                 delete meta.picture;
                 cb(null, meta);
             }
@@ -136,18 +145,18 @@ exports.handle = (file, cb)=>{
                     cb(null, true);
                 }).catch((err)=>{
                     tools.rm(__dirname + '/..' + obj.path);
-                    log.error('error inserting song');
-                    log.error(err);
+                    lo.error('insert', {tbl: tbls.song, obj: obj, error: err});
                     cb(err, null);
                 });
             }
         });
     }
 };
-var byDate = function(a, b){
-    if(a.date > b.date) return -1;
-    else return 1;
-};
+
+//best function ever !
+var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
+
+//TODO: add limitation number on demand. sorting options as well.
 exports.allSongs = function(){
     var files = [];
     return new Promise(function(ful, rej){
@@ -155,20 +164,18 @@ exports.allSongs = function(){
             files = songs.sort(byDate);
             ful(files);
         }).catch((e)=>{
-            log.error('err requesting all');
-            log.error(e);
+            lo.error('get', {msg: 'requesting all songs.', tbl: tbls.song, error: e});
             rej(e);
         });
     });
 };
 
-//send all notes.
+//send all notes. TODO the same as for allSongs.
 exports.allNotes = function(req, res){
     re.getAll(tbls.note).then((notes)=>{
         res.json(notes);
     }).catch((e)=>{
-        log.error('err requesting all');
-        log.error(e);
+        lo.error('get', {msg: 'requesting all notes.', tbl: tbls.note, error: e});
         res.json([]);
     });
 };
@@ -189,6 +196,13 @@ exports.addNote = function(req, res){
     });
 };
 
+/*
+Retrieve a youTube song from url.
+Use the awesome youtube-dl (https://rg3.github.io/youtube-dl/) to handle the download and song extraction.
+Some modules exists do to the same, but honestly that's just better.
+Just one thing: if youtube-dl is not up do date it can crash sometimes, but the song is still here.
+So in case of error we nned to check if the download/extraction was killed or not.
+*/
 exports.fromYoutube = function(url, cb){
     var dir = process.env.PWD + '/medias';
     var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir ' + dir + ' ';
@@ -220,8 +234,9 @@ exports.fromYoutube = function(url, cb){
                 cb(err);
             });
         }else{
-            log.error(' with youtube-dl!');
+            log.error(' with youtube-dl!, trying to update it.');
             log.error(err);
+            child_process.exec('youtube-dl -U');
             cb(err);
         }
     });
