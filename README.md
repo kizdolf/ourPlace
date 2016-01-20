@@ -64,7 +64,7 @@ Unique token for the invitation, unique token at each login.
  * sort Music. By artist, by date. 
  * playlists. Because that's what we love nowadays.
 * Notes: 
-  * Edit/delete/comment/sort.
+  * Edit[**done**]/delete[**done**]/comment/sort.
 * Pictures: 
  * Not sure about this. Is it usefull to store pics on a cloud? for real. I don't know. But maybe.
 * Documents: 
