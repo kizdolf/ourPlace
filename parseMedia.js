@@ -74,7 +74,7 @@ var callDb = (files, pics)=>{
         var pSize = pics.length;
         var delPics = [];
         pics.forEach((p)=>{
-            r.db('ourPlace').table('songs').filter({picture: '/' + p})
+            r.db('ourPlace').table('songs').filter({meta: {picture: '/' + p}})
             .run(c, (e, cursor)=>{
                 if(e){
                     tools.lo.error('get from cleaning', {error: e, path: f, byWho: 'system'});
