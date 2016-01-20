@@ -87,3 +87,8 @@ var
 
     httpServer.listen(conf.mainPort);
     httpsServer.listen(conf.httpsPort);
+
+    if(conf.cleanAtStartup){
+        tools.lo.info('launch media cleaning.', {byWho: 'system'});
+        require('./parseMedia').cleanMediasDir();
+    }

@@ -21,6 +21,7 @@ exports.conf = {
     pathPlay: '/play/:token',
     pathTokenLogin: '/tokenLogin',
     pathLogin: '/login',
+    cleanAtStartup: true, // delete existing media not in db at startUp.
 };
 
 exports.socket = {
