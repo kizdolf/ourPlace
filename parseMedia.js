@@ -110,7 +110,45 @@ var handleFiles = (list)=>{
     return true;
 };
 
-cleanMediasDir();
+/*
+    Recover what I fucking deleted.
+    I can just retrieve what's out there on the web.
+    so stuff from youtube. (better than nothing hein)
+    launch it by hand. It's not something we're SUPPOSED to launch every damn day, riiiiiggght?
+    (just uncomment the call, and run "node parseMedia".)
+*/
+var request = require('request');
+
+var download = (uri, filename, cb)=>{
+    request.head(uri, function(err, res, body){
+        request(uri).pipe(fs.createWriteStream(filename)).on('close', cb);
+    });
+};
+
+var recovPicsYt = ()=>{
+    var pics = [];
+    re.getCon((c)=>{
+        r.db('ourPlace').table('songs').filter(function(song){
+            return song('meta')('picture').match('cover').not();
+        })
+        .run(c, (e, cur)=>{
+            cur.each((e, s)=>{
+                var videoId = s.meta.picture.split('/')[2];
+                var id = videoId.split('.')[0];
+                var url = 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg';
+                pics.push({pic: videoId, url: url});
+            }, ()=>{
+                pics.forEach((p)=>{
+                    download(p.url, conf.mediaDir + '/' + p.pic, ()=>{
+                        tools.lo.info('Picture downloaded again' , {url: p.url, pic: p.pic, byWho: 'system'});
+                    });
+                });
+            });
+        });
+    });
+};
+
+// recovPicsYt();
 
 module.exports = {
     cleanMediasDir: cleanMediasDir
