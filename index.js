@@ -31,10 +31,10 @@ var
     RDBStore    = require('session-rethinkdb')(session);
     const options = {
         servers: [confRe.connect],
-        clearInterval: 5000, 
-        table: 'session' 
+        clearInterval: 5000,
+        table: 'session'
     };
-    var store = new RDBStore(options); 
+    var store = new RDBStore(options);
     var Session = session({
         secret: 'somethinglikeBllaaaaaahhh',
         resave: false,
@@ -80,7 +80,6 @@ var
     //TODO: add log.
     // .listen(conf.mainPort);
 
-    require('./app/socket')(app, Session, store);
 
     var httpServer = http.createServer(app);
     var httpsServer = https.createServer(credentials, app);
@@ -88,6 +87,7 @@ var
     httpServer.listen(conf.mainPort);
     httpsServer.listen(conf.httpsPort);
 
+    require('./app/socket')(app, Session, store);
     if(conf.cleanAtStartup){
         tools.lo.info('launch media cleaning.', {byWho: 'system'});
         require('./parseMedia').cleanMediasDir();
