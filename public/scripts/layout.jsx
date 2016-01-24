@@ -11,7 +11,7 @@ var Layout = React.createClass({
     inter: 1000,
     notesUrl: '/api/notes',
     apiAddNote: '/api/note',
-    socketHost: '//azerty.gq:9091',
+    socketHost: 'https://localhost:9091',
     getInitialState: function(){
         return {
             musics: [],
@@ -59,7 +59,7 @@ var Layout = React.createClass({
             var indexesOrder = Array.from(Array(this.state.musics.length).keys());
             this.setState({playList: indexesOrder});
         }.bind(this));
-        this.socket = io(this.socketHost);
+        this.socket = io(this.socketHost, {secure: true});
         this.socket.on('update', function(data){ //jshint ignore: line
             this.getMusicFromAPI();
         }.bind(this));

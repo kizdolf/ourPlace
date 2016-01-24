@@ -77,7 +77,7 @@ var Editor = React.createClass({
 });
 
 exports.NoteBox = React.createClass({
-    socketHost: '//azerty.gq:9091',
+    socketHost: 'https://localhost:9091',
     getInitialState: function(){
         return {
             notes: [],
@@ -102,14 +102,14 @@ exports.NoteBox = React.createClass({
     },
     componentDidMount: function(){
         this.getNotesFromAPI();
-        this.socket = io(this.socketHost);
-        this.socket.on('update', function(data){
+        this.socket = io(this.socketHost, {secure: true});
+        this.socket.on('update', function(data){ //jshint ignore: line
             this.getNotesFromAPI();
         }.bind(this));
         // this.load = setInterval(this.getNotesFromAPI, 1000);
     },
     componentWillUnmount: function(){
-        this.socket.on('update', function(data){});
+        this.socket.on('update', function(data){});//jshint ignore: line
         // clearInterval(this.load);
     },
     showMenu: function(e, meta, id){
