@@ -63,7 +63,8 @@ var
             res.redirect('https://' + req.headers.host + req.url);
     })
     //some cases
-    .use(conf.pathPlay, externSession.play)
+    .use('/stuff', express.static('stuff'))
+	.use(conf.pathPlay, externSession.play)
     //login
     .use(conf.pathTokenLogin, login.getToken)
     .use(conf.pathLogin, login.login)
@@ -87,7 +88,8 @@ var
     httpServer.listen(conf.mainPort);
     httpsServer.listen(conf.httpsPort);
 
-    require('./app/socket')(app, Session, store);
+    require('./app/socket')(httpsServer, Session, store);
+
     if(conf.cleanAtStartup){
         tools.lo.info('launch media cleaning.', {byWho: 'system'});
         require('./parseMedia').cleanMediasDir();

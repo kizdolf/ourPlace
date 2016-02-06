@@ -4,7 +4,7 @@
     var
         conf        = require('./config').socket,
         user        = require('./user'),
-        io          = require('socket.io')(conf.socketPort),
+        io          = require('socket.io'),
         ios         = require('socket.io-express-session');
 
     var sockets  = {};
@@ -14,6 +14,7 @@ module.exports = function(app, session){
     var module = {};
 
     if(app && session){
+        io = io(app);
         io.use(ios(session));
         io.on('connection', function(socket){
 

@@ -77,7 +77,6 @@ var Editor = React.createClass({
 });
 
 exports.NoteBox = React.createClass({
-    socketHost: 'https://localhost:9091',
     getInitialState: function(){
         return {
             notes: [],
@@ -102,7 +101,7 @@ exports.NoteBox = React.createClass({
     },
     componentDidMount: function(){
         this.getNotesFromAPI();
-        this.socket = io(this.socketHost, {secure: true});
+        this.socket = io({secure: true});
         this.socket.on('update', function(data){ //jshint ignore: line
             this.getNotesFromAPI();
         }.bind(this));
