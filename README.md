@@ -76,4 +76,4 @@ Unique token for the invitation, unique token at each login.
 * CSS. I am not good in css. I do not like css. The existing one is... working at least.
 * Streaming managment. As the moment a user start to listen a song, I would like to store in the user device the whole playlist (at least the x nexts songs) to allow the user to listen music when network is down. And to retrieve this data even after a reload of the page. 
 * Add a bit of social. By that I mean a chat at least. But if a chat it is, it's a chat without keeping data. I don't want to store people message in a databse. Or we store them encrypted. With no way to decrypt them. (not sure, at all.)
-* Https.
+* Https[**done**].
