@@ -9,59 +9,34 @@
 'use strict';
 
 var
-    express     = require('express'),
-    bodyParser  = require('body-parser'),
-    conf        = require('./app/config').conf,
-    confRe      = require('./app/criticalConf'),
-    api         = require('./app/api'),
-    login       = require('./app/login'),
-    tools       = require('./app/tools'),
-    externSession = require('./app/externSession');
+    express         = require('express'),
+    bodyParser      = require('body-parser'),
+    fs              = require('fs'),
+    http            = require('http'),
+    https           = require('https'),
 
-    /*   HTTPS    */
-    var fs          = require('fs'),
-        http        = require('http'),
-        https       = require('https'),
-        privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
-        ca          = fs.readFileSync(confRe.https.chain, 'utf8'),
-        certificate = fs.readFileSync(confRe.https.certificate, 'utf8');
-    var credentials = {key: privateKey, cert: certificate, ca: ca };
-
-    var session = require('express-session'),
-    RDBStore    = require('session-rethinkdb')(session);
-    const options = {
-        servers: [confRe.connect],
-        clearInterval: 5000,
-        table: 'session'
-    };
-    var store = new RDBStore(options);
-    var Session = session({
-        secret: 'somethinglikeBllaaaaaahhh',
-        resave: false,
-        saveUninitialized: true,
-        store: store
-    });
+    conf            = require('./app/config').conf,
+    confRe          = require('./app/criticalConf'),
+    api             = require('./app/api'),
+    login           = require('./app/login'),
+    tools           = require('./app/tools'),
+    externSession   = require('./app/externSession'),
+    sessionRe       = require('./app/rethinkSession'),
+    //HTTPS
+    privateKey      = fs.readFileSync(confRe.https.privKey, 'utf8'),
+    ca              = fs.readFileSync(confRe.https.chain, 'utf8'),
+    certificate     = fs.readFileSync(confRe.https.certificate, 'utf8'),
+    credentials     = {key: privateKey, cert: certificate, ca: ca };
 
     var app =  express();
 
     app
-    .use(Session)
+    .use(sessionRe.Session)
     //externs middlewares
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
-    /*
-        Each request need to be loggued,
-        as well I want to force https. Here it is.
-    */
-    .use((req, res, next)=>{
-        var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-        var route = req.originalUrl;
-        tools.lo.request('request:', {ip: ip, route: route, method: req.method});
-        if(req.secure)
-            next();
-        else
-            res.redirect('https://' + req.headers.host + req.url);
-    })
+    //log request and redirect to https if needed.
+    .use(tools.makeItHttps)
     //some cases
     .use('/stuff', express.static('stuff'))
 	.use(conf.pathPlay, externSession.play)
@@ -77,19 +52,17 @@ var
     .use(conf.apiPrefix, api.main)
     //wrong path
     .use(tools.thisIs404);
-    //ready for requests.
-    //TODO: add log.
-    // .listen(conf.mainPort);
 
-
+    //ready for http[s]
     var httpServer = http.createServer(app);
     var httpsServer = https.createServer(credentials, app);
-
     httpServer.listen(conf.mainPort);
     httpsServer.listen(conf.httpsPort);
 
-    require('./app/socket')(httpsServer, Session, store);
+    //sockets are safe as well, and can use session.
+    require('./app/socket')(httpsServer, sessionRe.Session, sessionRe.store);
 
+    //because time to time cleaning is good..
     if(conf.cleanAtStartup){
         tools.lo.info('launch media cleaning.', {byWho: 'system'});
         require('./parseMedia').cleanMediasDir();

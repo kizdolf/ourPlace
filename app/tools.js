@@ -49,8 +49,17 @@ var lo = ()=>{
     };
 };
 
+var makeItHttps = (req, res, next)=>{
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    var route = req.originalUrl;
+    lo().request('request:', {ip: ip, route: route, method: req.method});
+    if(req.secure) next();
+    else res.redirect('https://' + req.headers.host + req.url);
+}
+
 module.exports = {
     rm: rm,
     thisIs404: thisIs404,
-    lo: lo()
+    lo: lo(),
+    makeItHttps: makeItHttps
 };
