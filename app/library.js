@@ -132,13 +132,15 @@ exports.handle = (file, cb)=>{
     }else{
         getMetaData(file.path, function(err, meta){
             if(!err){ //else log. No?
+                var ext = file.originalname.split('.').pop();
                 var obj = {
                     name : file.originalname,
                     path : '/' + file.path,
                     size : file.size,
                     date : new Date(),
                     type : file.mimetype,
-                    meta : meta
+                    meta : meta,
+                    ext  : ext
                 };
                 re.insert(tbls.song, obj).then((res)=>{
                     lo.info('insert', {tbl: tbls.song, obj: obj, response: res});
@@ -220,7 +222,8 @@ exports.fromYoutube = function(url, cb){
                 meta : {
                     picture : mainConf.mediaPath + '/' +  ret.id + '.jpg'
                 },
-                urlOrigin: url
+                urlOrigin: url,
+                ext : ret.ext
             };
 
             re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line

@@ -106,15 +106,11 @@ exports.ItemMenu = React.createClass({
         dl.setAttribute('href', song.path);
         console.log(song);
         console.log(meta);
+        var ext = song.type.split('/')[1];
         if(meta.title){
             name = meta.title + '_';
             name += (meta.artist) ? meta.artist[0] : '';
-            var ext = e.meta.name.split('.')[e.meta.name.split('.').length - 1];
-            console.log(ext);
-            if(ext.length !== 3){
-                ext = song.path.split('.')[song.path.split('.').length - 1];
-            }
-            name += (ext.length === 3) ? '.' + ext : '.' + e.src.split('.')[e.src.split('.').length - 1];
+            name += '.' + ext;
         }else{
             console.log('NON e.meta.title');
             name = e.meta.name;

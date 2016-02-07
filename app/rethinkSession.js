@@ -16,7 +16,8 @@ var store = new RDBStore(options);
 
 var Session = session({
     secret: 'somethinglikeBllaaaaaahhh',
-    resave: false,
+    resave: true,
+    rolling: true,
     saveUninitialized: true,
     store: store
 });
