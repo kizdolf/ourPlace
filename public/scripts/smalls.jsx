@@ -181,16 +181,3 @@ exports.ItemMenu = React.createClass({
     }
 });
 
-exports.Menu = React.createClass({
-    render: function(){
-        return (
-            <div className="WrapperMenu">
-                <ul className="links">
-                    <li className="oneLink"><Link to="/notes">Notes</Link></li>
-                    <li className="oneLink"><Link to="/">Music</Link></li>
-                    <li className="oneLink"><Link to="/rss">Rss</Link></li>
-                </ul>
-            </div>
-        );
-    }
-});

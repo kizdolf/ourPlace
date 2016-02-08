@@ -1,7 +1,7 @@
     var React       = require('react'),
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
-    Menu        = require('./smalls.jsx').Menu,
+    Menu        = require('./leftMenu.jsx').Menu,
     Visualizer  = require('./songViszu.jsx').Visualizer,
     Upload      = require('./upload.jsx').Upload;
 
@@ -130,7 +130,12 @@ var Layout = React.createClass({
     },
     addPlayed: function(){
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
-        if(sng) this.socket.emit('play', {id: sng.id});
+        if(sng){
+            this.socket.emit('play', {id: sng.id});
+            var actuals = this.state.musics;
+            actuals[this.state.playList[this.state.index - 1]].played++;
+            this.setState({musics: actuals});
+        }
     },
     render: function(){
         return (
@@ -146,7 +151,12 @@ var Layout = React.createClass({
                     play={this.play}
                     shuffle={this.shuffle}
                 />
-                <Menu />
+                <Menu 
+                    musics={this.state.musics}
+                    playList={this.state.playList}
+                    index={this.state.index}
+                    current={this.state.current}
+                />
                     {
                         this.props.children &&
                         React.cloneElement(this.props.children,
