@@ -63,6 +63,10 @@ var InputBox = React.createClass({
         this.setState({search: v});
         this.props.search(v);
     },
+    clear : function(){
+        this.setState({search: ''});
+        this.props.search('');  
+    },
     render: function(){
         return(
             <div className="inputBox">
