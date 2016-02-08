@@ -69,7 +69,7 @@ exports.main = (function(){
     });
 
     router.get('/music', function(req, res){
-        lib.allSongs().then(function(music){
+        lib.allSongs(req.session).then(function(music){
             res.json({music : music});
         });
     });

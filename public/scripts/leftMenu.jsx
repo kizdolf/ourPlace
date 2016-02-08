@@ -11,7 +11,7 @@ var CurPlaylist = React.createClass({
             var clss = (current.id == song.id) ? 'current' : '';
             return(
                 <li key={song.id} className={clss}>
-                    {song.played} {song.meta.title || song.name}
+                    {song.playedBy} {song.meta.title || song.name}
                 </li>
             )
         }.bind(this));

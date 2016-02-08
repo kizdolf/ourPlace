@@ -3,9 +3,11 @@
 var
     mainConf        = require('./config').conf,
     conf            = require('./config').couch,
+    conCnf          = require('./criticalConf'),
     re              = require('./rethink.js'),
     r               = require('rethinkdb'),
     tbls            = require('./config').rethink.tables,
+    _r              = require('rethinkdbdash')(conCnf.connect),
     tools           = require('./tools.js'),
     log             = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
@@ -148,11 +150,30 @@ var makeMeRoot = ()=>{
     });
 };
 
+/*return count ids for user.*/
+var getPlayed = (id, uuid)=>{
+    return new Promise((ful, rej)=>{
+        _r.table(tbls.user).get(uuid)('played').filter(
+            function (idSng){
+                return(idSng.eq(id));
+            }
+        ).count().run()
+        .then((res)=>{
+            ful(res);             
+        })
+        .catch((e)=>{
+            lo.error('catching played:', {byWho: uuid, idSng: id, error: e});
+            ful(0);
+        });
+    });
+};
+
 module.exports = {
     played: played,
     root: root,
     rootPost: rootPost,
     rootDelete: rootDelete,
     own: own,
-    makeMeRoot: makeMeRoot
+    makeMeRoot: makeMeRoot,
+    getPlayed: getPlayed
 };

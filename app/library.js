@@ -159,12 +159,19 @@ exports.handle = (file, cb)=>{
 var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
 
 //TODO: add limitation number on demand. sorting options as well.
-exports.allSongs = function(){
+exports.allSongs = function(session){
     var files = [];
+    var who = session.uuid;
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
             files = songs.sort(byDate);
-            ful(files);
+            var lnght = files.length;
+            files.forEach((sng, index)=>{
+                user.getPlayed(sng.id, who).then((nb)=>{
+                    files[index].playedBy = nb;
+                    if(index == (lnght - 1)) ful(files);
+                });
+            });
         }).catch((e)=>{
             lo.error('get', {msg: 'requesting all songs.', tbl: tbls.song, error: e});
             rej(e);
