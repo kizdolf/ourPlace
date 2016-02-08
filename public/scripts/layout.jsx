@@ -156,6 +156,7 @@ var Layout = React.createClass({
                     playList={this.state.playList}
                     index={this.state.index}
                     current={this.state.current}
+                    play={this.play}
                 />
                     {
                         this.props.children &&

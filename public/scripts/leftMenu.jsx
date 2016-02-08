@@ -4,18 +4,25 @@ var
 
 
 var CurPlaylist = React.createClass({
+    play: function(song){
+        this.props.playList.forEach(function(i, index){
+            if(this.props.musics[i].id == song.id){
+                this.props.play(song.path, song.type, song.meta, index);
+                return;
+            }
+        }.bind(this));
+    },
     render: function(){
         var current = this.props.musics[this.props.playList[this.props.index]];
         var mountElems = this.props.playList.map(function(i){
             var song = this.props.musics[i];
             var clss = (current.id == song.id) ? 'current' : '';
             return(
-                <li key={song.id} className={clss}>
+                <li onClick={this.play.bind(this, song)} key={song.id} className={clss}>
                     {song.playedBy} {song.meta.title || song.name}
                 </li>
             )
         }.bind(this));
-        console.log(current);
         return(
             <div id="curPlaylist">
                 <p>Current Playlist:</p>
@@ -41,6 +48,7 @@ exports.Menu = React.createClass({
                     musics={this.props.musics}
                     playList={this.props.playList}
                     index={this.props.index}
+                    play={this.props.play}
                 />
             </div>
         );
