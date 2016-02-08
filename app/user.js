@@ -154,14 +154,10 @@ var makeMeRoot = ()=>{
 var getPlayed = (id, uuid)=>{
     return new Promise((ful, rej)=>{
         _r.table(tbls.user).get(uuid)('played').filter(
-            function (idSng){
-                return(idSng.eq(id));
-            }
-        ).count().run()
-        .then((res)=>{
+            function (idSng){ return(idSng.eq(id)); }
+        ).count().run().then((res)=>{
             ful(res);             
-        })
-        .catch((e)=>{
+        }).catch((e)=>{
             lo.error('catching played:', {byWho: uuid, idSng: id, error: e});
             ful(0);
         });

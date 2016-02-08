@@ -133,7 +133,7 @@ var Layout = React.createClass({
         if(sng){
             this.socket.emit('play', {id: sng.id});
             var actuals = this.state.musics;
-            actuals[this.state.playList[this.state.index - 1]].played++;
+            actuals[this.state.playList[this.state.index - 1]].playedBy++;
             this.setState({musics: actuals});
         }
     },
