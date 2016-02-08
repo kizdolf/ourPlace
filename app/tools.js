@@ -1,7 +1,9 @@
-var fs = require('fs');
-var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
-var re = require('./rethink'),
-    tbls = require('./config').rethink.tables;
+var 
+fs      = require('fs');
+log     = require('simple-node-logger').createSimpleFileLogger('infos.log');
+re      = require('./rethink'),
+cnf     = require('./config').conf,
+tbls    = require('./config').rethink.tables;
 
 var rm = (path)=>{
     fs.access(path, (err)=>{
@@ -52,7 +54,7 @@ var lo = ()=>{
 var makeItHttps = (req, res, next)=>{
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var route = req.originalUrl;
-    lo().request('request:', {ip: ip, route: route, method: req.method});
+    if(cnf.devMode) lo().request('request:', {ip: ip, route: route, method: req.method});
     if(req.secure) next();
     else res.redirect('https://' + req.headers.host + req.url);
 }
