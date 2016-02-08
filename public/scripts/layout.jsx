@@ -68,20 +68,16 @@ var Layout = React.createClass({
                     this.setState({autoPlay: autoPlay});
                     if(autoPlay) this.play();
                 }
-                this.setState({canUpdateStatus: true});
             }
+            this.setState({canUpdateStatus: true});
         }.bind(this));
     },
     setUserStatus: function(){
-        var playlist = this.state.playList;
-        var index = this.state.index;
-        var shuffling = this.state.shuffling;
-        var autoPlay = this.state.autoPlay;
         $.post('/api/user/status', {
-            playlist: playlist,
-            index: index,
-            shuffling: shuffling,
-            autoPlay: autoPlay
+            playlist: this.state.playList,
+            index: this.state.index,
+            shuffling: this.state.shuffling,
+            autoPlay: this.state.autoPlay
         });
     },
     componentDidMount: function(){
@@ -126,7 +122,6 @@ var Layout = React.createClass({
             if(this.state.musics[i].id == id){
                 toPlay = this.state.musics[i];
                 this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
-                this.setUserStatus();
                 return;
             }
         });
