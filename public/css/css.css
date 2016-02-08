@@ -263,9 +263,37 @@ body{
         background: rgba(240, 248, 255, 0.14);
         word-wrap: break-word;
         line-height: 30px;
-        overflow: hidden;
         margin-top: 4px;
         cursor: pointer;
+    }
+
+    #curPlaylist ul li:hover .stats{
+        opacity: 1;
+    }
+    
+    #curPlaylist ul li:hover .statsName{
+        width: 50%;
+    }
+
+    .statsName{
+        width: 100%;
+    }
+    
+    .stats{
+        color: black;
+        position: relative;
+        opacity: 0;
+        display: block;
+        top: -30px;
+        left: 50%;
+        width: 50%;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.61);
+        text-shadow: none;
+        font-size: 10px;
+        line-height: 10px;
+        padding: 2px;
+        transition: 0.1s;
     }
 
     #music{

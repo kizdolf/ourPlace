@@ -168,8 +168,9 @@ exports.allSongs = function(session){
             var lnght = files.length;
             files.forEach((sng, index)=>{
                 user.getPlayed(sng.id, who).then((nb)=>{
+                    lnght--;
                     files[index].playedBy = nb;
-                    if(index == (lnght - 1)) ful(files);
+                    if(lnght == 0) ful(files);
                 });
             });
         }).catch((e)=>{

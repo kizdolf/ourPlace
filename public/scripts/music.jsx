@@ -5,7 +5,7 @@ var
 
 var MusicItem = React.createClass({
     play: function(){
-        this.props.onWishPlay(this.props.index);
+        this.props.onWishPlay(this.props.song.id);
     },
     showMenu: function(e){
         this.props.showOnTop(
@@ -44,7 +44,7 @@ var MusicItem = React.createClass({
 var InputBox = React.createClass({
     getInitialState: function(){
         return({
-            search: '',
+            search: ''
         });
     },
     sendFromYT: function(){
@@ -57,6 +57,11 @@ var InputBox = React.createClass({
                 $('#addMusBtn').html('Add a other one.');
             }, 1500);
         });
+    },
+    componentDidMount: function(){
+        $('#changeAutoPlay').click(function(){
+            this.props.changeAutoPlay(!this.props.autoPlay);
+        }.bind(this));
     },
     search: function(e){
         var v = e.target.value;
@@ -86,6 +91,7 @@ var InputBox = React.createClass({
                         </span>
                     </div>
                 </div>
+                <button id="changeAutoPlay" className="btn btn-xs">{(this.props.autoPlay == true) ? 'Unset' : 'Set'} Autoplay</button>
             </div>
         );
     }
@@ -190,6 +196,8 @@ exports.MusicBox = React.createClass({
             <div id="music">
                 <InputBox
                     search={this.search}
+                    changeAutoPlay={this.props.changeAutoPlay}
+                    autoPlay={this.props.autoPlay}
                 />
             <ul classNammusice="listMusic">
                     {musicNodes}

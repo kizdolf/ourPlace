@@ -111,8 +111,9 @@ var Player = React.createClass({
             this.player.pause();
         else if(this.player.src !== '')
             this.player.play();
-        else
+        else{
             this.props.play();
+        }
     },
     componentDidMount: function(){
         this.player = new Audio();
@@ -154,6 +155,9 @@ var Player = React.createClass({
                 playing: true,
                 meta: this.props.meta
             });
+        }
+        if(typeof this.props.isShuffling === 'boolean' && this.props.isShuffling !== this.state.shuffle){
+            this.setState({shuffle: this.props.isShuffling});
         }
     },
     shuffle : function(){

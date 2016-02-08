@@ -19,7 +19,9 @@ var Layout = React.createClass({
             index: 0,
             current: {},
             playList: [],
-            shuffling: false
+            shuffling: false,
+            canUpdateStatus: false,
+            autoPlay: false
         };
     },
     byDate: function(a, b){
@@ -36,27 +38,57 @@ var Layout = React.createClass({
     shuffle: function(){
         var indexesOrder = this.state.playList;
         if(this.state.shuffling){
-            console.log(indexesOrder[this.state.index]);
             this.setState({shuffling: false});
             indexesOrder =  Array.from(Array(this.state.musics.length - 1).keys());
-            console.log(this.state.index);
         }else{
             this.setState({shuffling: true});
             for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
             indexesOrder.forEach(function(ind, key){
                 if(ind == this.state.index){
-                    console.log('new index is ' + key);
                     this.setState({index: key});
                 }
             }.bind(this));
         }
         this.setState({playList: indexesOrder});
-
+    },
+    changeAutoPlay: function(bool){
+        this.setState({autoPlay: bool});
+    },
+    getUserStatus: function(){
+        $.get('/api/user/status', function(data){
+            if(data.index && data.shuffling && data.playlist){
+                var state = {
+                    index: parseInt(data.index),
+                    shuffling: (data.shuffling == "true") ? true : false,
+                    playList: data.playlist.map(function(el){ return parseInt(el); })
+                }
+                this.setState(state);
+                if(data.autoPlay){
+                    var autoPlay = (data.autoPlay == 'true') ? true : false;
+                    this.setState({autoPlay: autoPlay});
+                    if(autoPlay) this.play();
+                }
+                this.setState({canUpdateStatus: true});
+            }
+        }.bind(this));
+    },
+    setUserStatus: function(){
+        var playlist = this.state.playList;
+        var index = this.state.index;
+        var shuffling = this.state.shuffling;
+        var autoPlay = this.state.autoPlay;
+        $.post('/api/user/status', {
+            playlist: playlist,
+            index: index,
+            shuffling: shuffling,
+            autoPlay: autoPlay
+        });
     },
     componentDidMount: function(){
         this.getMusicFromAPI(function(){
             var indexesOrder = Array.from(Array(this.state.musics.length).keys());
             this.setState({playList: indexesOrder});
+            this.getUserStatus();
         }.bind(this));
         this.socket = io({secure: true});
         this.socket.on('update', function(data){ //jshint ignore: line
@@ -70,31 +102,40 @@ var Layout = React.createClass({
             down[e.keyCode] = true;
         }).keyup(function(e) {
             if (down[18] && down[13]) {
-                console.log(window.location.href);
                 window.location.href = '#/root';
             }
             down[e.keyCode] = false;
         }.bind(this));
     },
     componentWillUnmount: function(){
-        // clearInterval(this.load);
         this.socket.on('update', function(data){}); //jshint ignore:line
     },
     play: function(path, type, meta, index){
-        if(typeof index === 'undefined')
-            index = 0;
+        if(typeof index === 'undefined'){
+            if(this.state.index)
+                index = this.state.index;
+            else
+                index = 0;
+        }
 
         var toPlay = this.state.musics[this.state.playList[index]];
         this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
     },
-    forcePlay: function(index){
-        var toPlay = this.state.musics[index];
+    forcePlay: function(id){
         this.state.playList.forEach((i, key)=>{
-            if(i == index){
+            if(this.state.musics[i].id == id){
+                toPlay = this.state.musics[i];
                 this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
+                this.setUserStatus();
                 return;
             }
         });
+    },
+    componentDidUpdate: function(prevProps, prevState) {
+        var n = this.state, p = prevState;
+        if((n.shuffling !== p.shuffling || n.index !== p.index || n.playList !== p.playList || n.autoPlay !== p.autoPlay) && n.canUpdateStatus){
+            this.setUserStatus();
+        }
     },
     next: function(){
         var list    = this.state.playList,
@@ -113,7 +154,6 @@ var Layout = React.createClass({
         this.play(n.path, n.type, n.meta, i);
     },
     removed: function(name){
-        console.log(name + ' had beed removed');
         var actuals = this.state.musics;
         var indexes = this.state.playList;
         actuals.forEach((music, i)=>{
@@ -150,6 +190,7 @@ var Layout = React.createClass({
                     addPlayed={this.addPlayed}
                     play={this.play}
                     shuffle={this.shuffle}
+                    isShuffling={this.state.shuffling}
                 />
                 <Menu 
                     musics={this.state.musics}
@@ -170,7 +211,9 @@ var Layout = React.createClass({
                                 removed: this.removed,
                                 musics: this.state.musics,
                                 apiAddNote: this.apiAddNote,
-                                indexPlaying: this.state.playList[this.state.index]
+                                indexPlaying: this.state.playList[this.state.index],
+                                changeAutoPlay: this.changeAutoPlay,
+                                autoPlay : this.state.autoPlay
                             }
                         )
                     }

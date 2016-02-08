@@ -16,12 +16,20 @@ var CurPlaylist = React.createClass({
         var current = this.props.musics[this.props.playList[this.props.index]];
         var mountElems = this.props.playList.map(function(i){
             var song = this.props.musics[i];
-            var clss = (current.id == song.id) ? 'current' : '';
-            return(
-                <li onClick={this.play.bind(this, song)} key={song.id} className={clss}>
-                    {song.playedBy} {song.meta.title || song.name}
-                </li>
-            )
+            if(typeof song !== 'undefined'){
+                var toDisplay = (song.meta.title) ? song.meta.title : song.name;
+                var clss = (current.id == song.id) ? 'current' : '';
+                return(
+                    <li onClick={this.play.bind(this, song)} key={song.id} className={clss}>
+                        <span className="statsName">
+                            {toDisplay}
+                        </span>
+                        <span className="stats">
+                            played {song.playedBy} times.
+                        </span>
+                    </li>
+                )
+            }
         }.bind(this));
         return(
             <div id="curPlaylist">

@@ -164,6 +164,28 @@ var getPlayed = (id, uuid)=>{
     });
 };
 
+var getStatus = (req, res)=>{
+    var uuid = req.session.uuid;
+    _r.table(tbls.user).get(uuid)('status')
+    .run().then((resp)=>{
+        res.json(resp);
+    })
+    .catch((e)=>{
+        _r.table(tbls.user).get(uuid).update({status: {}});
+        res.json({});
+    });
+};
+
+var setStatus =  (req, res)=>{
+    var status = req.body;
+    var uuid = req.session.uuid;
+    re.update(tbls.user, uuid, {status: status}).then((resp)=>{
+        res.json(true);
+    }).catch((e)=>{
+        res.json(false);
+    });
+};
+
 module.exports = {
     played: played,
     root: root,
@@ -171,5 +193,7 @@ module.exports = {
     rootDelete: rootDelete,
     own: own,
     makeMeRoot: makeMeRoot,
-    getPlayed: getPlayed
+    getPlayed: getPlayed,
+    setStatus: setStatus,
+    getStatus: getStatus
 };

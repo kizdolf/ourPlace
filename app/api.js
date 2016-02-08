@@ -117,5 +117,9 @@ exports.main = (function(){
 
     router.get('/rss', feed.getRss);
 
+    router.get('/user/status', user.getStatus);
+
+    router.post('/user/status', user.setStatus);
+
     return router;
 })();
