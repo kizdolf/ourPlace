@@ -48,7 +48,6 @@ exports.Upload = React.createClass({
     },
     onDrop: function(files){
         files.forEach(function(file, i) {
-            console.log('uploading ' + file.name);
             var elem = {name: file.name, pct: 'Starting ...'};
             var current = this.state.uploading;
             current[file.name] = elem;
@@ -61,9 +60,7 @@ exports.Upload = React.createClass({
                 current[file.name] = elem;
                 this.setState({ uploading: current });
             }.bind(this))
-            .on('error', function(err){
-                console.log(err);
-            })
+            .on('error', function(err){})
             .end(function(res){
                 var current = this.state.uploading;
                 current[file.name].pct = 'Finished.';

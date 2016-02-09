@@ -13,7 +13,6 @@ var
     bodyParser      = require('body-parser'),
     fs              = require('fs'),
     http            = require('http'),
-    https           = require('https'),
 
     conf            = require('./app/config').conf,
     confRe          = require('./app/criticalConf'),
@@ -21,12 +20,7 @@ var
     login           = require('./app/login'),
     tools           = require('./app/tools'),
     externSession   = require('./app/externSession'),
-    sessionRe       = require('./app/rethinkSession'),
-    //HTTPS
-    privateKey      = fs.readFileSync(confRe.https.privKey, 'utf8'),
-    ca              = fs.readFileSync(confRe.https.chain, 'utf8'),
-    certificate     = fs.readFileSync(confRe.https.certificate, 'utf8'),
-    credentials     = {key: privateKey, cert: certificate, ca: ca };
+    sessionRe       = require('./app/rethinkSession');
 
     var app =  express();
 
@@ -55,12 +49,21 @@ var
 
     //ready for http[s]
     var httpServer = http.createServer(app);
-    var httpsServer = https.createServer(credentials, app);
     httpServer.listen(conf.mainPort);
-    httpsServer.listen(conf.httpsPort);
+    var mainServer = httpServer;
+    if(conf.httpsMode){
+        var privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
+        ca              = fs.readFileSync(confRe.https.chain, 'utf8'),
+        certificate     = fs.readFileSync(confRe.https.certificate, 'utf8'),
+        credentials     = {key: privateKey, cert: certificate, ca: ca },
+        https           = require('https'),
+        httpsServer     = https.createServer(credentials, app);
+        httpsServer.listen(conf.httpsPort);
+        mainServer = httpsServer;
+    }
 
     //sockets are safe as well, and can use session.
-    require('./app/socket')(httpsServer, sessionRe.Session, sessionRe.store);
+    require('./app/socket')(mainServer, sessionRe.Session, sessionRe.store);
 
     //because time to time cleaning is good..
     if(conf.cleanAtStartup){

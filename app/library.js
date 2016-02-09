@@ -143,7 +143,7 @@ exports.handle = (file, cb)=>{
                     ext  : ext
                 };
                 re.insert(tbls.song, obj).then((res)=>{
-                    lo.info('insert', {tbl: tbls.song, obj: obj, response: res});
+                    lo.info('insert', {tbl: tbls.song, obj: obj});
                     cb(null, true);
                 }).catch((err)=>{
                     tools.rm(__dirname + '/..' + obj.path);
@@ -236,17 +236,16 @@ exports.fromYoutube = function(url, cb){
 
             re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line
                 log.info('obj inserted:');
+                lo.info('insert', {tbl: tbls.song, obj: obj});
                 cb(true);
             }).catch((err)=>{
                 tools.rm(__dirname + '/..' + obj.path);
                 tools.rm(__dirname + '/..' + obj.meta.picture);
-                log.error('error inserting song');
-                log.error(err);
+                lo.error('error inserting song', {error: err});
                 cb(err);
             });
         }else{
-            log.error(' with youtube-dl!, trying to update it.');
-            log.error(err);
+            lo.error('error with youtube-dl!, trying to update it.', {error: err});
             child_process.exec('youtube-dl -U');
             cb(err);
         }
