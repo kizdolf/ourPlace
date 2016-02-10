@@ -134,6 +134,18 @@ exports.ItemMenu = React.createClass({
             }
         }.bind(this));
     },
+    getLink: function(){
+        var el = this.props.e.meta;
+        if(el.urlOrigin){
+            var link = document.createElement('a');
+            link.setAttribute('class', 'oneOpt');
+            link.innerHTML = el.urlOrigin;
+            link.setAttribute('href', el.urlOrigin);
+            link.setAttribute('target', '_blank');
+            link.click();
+        }
+        this.props.closeMenu();
+    },
     update: function(data){
         var id = this.props.e.id;
         var type = this.props.e.type;
@@ -165,7 +177,7 @@ exports.ItemMenu = React.createClass({
                     <span className="oneOpt" onClick={this.edit}><img src="img/ic_edit_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Edit</span></span>
                     <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_comment_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Comment</span></span>
                     <span className="oneOpt" onClick={this.delete}><img src="img/ic_delete_black_24dp.png" alt="del" className="imgOpt"/><span className="txtOpt">Delete</span></span>
-                    <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_link_black_48px.svg" alt="share" className="imgOpt"/><span className="txtOpt">Get link</span></span>
+                    <span className="oneOpt" id="getLink" onClick={this.getLink}><img src="img/ic_link_black_48px.svg" alt="share" className="imgOpt"/><span className="txtOpt">Get link</span></span>
                 </div>
                 {
                     this.state.showOnTop ?
