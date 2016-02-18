@@ -55,3 +55,4 @@ it should be accessible visible here: http://azerty.gq   (*but it require a logi
 * CSS. I am not good in css. I do not like css. The existing one is... working at least.
 * Streaming managment. As the moment a user start to listen a song, I would like to store in the user device the whole playlist (at least the x nexts songs) to allow the user to listen music when network is down. And to retrieve this data even after a reload of the page. 
 * Documents:  store stuff you want to download later somewhere else. Store stuff you want to share. Do not store personnal stuff. Not if you share this cloud with others people. 
+* Live stats of listening trends (when do you listen the more music, and what)

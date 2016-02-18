@@ -1,7 +1,9 @@
 var
     React       = require('react'),
     $           = require('jquery'),
+    Dropzone    = require('react-dropzone'),
     ItemMenu    = require('./smalls.jsx').ItemMenu;
+
 
 var MusicItem = React.createClass({
     play: function(){
@@ -14,16 +16,24 @@ var MusicItem = React.createClass({
             this.props.song.id
         );
     },
+    onDrop: function(li){
+        console.log(li);
+        console.log(this.props);
+    },
+    onDrag: function(e){
+        console.log(e);
+    },
     render: function(){
         // console.log(this.props.song.played);
+        // <Dropzone onDrop={this.onDrop}>
         var meta = this.props.song.meta;
         var name = this.props.song.name;
         var clss = this.props.now ? 'itemMusic current': 'itemMusic';
         return (
-            <li className={clss}>
-                <span onClick={this.play} className="clickable">
-                    <div className="cover">
-                        <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov"/>
+            <li className={clss} ondrop={this.onDrop}>
+                <span onClick={this.play} className="clickable" >
+                    <div className="cover" >
+                        <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" />
                     </div>
                     <div className="Meta">
                         <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
@@ -31,11 +41,7 @@ var MusicItem = React.createClass({
                         {(meta.album) ? <span className="album"><i>{meta.album}</i></span> : ''}
                     </div>
                 </span>
-                <img
-                    className="itemMenu"
-                    src="img/ic_more_vert_black_24dp_1x.png"
-                    onClick={this.showMenu}
-                />
+                <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
             </li>
         );
     }
@@ -132,33 +138,32 @@ exports.MusicBox = React.createClass({
         });
         this.forceUpdate();
     },
+    calculateLIsInRow: function (){
+        var lisInRow = 0;
+        $('.itemMusic').each(function() {
+            if($(this).prev().length > 0) {
+                if($(this).position().top != $(this).prev().position().top) return false;
+                lisInRow++;
+            }
+            else {
+                lisInRow++;   
+            }
+        });
+        return lisInRow;
+    },
     componentDidMount: function(){
         $(document).keydown(function(e) {
             var tag = e.target.tagName.toLowerCase();
             if(tag != 'input' && tag != 'textarea' && tag != 'pre'){
-                var current = $('.current');
-                var pos = current.offset();
-                var y, x;
-                if(e.keyCode == 39 ){
-                    this.props.next();
-                }else if(e.keyCode == 37){
-                    this.props.prev();
-                }else if(e.keyCode == 40){
+                if(e.keyCode == 39 ) this.props.next();
+                else if(e.keyCode == 37) this.props.prev();
+                else{
+                    var nb = this.calculateLIsInRow();
                     e.preventDefault();
-                    //down
-                    y = pos.top + (parseInt(current.css('marginTop')) * 3) + current.height();
-                    x = pos.left + parseInt(current.css('marginLeft'));
-                    var down = $(document.elementFromPoint(x, y))[0];
-                    down.closest('.clickable').click();
-                    return false;
-                }else if(e.keyCode == 38){
-                    e.preventDefault();
-                    //up
-                    y = pos.top - (parseInt(current.css('marginTop'))) - current.height();
-                    x = pos.left + parseInt(current.css('marginLeft'));
-                    console.log({x: x, y:y});
-                    var up = $(document.elementFromPoint(x, y))[0];
-                    up.closest('.clickable').click();
+                    if(e.keyCode == 40)
+                        while(nb-- > 0) this.props.next();
+                    else if(e.keyCode == 38)
+                        while(nb-- > 0) this.props.prev();
                     return false;
                 }
             }

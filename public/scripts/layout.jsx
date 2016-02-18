@@ -118,13 +118,15 @@ var Layout = React.createClass({
         this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
     },
     forcePlay: function(id){
-        this.state.playList.forEach((i, key)=>{
-            if(this.state.musics[i].id == id){
-                toPlay = this.state.musics[i];
-                this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
-                return;
-            }
-        });
+        if(id){
+            this.state.playList.forEach((i, key)=>{
+                if(this.state.musics[i].id == id){
+                    toPlay = this.state.musics[i];
+                    this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
+                    return;
+                }
+            });
+        }
     },
     componentDidUpdate: function(prevProps, prevState) {
         var n = this.state, p = prevState;

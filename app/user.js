@@ -18,7 +18,8 @@ var played = (id, req)=>{
     var idUser = req.session.uuid;
     re.getCon((c)=>{
         r.table(tbls.user).filter({pseudo: pseudo})
-        .update({played: r.row('played').append(id)})
+        // .update({played: r.row('played').append(id)})
+        .update({played: r.row('played').append({id: id, when: new Date()})})
         .run(c);
         r.table(tbls.song).get(id)
         .update({played: r.row('played').add(1).default(1)})

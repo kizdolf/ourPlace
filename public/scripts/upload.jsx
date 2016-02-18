@@ -30,7 +30,8 @@ exports.Upload = React.createClass({
             rmClass = function(){
                 dZ.removeClass('willDrop');
             },
-            putClass = function(){
+            putClass = function(evt){
+                // console.log(evt);
                 dZ.addClass('willDrop');
             };
 
