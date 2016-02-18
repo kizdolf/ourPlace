@@ -57,8 +57,10 @@ var
         certificate     = fs.readFileSync(confRe.https.certificate, 'utf8'),
         credentials     = {key: privateKey, cert: certificate, ca: ca },
         https           = require('https'),
+        
         httpsServer     = https.createServer(credentials, app);
         httpsServer.listen(conf.httpsPort);
+        mainServer = null;
         mainServer = httpsServer;
     }
 
