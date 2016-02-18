@@ -39,3 +39,6 @@ app/criticalConf.js
 .git.bfg-report/
 ..bfg-report/
 stuff/
+
+
+app/freebox-share/

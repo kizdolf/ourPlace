@@ -159,18 +159,18 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
                     path : '/' + file.path, //Where?
                     type : file.mimetype, //Can you specify where?
                     size : file.size, //How much?
-                    date : new Date(), //When?
+                    date : new Date(), //When? Ouh, sorry, we have a clock here.
                     meta : meta, //Give me your money!
                     ext  : ext //Even your Last Name!
                 };
                 re.insert(tbls.song, obj).then((res)=>{ //Now. I have it. I'll keep safe don't worry.
-                    lo.info('insert', {tbl: tbls.song, obj: obj});
-                    cb(null, true); //everything fine mate, was easy :)
+                    lo.info('insert', {tbl: tbls.song, obj: obj}); //I write it down even.
+                    cb(null, true); //Everything fine mate, was easy :)
                 }).catch((err)=>{ //Fuck that shit. Fracking file did not fucking survived. Looser one.
                     tools.rm(__dirname + '/..' + obj.path); //Let's burn it.
                     lo.error('insert', {tbl: tbls.song, obj: obj, error: err}); //Remember it.
-                    cb(err, null); //And say it.
-                });
+                    cb(err, null); //And say it. "Was a nice try kid."
+                }); //So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
             } //you know what? if you're already dead I don't even give a fuck (actually it don't fail, because it's useless to fail here.)
         }); //Have a good night!
     } //Enjoy!
