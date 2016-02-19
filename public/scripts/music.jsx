@@ -153,19 +153,25 @@ exports.MusicBox = React.createClass({
     },
     componentDidMount: function(){
         $(document).keydown(function(e) {
-            var tag = e.target.tagName.toLowerCase();
-            if(tag != 'input' && tag != 'textarea' && tag != 'pre'){
-                if(e.keyCode == 39 ) this.props.next();
-                else if(e.keyCode == 37) this.props.prev();
-                else{
-                    var nb = this.calculateLIsInRow();
-                    e.preventDefault();
-                    if(e.keyCode == 40)
-                        while(nb-- > 0) this.props.next();
-                    else if(e.keyCode == 38)
-                        while(nb-- > 0) this.props.prev();
-                    return false;
+            if ([39, 37, 40, 38].indexOf(e.keyCode) != -1){
+                var tag = e.target.tagName.toLowerCase();
+                if(tag != 'input' && tag != 'textarea' && tag != 'pre'){
+                    if(e.keyCode == 39 ) this.props.next();
+                    else if(e.keyCode == 37) this.props.prev();
+                    else{
+                        var nb = this.calculateLIsInRow();
+                        e.preventDefault();
+                        if(e.keyCode == 40) this.props.next(nb);
+                        else if(e.keyCode == 38) this.props.prev(nb);
+                        var scrollTo = $('.current');
+                        var h = scrollTo.position().top;
+                        var less = ((h - 500) < 0) ? h : h - 500;
+                        $(window).scrollTop(h);
+                        return false;
+                    }
                 }
+            }else{
+                return true;
             }
         }.bind(this));
         // this.getRightMenu();

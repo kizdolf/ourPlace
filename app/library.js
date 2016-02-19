@@ -107,8 +107,7 @@ exports.update = (req, res)=>{
         s.send(obj, req.session, true); //trigger sockets.
         res.json(response); //send the db call succesfull result to the front.
     }).catch((e)=>{
-        //if error don't even say it to the front. Because naaaaaa. Wait what? Let's say it to the front. 
-        lo.error('updte', {t bpicName: picNamel: tbl, byWho: req.session.uuid, id: id, update: obj, error: e, err: err});
+        lo.error('update', {tbl: tbl, picName: picName, byWho: req.session.uuid, id: id, update: obj, error: e, err: err});
         res.json({error: 'update failed to record itself in the database.'}); //sorry
     });
 };
@@ -156,6 +155,7 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
                 var ext = file.originalname.split('.').pop(); //I just need that, I'll remove it :)
                 var obj = { //All that too actually!
                     name : file.originalname, //Who?
+                    // path : '/' + (new Date().toISOString().substring(0,10)) + '/' + file.path, 
                     path : '/' + file.path, //Where?
                     type : file.mimetype, //Can you specify where?
                     size : file.size, //How much?

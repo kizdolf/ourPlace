@@ -16,6 +16,11 @@ var rm = (path)=>{
     });
 };
 
+var mkdir = (path)=>{
+    try{fs.mkdirSync(path); }
+    catch(e) {}
+};
+
 var thisIs404 = (req, res)=>{
     //TODO: Send a 404 page. Or redirect somewhere.
     res.json({msg: '404'});
@@ -61,6 +66,7 @@ var makeItHttps = (req, res, next)=>{
 
 module.exports = {
     rm: rm,
+    mkdir: mkdir,
     thisIs404: thisIs404,
     lo: lo(),
     makeItHttps: makeItHttps

@@ -93,34 +93,36 @@ var Layout = React.createClass({
         this.rootKeyCode();
     },
     rootKeyCode: function(){
-        var down = [];
-        $(document).keydown(function(e) {
-            down[e.keyCode] = true;
-        }).keyup(function(e) {
-            if (down[18] && down[13]) {
-                window.location.href = '#/root';
-            }
-            down[e.keyCode] = false;
-        }.bind(this));
+        // var down = {};
+        // $(document).keydown(function(e) {
+        //     down[e.keyCode] = true;
+        // }).keyup(function(e) {
+        //     if (down[18] && down[13]) {
+        //         window.location.href = '#/root';
+        //     }else{
+        //         delete down[e.keyCode];
+        //     }
+        //     $(document).unbind('keydown');
+        // });
     },
     componentWillUnmount: function(){
         this.socket.on('update', function(data){}); //jshint ignore:line
     },
     play: function(path, type, meta, index){
-        if(typeof index === 'undefined'){
-            if(this.state.index)
-                index = this.state.index;
-            else
-                index = 0;
-        }
+            if(typeof index === 'undefined'){
+                if(this.state.index)
+                    index = this.state.index;
+                else
+                    index = 0;
+            }
 
-        var toPlay = this.state.musics[this.state.playList[index]];
-        this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
+            var toPlay = this.state.musics[this.state.playList[index]];
+            this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
     },
     forcePlay: function(id){
         if(id){
             this.state.playList.forEach((i, key)=>{
-                if(this.state.musics[i].id == id){
+                if(this.state.musics[i] && this.state.musics[i].id == id){
                     toPlay = this.state.musics[i];
                     this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
                     return;
@@ -134,21 +136,29 @@ var Layout = React.createClass({
             this.setUserStatus();
         }
     },
-    next: function(){
+    moveInSongs: function(dir, n){
         var list    = this.state.playList,
-            i       = this.state.index;
-
-        i = (i + 1 < list.length) ? (i + 1) : 0;
+            i       = this.state.index,
+            ln      = list.length;
+        n = parseInt(n); 
+        if(typeof n !== "number" || !isFinite(n)) n = 1;
+        if(dir == 'prev')
+            while(n--) i = (i - 1 >= 0) ? (i - 1) : (ln - 1);
+        else if (dir == 'next')
+            while(n--) i = (i + 1 < ln) ? (i + 1) : 0;
+        else{
+            console.log('[error], (function moveInSongs). Wrong move in songs. params:');
+            console.log({dir: dir, n: n});
+            return false;
+        }
         var n = this.state.musics[list[i]];
         this.play(n.path, n.type, n.meta, i);
     },
-    prev: function(){
-        var list    = this.state.playList,
-            i       = this.state.index;
-
-        i = (i - 1 >= 0) ? (i - 1) : (list.length - 1);
-        var n = this.state.musics[list[i]];
-        this.play(n.path, n.type, n.meta, i);
+    prev: function(n){
+        this.moveInSongs('prev', n);
+    },
+    next: function(n){
+        this.moveInSongs('next', n);
     },
     removed: function(name){
         var actuals = this.state.musics;

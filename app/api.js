@@ -13,21 +13,37 @@
 var
 express         = require('express'),
 multer          = require('multer'),
-externSession   = require('./externSession'),
-upload          = multer({dest: 'medias/'}),
+// externSession   = require('./externSession'),
 login           = require('./login'),
 lib             = require('./library'),
+tools           = require('./tools'),
 user            = require('./user'),
+conf            = require('./config').conf,
 feed            = require('./rss/main');
 
 var s = require('./socket')();
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+//upload          = multer({dest: 'medias/'}),
 
 exports.main = (function(){
-    var router      = express.Router();
     // Would it be better to externalise the route(s) in a json file somewhere else?
-    router.post('/upload', upload.any(), function(req, res){
+    var router      = express.Router();
+    //take care of where, not more.
+    var storage = multer.diskStorage({
+        destination: (r, f, cb)=>{
+            var path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
+            tools.mkdir(path);
+            path += '/';
+            cb(null, path);
+        },
+        // filename: (r, file, cb)=>{
+        //     console.log(file);
+        //     cb(null, file.filename);
+        // }
+    });
+
+    router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
         req.files.forEach((file)=>{
             log.info(file);
             lib.handle(file, (err, response)=>{
@@ -76,15 +92,15 @@ exports.main = (function(){
 
 
 
-    router.post('/getToken', function(req, res){
-        log.info('Create token for ', req.body.name);
-         externSession.generateToken(req.body.name, function(err, token){
-            if(err)
-                res.json({err: err});
-            else
-                res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
-         });
-    });
+    // router.post('/getToken', function(req, res){
+    //     log.info('Create token for ', req.body.name);
+    //      externSession.generateToken(req.body.name, function(err, token){
+    //         if(err)
+    //             res.json({err: err});
+    //         else
+    //             res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
+    //      });
+    // });
 
     router.post('/newUser', function(req, res){
         var user = req.body;
@@ -97,23 +113,23 @@ exports.main = (function(){
         });
     });
 
-    router.get('/playplease/:token', function(req, res){
-        if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
-            log.info('can play ' + req.session.name);
-            externSession.getPath(req.session.name, function(err, rep){
-                if(!err){
-                    req.session.nbLeft = req.session.nbLeft - 1;
-                    res.json(rep);
-                }else{
-                    log.error(err);
-                }
-            });
-        }else{
-            req.session = null;
-            externSession.delToken(req.params.token);
-            res.json({err: 'not allowed'});
-        }
-    });
+    // router.get('/playplease/:token', function(req, res){
+    //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
+    //         log.info('can play ' + req.session.name);
+    //         externSession.getPath(req.session.name, function(err, rep){
+    //             if(!err){
+    //                 req.session.nbLeft = req.session.nbLeft - 1;
+    //                 res.json(rep);
+    //             }else{
+    //                 log.error(err);
+    //             }
+    //         });
+    //     }else{
+    //         req.session = null;
+    //         externSession.delToken(req.params.token);
+    //         res.json({err: 'not allowed'});
+    //     }
+    // });
 
     router.get('/rss', feed.getRss);
 

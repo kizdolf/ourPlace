@@ -13,7 +13,7 @@ exports.conf = {
         extended: true
     },
     devMode: false,
-    httpsMode: true,
+    httpsMode: false,
     sessionCnf: {
         secret: 'thisIsSecretForSession',
         resave: false,

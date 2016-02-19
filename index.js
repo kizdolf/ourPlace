@@ -8,60 +8,69 @@
 */
 'use strict';
 
-var
+var //extern dependencies
     express         = require('express'),
     bodyParser      = require('body-parser'),
     fs              = require('fs'),
     http            = require('http'),
-
+    //inner dependencies
     conf            = require('./app/config').conf,
     confRe          = require('./app/criticalConf'),
     api             = require('./app/api'),
     login           = require('./app/login'),
     tools           = require('./app/tools'),
-    externSession   = require('./app/externSession'),
+    // externSession   = require('./app/externSession'),
     sessionRe       = require('./app/rethinkSession');
-
+    //main object.
     var app =  express();
-
+    //Logic:
     app
+    //intern Session to have the session in sockets.
     .use(sessionRe.Session)
     //externs middlewares
     .use(bodyParser.urlencoded(conf.bodyParserOpt))
     .use(bodyParser.json())
     //log request and redirect to https if needed.
     .use(tools.makeItHttps)
-    //some cases
+    //because I might try some stuff. So let's think about it now.
     .use('/stuff', express.static('stuff'))
-	.use(conf.pathPlay, externSession.play)
-    //login
+    //someone not loged-in can still listen some songs. On condtions.
+	// .use(conf.pathPlay, externSession.play)
+    //login mechanisms.
     .use(conf.pathTokenLogin, login.getToken)
     .use(conf.pathLogin, login.login)
+    //loged-in check. at this point if not loged-in bye.
     .use(login.shouldLogin)
     //serve webApp
     .use(conf.webPath, express.static(conf.webDir))
-    //serve medias
+    //serve medias (this should evolve deeply :/)
     .use(conf.mediaPath, express.static(conf.mediaDir))
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong path
     .use(tools.thisIs404);
 
-    //ready for http[s]
+    //ready for  requests. Http/Https. We have to handle both.
+    //Start a HTTP server.
     var httpServer = http.createServer(app);
     httpServer.listen(conf.mainPort);
+    //Set it as default.
     var mainServer = httpServer;
     if(conf.httpsMode){
+        //https.
         var privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
         ca              = fs.readFileSync(confRe.https.chain, 'utf8'),
         certificate     = fs.readFileSync(confRe.https.certificate, 'utf8'),
         credentials     = {key: privateKey, cert: certificate, ca: ca },
         https           = require('https'),
-        
+        //start a HTTPS server.
         httpsServer     = https.createServer(credentials, app);
         httpsServer.listen(conf.httpsPort);
-        mainServer = null;
-        mainServer = httpsServer;
+        //swith default properly.
+        mainServer.close(()=>{
+            mainServer = null;
+            mainServer = httpsServer;
+        });
     }
 
     //sockets are safe as well, and can use session.
