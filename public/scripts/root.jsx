@@ -90,12 +90,13 @@ exports.RootBox = React.createClass({
     create: function(){
         var pseudo = $('#pseudo').val();
         var pass = $('#pass').val();
+        var mail = $('#mail').val();
         console.log('create ' + pseudo + ' with ' + pass);
         if(pseudo.length <= 3 || pass.length <= 3){
             $('#msg').html('not long enough. min 3 char');
         }else{
             $('#msg').html('');
-            $.post('/api/root/new', {pseudo: pseudo, password: pass}, function(res){
+            $.post('/api/root/new', {pseudo: pseudo, password: pass, email: mail}, function(res){
                 console.log(res);
                 this.refresh();
             }.bind(this));
@@ -136,6 +137,7 @@ exports.RootBox = React.createClass({
                     <p>Create user here:</p>
                     <input type="text" placeholder="Pseudo" id="pseudo"/>
                     <input type="text" placeholder="Password" id="pass"/>
+                    <input type="email" placeholder="Email (optional)" id="mail"/>
                     <button className="btn btn-default btn-sm" onClick={this.create}>Create</button>
                 </div>
                 <ul>

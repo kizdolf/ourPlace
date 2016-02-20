@@ -4,12 +4,17 @@ var
     randToken   = require('rand-token'),
     pass        = require('password-hash'),
     tbls        = require('./config').rethink.tables,
-    isDev       = require('./config').conf.devMode,
+    cnf         = require('./config').conf,
+    isDev       = cnf.devMode,
+    critCnf     = require('./criticalConf'),
     path        = require('path'),
     user        = require('./user'),
+    mandrill    = require('node-mandrill')(critCnf.extern.mandrillApiKey);
     re          = require('./rethink');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
+
+var lo = require('./tools').lo;
 
 var userExist = function(pseudo, password){
     return new Promise(function(ful, rej){
@@ -88,7 +93,7 @@ var isRoot = function(req){
     });
 };
 
-var createUser = function(pseudo, password, cb){
+var createUser = function(pseudo, password, email, cb){
     var hash = pass.generate(password),
     o = {
         pseudo : pseudo,
@@ -105,7 +110,21 @@ var createUser = function(pseudo, password, cb){
             re.insert(tbl, o).then((res)=>{
                 log.info('user ' + pseudo + ' was created: ');
                 log.info(res);
-                if(cb) cb(true);
+
+                mandrill('/messages/send', {
+                    message: {
+                        to: [{email: email, name: pseudo}],
+                        from_email: cnf.fromMail,
+                        subject: "An account was created for you on OurPlace!",
+                        text: "Hello " + pseudo + ", someone created a account for you. You can log in here: <a href='" + cnf.ndd + "'>OurPlace</a>. You should already know the password :)"
+                    }
+                },(e, r)=>{
+                    if (e) lo.error('unable to send mail:', {error: e, mail: email});
+                    else lo.info('mail sent', {to: email});
+                    if(cb) cb(true);
+                });
+
+
             }).catch((err)=>{
                 log.error('error creating user ' + pseudo);
                 log.error(err);

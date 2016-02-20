@@ -96,16 +96,16 @@ exports.main = (function(){
     //      });
     // });
 
-    router.post('/newUser', function(req, res){
-        var user = req.body;
-        login.isRoot(req).then(function(canRoot){
-            if(!!canRoot){
-                console.log('create user!');
-                login.createUser(user.pseudo, user.password);
-                res.json({done: 'user created.'});
-            }
-        });
-    });
+    // router.post('/newUser', function(req, res){
+    //     var user = req.body;
+    //     login.isRoot(req).then(function(canRoot){
+    //         if(!!canRoot){
+    //             console.log('create user!');
+    //             login.createUser(user.pseudo, user.password);
+    //             res.json({done: 'user created.'});
+    //         }
+    //     });
+    // });
 
     // router.get('/playplease/:token', function(req, res){
     //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
