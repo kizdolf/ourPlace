@@ -128,7 +128,7 @@ exports.ItemMenu = React.createClass({
         $.ajax({
             method: 'DELETE',
             url : url,
-        }).done(function(msg){
+        }).done(function(msg){ //this is to remove soon. due to db listeners.
             if(msg === true){
                 this.props.removed(id);
             }

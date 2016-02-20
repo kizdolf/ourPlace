@@ -64,7 +64,7 @@ So in case of error an empty object is returned. The app continue to run. See ya
 var getMetaData = (path, cb)=>{
     mm(fs.createReadStream(path), (err, meta)=>{ //send all the algo to mm (music metadata package)
         if(err){
-            lo.error('getting Metadata. Continuing with empty meta.', {pathWeKnow: path, err, err});
+            lo.error('getting Metadata. Continuing with empty meta.', {pathWeKnow: path, err: err});
             cb(null, {}); //do not let 0 metaData prevent the song to be listened.
         }else{
             if(meta.picture[0] && meta.picture[0].data){ //there is a pic. Extract it.
@@ -112,7 +112,7 @@ exports.update = (req, res)=>{
         s.send(obj, req.session, true); //trigger sockets.
         res.json(response); //send the db call succesfull result to the front.
     }).catch((e)=>{
-        lo.error('update', {tbl: tbl, picName: picName, byWho: req.session.uuid, id: id, update: obj, error: e, err: err});
+        lo.error('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj, error: e});
         res.json({error: 'update failed to record itself in the database.'}); //sorry
     });
 };
@@ -165,7 +165,7 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
                 //We convert all songs in ogg format. Because it's the best for cross-browser html5 audio.
                 var path = critCnf.local.appPath + '/' + file.path;
                 var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
-                child_process.exec(exec, (err, out)=>{
+                child_process.exec(exec, (err)=>{
                     if(err) lo.error('converting file to ogg.', {error: err, path: path, file: file});
                     else{
                         lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
@@ -181,7 +181,7 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
                             meta : meta, //Give me your money!
                             ext  : ext //Even your Last Name!
                         };
-                        re.insert(tbls.song, obj).then((res)=>{ //Now. I have it. I'll keep safe don't worry.
+                        re.insert(tbls.song, obj).then(()=>{ //Now. I have it. I'll keep safe don't worry.
                             lo.info('insert', {tbl: tbls.song, obj: obj}); //I write it down even.
                             cb(null, true); //Everything fine mate, was easy :)
                         }).catch((err)=>{ //Fuck that shit. Fracking file did not fucking survived. Looser one.
@@ -213,7 +213,7 @@ exports.allSongs = function(session){
                 user.getPlayed(sng.id, who).then((nb)=>{
                     lnght--;
                     files[index].playedBy = nb;
-                    if(lnght == 0) ful(files);
+                    if(lnght === 0) ful(files);
                 });
             });
         }).catch((e)=>{

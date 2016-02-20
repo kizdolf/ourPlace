@@ -28,9 +28,10 @@ module.exports = function(app, session){
         });
     }
 
-    module.send = (what, whom, abroad)=>{
+    module.send = (what, whom, abroad, name)=>{
         var sok = (abroad && !!abroad) ? io : sockets[whom.sokId];
-        sok.emit('update', what);
+        if(typeof name === 'undefined') name = 'update';
+        sok.emit(name, what);
     };
 
     return module;

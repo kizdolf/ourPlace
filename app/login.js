@@ -9,7 +9,7 @@ var
     critCnf     = require('./criticalConf'),
     path        = require('path'),
     user        = require('./user'),
-    mandrill    = require('node-mandrill')(critCnf.extern.mandrillApiKey);
+    mandrill    = require('node-mandrill')(critCnf.extern.mandrillApiKey),
     re          = require('./rethink');
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
@@ -118,7 +118,7 @@ var createUser = function(pseudo, password, email, cb){
                         subject: "An account was created for you on OurPlace!",
                         text: "Hello " + pseudo + ", someone created a account for you. You can log in here: <a href='" + cnf.ndd + "'>OurPlace</a>. You should already know the password :)"
                     }
-                },(e, r)=>{
+                },(e)=>{
                     if (e) lo.error('unable to send mail:', {error: e, mail: email});
                     else lo.info('mail sent', {to: email});
                     if(cb) cb(true);

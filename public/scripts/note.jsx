@@ -55,7 +55,6 @@ var Editor = React.createClass({
         };
         this.setState({text: 'Note sended!'});
         $.post(this.props.apiAddNote, {note: note});
-        this.props.addNote(note);
     },
     render: function(){
         return(
@@ -93,21 +92,42 @@ exports.NoteBox = React.createClass({
             this.setState({notes: data.sort(this.byValue)});
         }.bind(this));
     },
-    addNote: function(note){
-        var newNotes = this.state.notes;
-        note.id = note.date;
-        newNotes.unshift(note);
-        this.setState({notes: newNotes});
-    },
     componentDidMount: function(){
         this.getNotesFromAPI();
         this.socket = io({secure: true});
-        this.socket.on('update', function(data){ //jshint ignore: line
-            this.getNotesFromAPI();
+        this.socket.on('new', function(data){
+            if(data.type !== 'note') return false;
+            var notes = this.state.notes;
+            notes.unshift(data.obj);
+            this.setState({notes: notes});
         }.bind(this));
-        // this.load = setInterval(this.getNotesFromAPI, 1000);
+        this.socket.on('changed', function(data){
+            if(data.type !== 'note') return false;
+            var notes = this.state.notes;
+            notes.forEach(function(note, i){
+                if(note.id === data.obj.id){
+                    notes[i] = data.obj;
+                    this.setState({notes: notes});
+                    return;
+                }
+            }.bind(this));
+        }.bind(this));
+        this.socket.on('delete', function(data){
+            if(data.type !== 'note') return false;
+            var notes = this.state.notes;
+            notes.forEach(function(note, i){
+                if(note.id === data.obj){
+                    notes.splice(i, 1);
+                    this.setState({notes: notes});
+                    return;
+                }
+            }.bind(this));
+        }.bind(this));
     },
     componentWillUnmount: function(){
+        this.socket.on('update', function(data){});//jshint ignore: line
+        this.socket.on('new', function(data){});//jshint ignore: line
+        this.socket.on('delete', function(data){});//jshint ignore: line
         this.socket.on('update', function(data){});//jshint ignore: line
         // clearInterval(this.load);
     },
@@ -120,18 +140,7 @@ exports.NoteBox = React.createClass({
     closeMenu: function(){
         this.setState({showMenu: false});
     },
-    removed: function(id){
-        console.log(name + ' had beed removed');
-        var actuals = this.state.notes;
-        actuals.forEach((note, i)=>{
-            if(note.id === id){
-                actuals.splice(i, 1);
-                return;
-            }
-        });
-        this.setState({notes: actuals});
-        // setTimeout(function(){this.getNotesFromAPI();}.bind(this), 2500);
-    },
+    removed: function(id){id = null;},
     render: function(){
         var mountNotes = this.state.notes.map((note)=>{
             return(
@@ -144,7 +153,6 @@ exports.NoteBox = React.createClass({
                     <Editor
                         get={this.getNotesFromAPI}
                         apiAddNote={this.props.apiAddNote}
-                        addNote={this.addNote}
                     />
                     {mountNotes}
                 </ul>

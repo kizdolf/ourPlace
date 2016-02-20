@@ -14,7 +14,6 @@ var
 express         = require('express'),
 multer          = require('multer'),
 // externSession   = require('./externSession'),
-login           = require('./login'),
 lib             = require('./library'),
 tools           = require('./tools'),
 user            = require('./user'),
@@ -22,9 +21,6 @@ conf            = require('./config').conf,
 feed            = require('./rss/main');
 
 var s = require('./socket')();
-
-var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
-//upload          = multer({dest: 'medias/'}),
 
 exports.main = (function(){
     // Would it be better to externalise the route(s) in a json file somewhere else?
@@ -84,7 +80,11 @@ exports.main = (function(){
         });
     });
 
+    router.get('/rss', feed.getRss);
 
+    router.get('/user/status', user.getStatus);
+
+    router.post('/user/status', user.setStatus);
 
     // router.post('/getToken', function(req, res){
     //     log.info('Create token for ', req.body.name);
@@ -94,17 +94,6 @@ exports.main = (function(){
     //         else
     //             res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
     //      });
-    // });
-
-    // router.post('/newUser', function(req, res){
-    //     var user = req.body;
-    //     login.isRoot(req).then(function(canRoot){
-    //         if(!!canRoot){
-    //             console.log('create user!');
-    //             login.createUser(user.pseudo, user.password);
-    //             res.json({done: 'user created.'});
-    //         }
-    //     });
     // });
 
     // router.get('/playplease/:token', function(req, res){
@@ -124,12 +113,6 @@ exports.main = (function(){
     //         res.json({err: 'not allowed'});
     //     }
     // });
-
-    router.get('/rss', feed.getRss);
-
-    router.get('/user/status', user.getStatus);
-
-    router.post('/user/status', user.setStatus);
 
     return router;
 })();
