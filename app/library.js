@@ -2,6 +2,7 @@
 
 var
     mainConf        = require('./config').conf,
+    critCnf         = require('./criticalConf'),
     re              = require('./rethink.js'),
     tbls            = require('./config').rethink.tables,
     tools           = require('./tools.js'),
@@ -21,6 +22,7 @@ var
         'audio/ogg',
         'audio/wav',
         'audio/webm',
+        'audio/flac'
     ];
 
 
@@ -35,16 +37,19 @@ require('./DBlisteners.js');
 //extract and save picture. if extract failed just delete pic without blocking process.
 var extractPicture = (meta, path, cb)=>{
     var pic     = new Buffer(meta.picture[0].data), //read picture
-        picName = path.split('/')[1] + '.' + meta.picture[0].format; //deduct name.
+        picName = path.split('/').pop() + '.' + meta.picture[0].format, //deduct name.
+        comp    = path.split('/');
+    comp.pop();
+    path = comp.join('/') + '/';
     pic = pic.toString('base64'); //convert the pic in readable data.
-
-    fs.writeFile(mainConf.coversPath + picName, pic, 'base64', (err)=>{ //write data in it's own file.
+    fs.writeFile(path + picName, pic, 'base64', (err)=>{ //write data in it's own file.
         if(err){
             lo.error('writing img', {picName: picName, err: err});
             delete meta.picture; //do not keep the useless file.
             cb(meta); //pretend everything was fine.
         }else{
-            meta.picture = '/' + mainConf.coversPath + picName; //save new pic path
+            lo.info('extracted img', {picName: picName, path: path});
+            meta.picture = '/' + path + picName; //save new pic path
             cb(meta); //and return the updated object!
         }
     });
@@ -120,10 +125,14 @@ exports.update = (req, res)=>{
 exports.delete = function(type, id, cb){
     var tbl = tbls[type];
     re.rmById(tbl, id).then((res)=>{
-        var old = res.changes.old_val; //nicely, rethinkDb allow us to see what was the object BEFORE we deleted, but after. I do like that.
+        var old = res.changes[0].old_val; //nicely, rethinkDb allow us to see what was the object BEFORE we deleted, but after. I do like that.
         if (old.path){
-            var path = __dirname + '/..' + res.value.path;
+            var path = critCnf.local.appPath + old.path;
             tools.rm(path); //delete the song.
+            if(old.meta && old.meta.picture){
+                path = critCnf.local.appPath + old.meta.picture;
+                tools.rm(path); //delete the pic.
+            }
         }
         cb(true); //Et bim!!
     }).catch((e)=>{
@@ -150,29 +159,42 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
         fs.unlinkSync(path); //PAN PAN PAN!
         cb('does not fit mimes types', null); //See you never.
     }else{ //You passed the first test! but will you finish them all ???
+        
         getMetaData(file.path, function(err, meta){ //first let's try to open you.
             if(!err){ //There is usefull stuff here!
-                var ext = file.originalname.split('.').pop(); //I just need that, I'll remove it :)
-                var obj = { //All that too actually!
-                    name : file.originalname, //Who?
-                    // path : '/' + (new Date().toISOString().substring(0,10)) + '/' + file.path, 
-                    path : '/' + file.path, //Where?
-                    type : file.mimetype, //Can you specify where?
-                    size : file.size, //How much?
-                    date : new Date(), //When? Ouh, sorry, we have a clock here.
-                    meta : meta, //Give me your money!
-                    ext  : ext //Even your Last Name!
-                };
-                re.insert(tbls.song, obj).then((res)=>{ //Now. I have it. I'll keep safe don't worry.
-                    lo.info('insert', {tbl: tbls.song, obj: obj}); //I write it down even.
-                    cb(null, true); //Everything fine mate, was easy :)
-                }).catch((err)=>{ //Fuck that shit. Fracking file did not fucking survived. Looser one.
-                    tools.rm(__dirname + '/..' + obj.path); //Let's burn it.
-                    lo.error('insert', {tbl: tbls.song, obj: obj, error: err}); //Remember it.
-                    cb(err, null); //And say it. "Was a nice try kid."
-                }); //So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
+                //We convert all songs in ogg format. Because it's the best for cross-browser html5 audio.
+                var path = critCnf.local.appPath + '/' + file.path;
+                var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
+                child_process.exec(exec, (err, out)=>{
+                    if(err) lo.error('converting file to ogg.', {error: err, path: path, file: file});
+                    else{
+                        lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
+                        fs.unlinkSync(path);
+                        file.path = file.path + '.ogg';
+                        var ext = file.originalname.split('.').pop(); //I just need that, I'll remove it :)
+                        var obj = { //All that too actually!
+                            name : file.originalname, //Who?
+                            path : '/' + file.path, //Where?
+                            type : file.mimetype, //Can you specify where?
+                            size : file.size, //How much?
+                            date : new Date(), //When? Ouh, sorry, we have a clock here.
+                            meta : meta, //Give me your money!
+                            ext  : ext //Even your Last Name!
+                        };
+                        re.insert(tbls.song, obj).then((res)=>{ //Now. I have it. I'll keep safe don't worry.
+                            lo.info('insert', {tbl: tbls.song, obj: obj}); //I write it down even.
+                            cb(null, true); //Everything fine mate, was easy :)
+                        }).catch((err)=>{ //Fuck that shit. Fracking file did not fucking survived. Looser one.
+                            tools.rm(__dirname + '/..' + obj.path); //Let's burn it.
+                            lo.error('insert', {tbl: tbls.song, obj: obj, error: err}); //Remember it.
+                            cb(err, null); //And say it. "Was a nice try kid."
+                        }); //So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
+                    }
+                });
+
             } //you know what? if you're already dead I don't even give a fuck (actually it don't fail, because it's useless to fail here.)
         }); //Have a good night!
+
     } //Enjoy!
 }; //Bacios!
 
@@ -236,7 +258,7 @@ So in case of error we nned to check if the download/extraction was killed or no
 */
 exports.fromYoutube = function(url, cb){
     var dir = process.env.PWD + '/medias';
-    var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -f bestaudio --print-json --cache-dir ' + dir + ' ';
+    var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
     log.info(' dowloading from youtube url : ' + url);
     child_process.exec(exec, (err, out)=>{

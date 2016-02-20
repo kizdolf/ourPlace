@@ -34,18 +34,12 @@ exports.main = (function(){
         destination: (r, f, cb)=>{
             var path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
             tools.mkdir(path);
-            path += '/';
-            cb(null, path);
+            cb(null, (path + '/'));
         },
-        // filename: (r, file, cb)=>{
-        //     console.log(file);
-        //     cb(null, file.filename);
-        // }
     });
 
     router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
         req.files.forEach((file)=>{
-            log.info(file);
             lib.handle(file, (err, response)=>{
                 if(err) res.json({err: err});
                 else {

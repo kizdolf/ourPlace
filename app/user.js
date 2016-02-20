@@ -63,7 +63,6 @@ var root = (req, res)=>{
                     if(typeof n != 'number') n = 0;
                 }
                 re.getCon((c)=>{
-                    console.log('n == ' + n);
                     r.table(tbls.log).orderBy(r.desc('when')).skip(n).limit(mainConf.logsPerPage)
                     .run(c).then((logs)=>{
                         res.json(logs);
