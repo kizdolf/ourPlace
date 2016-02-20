@@ -54,8 +54,6 @@ var //extern dependencies
     //Start a HTTP server.
     var httpServer = http.createServer(app);
     httpServer.listen(conf.mainPort);
-    //Set it as default.
-    var mainServer = httpServer;
     if(conf.httpsMode){
         //https.
         var privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
@@ -66,17 +64,11 @@ var //extern dependencies
         //start a HTTPS server.
         httpsServer     = https.createServer(credentials, app);
         httpsServer.listen(conf.httpsPort);
-        //swith default properly.
-        mainServer.close(()=>{
-            mainServer = null;
-            mainServer = httpsServer;
-        });
-    }
+        //sockets are safe as well, and can use session.
+        require('./app/socket')(httpsServer, sessionRe.Session, sessionRe.store);
+    }else require('./app/socket')(httpServer, sessionRe.Session, sessionRe.store);
 
-    //sockets are safe as well, and can use session.
-    require('./app/socket')(mainServer, sessionRe.Session, sessionRe.store);
-
-    //because time to time cleaning is good..
+    //because time to time cleaning is good.. launched only on start.
     if(conf.cleanAtStartup){
         tools.lo.info('launch media cleaning.', {byWho: 'system'});
         require('./parseMedia').cleanMediasDir();

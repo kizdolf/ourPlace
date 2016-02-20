@@ -144,10 +144,7 @@ exports.MusicBox = React.createClass({
             if($(this).prev().length > 0) {
                 if($(this).position().top != $(this).prev().position().top) return false;
                 lisInRow++;
-            }
-            else {
-                lisInRow++;   
-            }
+            }else lisInRow++;
         });
         return lisInRow;
     },
@@ -166,13 +163,11 @@ exports.MusicBox = React.createClass({
                         var scrollTo = $('.current');
                         var h = scrollTo.position().top;
                         var less = ((h - 500) < 0) ? h : h - 500;
-                        $(window).scrollTop(h);
+                        // $(window).scrollTop(h);
                         return false;
                     }
                 }
-            }else{
-                return true;
-            }
+            }else return true;
         }.bind(this));
         // this.getRightMenu();
     },

@@ -25,9 +25,7 @@ var checkPics = (pics)=>{
         var path = conf.coversPath + file;
         if(!isDir.sync(path)){
             var type = mime.lookup(path);
-            if(type.indexOf('image') !== -1){
-                toVerif.push(path);
-            }
+            if(type.indexOf('image') !== -1) toVerif.push(path);
         }
     });
     callDb([], toVerif);
@@ -40,11 +38,8 @@ var checkFiles = (files)=>{
         var path = conf.mediaDir + '/' + file;
         if(!isDir.sync(path)){
             var type = mime.lookup(path);
-            if(type.indexOf('image') === -1){
-                toVerif.push(path);
-            }else{
-                pics.push(path);
-            }
+            if(type.indexOf('image') === -1) toVerif.push(path);
+            else pics.push(path);
         }
     });
     callDb(toVerif, pics);
@@ -57,16 +52,11 @@ var callDb = (files, pics)=>{
         files.forEach((f)=>{
             r.db('ourPlace').table('songs').filter({path: '/' + f})
             .run(c, (e, cursor)=>{
-                if(e){
-                    tools.lo.error('get from cleaning', {error: e, path: f, byWho: 'system'});
-                    console.log(e);
-                }else{
+                if(e) tools.lo.error('get from cleaning', {error: e, path: f, byWho: 'system'});
+                else{
                     cursor.next((e, r)=>{
                         if(e) toHandle.push(f);
-                        size--;
-                        if(size == 0){
-                            handleFiles(toHandle);
-                        }
+                        if(--size == 0) handleFiles(toHandle);
                     });
                 }
             });
@@ -130,16 +120,15 @@ var recovPicsYt = ()=>{
     re.getCon((c)=>{
         r.db('ourPlace').table('songs').filter(function(song){
             return song('meta')('picture').match('cover').not();
-        })
-        .run(c, (e, cur)=>{
+        }).run(c, (e, cur)=>{
             cur.each((e, s)=>{
-                var videoId = s.meta.picture.split('/')[2];
-                var id = videoId.split('.')[0];
-                var url = 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg';
+                var videoId = s.meta.picture.split('/')[2],
+                    id      = videoId.split('.')[0],
+                    url     = 'https://i.ytimg.com/vi/' + id + '/mqdefault.jpg';
                 pics.push({pic: videoId, url: url});
             }, ()=>{
                 pics.forEach((p)=>{
-                    download(p.url, conf.mediaDir + '/' + p.pic, ()=>{
+                    download(p.url, (conf.mediaDir + '/' + (new Date().toISOString().substring(0,10)) + '/') + p.pic, ()=>{
                         tools.lo.info('Picture downloaded again' , {url: p.url, pic: p.pic, byWho: 'system'});
                     });
                 });

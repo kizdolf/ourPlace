@@ -13,7 +13,7 @@ exports.conf = {
         extended: true
     },
     devMode: false,
-    httpsMode: false,
+    httpsMode: true,
     sessionCnf: {
         secret: 'thisIsSecretForSession',
         resave: false,
@@ -22,7 +22,7 @@ exports.conf = {
     pathPlay: '/play/:token',
     pathTokenLogin: '/tokenLogin',
     pathLogin: '/login',
-    cleanAtStartup: false, // delete existing media not in db at startUp.
+    cleanAtStartup: true, // delete existing media not in db at startUp.
 };
 
 exports.socket = {

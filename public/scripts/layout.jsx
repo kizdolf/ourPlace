@@ -25,8 +25,7 @@ var Layout = React.createClass({
         };
     },
     byDate: function(a, b){
-        if(a.date > b.date) return -1;
-        else return 1;
+        return ((a.date > b.date) ? -1 : 1);
     },
     getMusicFromAPI: function(cb){
         $.get(this.url, function(data){
@@ -44,9 +43,8 @@ var Layout = React.createClass({
             this.setState({shuffling: true});
             for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
             indexesOrder.forEach(function(ind, key){
-                if(ind == this.state.index){
+                if(ind == this.state.index)
                     this.setState({index: key});
-                }
             }.bind(this));
         }
         this.setState({playList: indexesOrder});
@@ -59,12 +57,12 @@ var Layout = React.createClass({
             if(data.index && data.shuffling && data.playlist){
                 var state = {
                     index: parseInt(data.index),
-                    shuffling: (data.shuffling == "true") ? true : false,
+                    shuffling: (data.shuffling == "true"),
                     playList: data.playlist.map(function(el){ return parseInt(el); })
                 }
                 this.setState(state);
                 if(data.autoPlay){
-                    var autoPlay = (data.autoPlay == 'true') ? true : false;
+                    var autoPlay = (data.autoPlay == 'true');
                     this.setState({autoPlay: autoPlay});
                     if(autoPlay) this.play();
                 }
@@ -93,17 +91,17 @@ var Layout = React.createClass({
         this.rootKeyCode();
     },
     rootKeyCode: function(){
-        // var down = {};
-        // $(document).keydown(function(e) {
-        //     down[e.keyCode] = true;
-        // }).keyup(function(e) {
-        //     if (down[18] && down[13]) {
-        //         window.location.href = '#/root';
-        //     }else{
-        //         delete down[e.keyCode];
-        //     }
-        //     $(document).unbind('keydown');
-        // });
+        var down = {};
+        $(document).keydown(function(e) {
+            down[e.keyCode] = true;
+            return true;
+        }).keyup(function(e) {
+            if (down[18] && down[13]){
+                window.location.href = '#/root';
+                down = {};
+            } else down[e.keyCode] = false;
+            return true;
+        });
     },
     componentWillUnmount: function(){
         this.socket.on('update', function(data){}); //jshint ignore:line
