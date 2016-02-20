@@ -8,28 +8,9 @@ Maybe there is somewhere some traces of database password and stuff, I changed t
 
 *before running it:*
 
- * create app/criticalConf.js file, populate it like that:
-
-```
-'use strict';
-
-exports.connect =  {
-    db: 'dbName',
-    host: 'localhost',
-    port: 28015,
-    authKey: 'yourSuperSecretKey'
-};
-
-exports.https = {
-    privKey: '/path/to/your/key/privkey.pem',
-    certificate: '/path/to/your/cert/cert.pem',
-    chain : '/path/to/your/chain/chain.pem'
-};
-
-```
-
+ * create app/criticalConf.js file, populate it like in the [example file](https://github.com/kizdolf/ourPlace/blob/master/app/example.criticalConf.js).
  * Check this to know a bit more: https://www.rethinkdb.com/docs/security/
- * create the tables on rethinkDB. list in app/config.js => exports.rethink.tables.
+ * create the tables on rethinkDB. list in [app/config.js](https://github.com/kizdolf/ourPlace/blob/master/app/config.js#L44) => exports.rethink.tables.
 
 it should be accessible visible here: http://azerty.gq   (*but it require a login, which you have to ask me personnaly.*)
 
@@ -40,15 +21,17 @@ it should be accessible visible here: http://azerty.gq   (*but it require a logi
  * express-session && socket.io-express-session to manage session, session are stored in a rethinkdb table, avaible from request or socket. <3
  * Table listener from rethinkdb. It tell me when something happen (and what) on a table. Allow to react properly (still under dev)
  * youtube-dl : under the hood, it's used to download youtube song, extract metadata, image etc.
- * webpack : just on file to serve, and help so much the dev phase. 
+ * webpack : just on file to serve, and help so much the dev phase.
+ * mandrill: to send mails. An Api key is needed. Sorry, but if you want to change mail provider, you'll have to code it.
 
 ### What's here already? 
 
 * Music: Upload it, play it, edit it.
 * Notes: Because I needed it badly. 
 * Rss: under light construction. 
-* Usuable from a mobile. (even if not optimal)
-* Nothing more. See the next section for the rest. 
+* Usuable from a mobile. (even if not optimal) 
+* Admin interface (alt+enter). Only if your 'root'. 
+* Nothing more. See the next section for the rest.  
 
 ### What's need to be done in a later future?
 
