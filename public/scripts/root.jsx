@@ -46,7 +46,7 @@ var User = React.createClass({
 
 exports.RootBox = React.createClass({
     getInitialState: function(){
-        return {users: [], logs: [] };
+        return {users: [], logs: [], logsPage:0};
     },
     amIRoot: function(cb){
         $.get('/api/root/amI', (res)=>{
@@ -60,6 +60,7 @@ exports.RootBox = React.createClass({
     },
     refresh: function(){
         this.getAllUsers();
+        this.setState({logsPage: 0});
         this.getLogs();
     },
     componentDidMount: function(){
@@ -74,9 +75,16 @@ exports.RootBox = React.createClass({
         else return 1;
     },
     getLogs: function(){
-        $.get('/api/root/logs', function(logs){
-            logs = logs.sort(this.byDate);
-            this.setState({logs: logs});
+        var url = '/api/root/logs/' + this.state.logsPage;
+        $.get(url, function(logs){
+            if(logs.length == 0 && this.state.logsPage != 0){
+                console.log('set to 0');
+                this.setState({logsPage: 0});
+                this.getLogs();
+            }else{
+                // logs = logs.sort(this.byDate);
+                this.setState({logs: logs});
+            }
         }.bind(this));
     },
     create: function(){
@@ -92,6 +100,17 @@ exports.RootBox = React.createClass({
                 this.refresh();
             }.bind(this));
         }
+    },
+    nextLogs: function(){
+        var next = this.state.logsPage + 1;
+        this.setState({logsPage: next});
+        this.getLogs();
+    },
+    prevLogs: function(){
+        var prev = this.state.logsPage -1;
+        if(prev < 0) prev = 0;
+        this.setState({logsPage: prev});
+        this.getLogs();
     },
     render: function(){
         var mountUsers = this.state.users.map((user)=>{
@@ -122,9 +141,12 @@ exports.RootBox = React.createClass({
                 <ul>
                     {mountUsers}
                 </ul>
-                <hr/><h3>Logs en base:</h3><button className="btn btn-default btn-sm" onClick={this.refresh}>refresh</button>
+                <hr/><h3>Logs en base:</h3>
+                <button className="btn btn-default btn-sm" onClick={this.refresh}>Refresh</button>
+                <button className="btn btn-default btn-sm" onClick={this.prevLogs}>Previous Page</button>
+                <button className="btn btn-default btn-sm" onClick={this.nextLogs}>Next Page</button>
+                <span>current Page: {this.state.logsPage}</span>
                 <div id="logs">{mountLogs}</div>
-
             </div>
         );
     }

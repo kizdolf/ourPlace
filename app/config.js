@@ -23,6 +23,7 @@ exports.conf = {
     pathTokenLogin: '/tokenLogin',
     pathLogin: '/login',
     cleanAtStartup: true, // delete existing media not in db at startUp.
+    logsPerPage : 20, //could be a non fixed value.
 };
 
 exports.socket = {

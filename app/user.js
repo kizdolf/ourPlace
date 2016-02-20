@@ -57,8 +57,19 @@ var root = (req, res)=>{
                     });
                 }else res.json(false);
             }else if (first == 'logs'){
-                re.getAll(tbls.log).then((logs)=>{
-                    res.json(logs);
+                var n = 0;
+                if (second){
+                    n = parseInt(second) * (mainConf.logsPerPage);
+                    if(typeof n != 'number') n = 0;
+                }
+                re.getCon((c)=>{
+                    console.log('n == ' + n);
+                    r.table(tbls.log).orderBy(r.desc('when')).skip(n).limit(mainConf.logsPerPage)
+                    .run(c).then((logs)=>{
+                        res.json(logs);
+                    }).catch((e)=>{
+                        lo.error('getting logs', {error: e, params: {first: first, second: n}, byWho: req.session.uuid});
+                    });
                 });
             }else{
                 res.json(false);

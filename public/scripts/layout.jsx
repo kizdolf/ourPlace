@@ -90,7 +90,7 @@ var Layout = React.createClass({
         }.bind(this));
         this.rootKeyCode();
     },
-    rootKeyCode: function(){
+    rootKeyCode: function(){ //alt enter lead you to root interface.
         var down = {};
         $(document).keydown(function(e) {
             down[e.keyCode] = true;
