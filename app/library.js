@@ -257,7 +257,10 @@ Just one thing: if youtube-dl is not up do date it can crash sometimes, but the 
 So in case of error we nned to check if the download/extraction was killed or not.
 */
 exports.fromYoutube = function(url, cb){
-    var dir = process.env.PWD + '/medias';
+    var d = (new Date().toISOString().substring(0,10)),
+        dir = critCnf.local.appPath + '/medias/' + d,
+        path = mainConf.mediaPath + '/' + d;
+    tools.mkdir(dir);
     var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
     log.info(' dowloading from youtube url : ' + url);
@@ -266,12 +269,12 @@ exports.fromYoutube = function(url, cb){
             var ret = JSON.parse(out);
             var obj = {
                 name : ret.fulltitle,
-                path :  mainConf.mediaPath + '/' +  ret.id + '.' + ret.ext,
+                path : path + '/' +  ret.id + '.' + ret.ext,
                 size : ret.filesize,
                 date : new Date(),
                 type : mime.lookup(ret._filename),
                 meta : {
-                    picture : mainConf.mediaPath + '/' +  ret.id + '.jpg'
+                    picture : path + '/' +  ret.id + '.jpg'
                 },
                 urlOrigin: url,
                 ext : ret.ext
