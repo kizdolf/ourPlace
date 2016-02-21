@@ -85,7 +85,8 @@ exports.ItemMenu = React.createClass({
         };
     },
     close: function(){
-            this.setState({showOnTop: false});
+        this.setState({showOnTop: false});
+        this.props.closeMenu();
     },
     showOnTop: function(){
         this.setState({
@@ -154,16 +155,21 @@ exports.ItemMenu = React.createClass({
         this.props.closeMenu();
     },
     componentDidMount: function(){
-        var left = this.props.e.e.x;
-        var right = this.props.e.e.y;
-        /*
-            we need to see if it goes outside the screen here,
-            and move it on the other side if it does.
-            (true for vertical and horizontal)
-            And move a bit from the button itself could be good as well.
-        */
-        $('#optsItem').css('top', right + 'px');
+        var left = this.props.e.e.x - ($('#optsItem').width() + 10);
+        var top = this.props.e.e.y + 8;
+        $('#optsItem').css('top', top + 'px');
         $('#optsItem').css('left', left + 'px');
+        $(document).mouseup(function (e){
+            var opt = $('#optsItem');
+            var onTop = $('.onTop');
+            if (!opt.is(e.target) && opt.has(e.target).length === 0 && 
+                !onTop.is(e.target) && onTop.has(e.target).length === 0){
+                this.props.closeMenu();
+            }
+        }.bind(this));
+    },
+    componentWillUnmount: function(){
+        $(document).unbind('mouseup');
     },
     render: function(){
         return(

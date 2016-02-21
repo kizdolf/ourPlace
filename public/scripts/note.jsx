@@ -92,36 +92,32 @@ exports.NoteBox = React.createClass({
             this.setState({notes: data.sort(this.byValue)});
         }.bind(this));
     },
+    handlerSocket: function(name, data){
+        if(data.type !== 'note') return false;
+        var notes = this.state.notes;
+        var cb = function(){this.setState({notes: notes});}.bind(this);
+        if(name == 'new'){notes.unshift(data.obj); return cb(); }
+        else{
+            notes.forEach(function(note, i){
+                if(name == 'changed'){
+                    if(note.id === data.obj.id){notes[i] = data.obj; return cb(); }
+                }else{
+                    if(note.id === data.obj){notes.splice(i, 1); return cb(); }
+                }
+            });
+        }
+    },
     componentDidMount: function(){
         this.getNotesFromAPI();
         this.socket = io({secure: true});
         this.socket.on('new', function(data){
-            if(data.type !== 'note') return false;
-            var notes = this.state.notes;
-            notes.unshift(data.obj);
-            this.setState({notes: notes});
+            this.handlerSocket('new', data);
         }.bind(this));
         this.socket.on('changed', function(data){
-            if(data.type !== 'note') return false;
-            var notes = this.state.notes;
-            notes.forEach(function(note, i){
-                if(note.id === data.obj.id){
-                    notes[i] = data.obj;
-                    this.setState({notes: notes});
-                    return;
-                }
-            }.bind(this));
+            this.handlerSocket('changed', data);
         }.bind(this));
         this.socket.on('delete', function(data){
-            if(data.type !== 'note') return false;
-            var notes = this.state.notes;
-            notes.forEach(function(note, i){
-                if(note.id === data.obj){
-                    notes.splice(i, 1);
-                    this.setState({notes: notes});
-                    return;
-                }
-            }.bind(this));
+            this.handlerSocket('delete', data);
         }.bind(this));
     },
     componentWillUnmount: function(){
@@ -138,7 +134,7 @@ exports.NoteBox = React.createClass({
         });
     },
     closeMenu: function(){
-        this.setState({showMenu: false});
+        if (this.isMounted()) this.setState({showMenu: false});
     },
     removed: function(id){id = null;},
     render: function(){

@@ -415,6 +415,12 @@ body{
     #curPlaylist{
         display: none;
     }
+    .rootStuff {
+        margin-left: 0 !important;
+    }
+    #Notes {
+        margin-left: 0 !important;
+    }
 }
 
 .artist{
