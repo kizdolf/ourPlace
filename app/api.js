@@ -13,7 +13,7 @@
 var
 express         = require('express'),
 multer          = require('multer'),
-// externSession   = require('./externSession'),
+externSession   = require('./externSession'),
 lib             = require('./library'),
 tools           = require('./tools'),
 user            = require('./user'),
@@ -83,19 +83,18 @@ exports.main = (function(){
 
     router.post('/user/status', user.setStatus);
 
-    // router.post('/getToken', function(req, res){
-    //     log.info('Create token for ', req.body.name);
-    //      externSession.generateToken(req.body.name, function(err, token){
-    //         if(err)
-    //             res.json({err: err});
-    //         else
-    //             res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
-    //      });
-    // });
+    router.post('/getToken', function(req, res){
+        var obj = {id: req.body.id, type: req.body.type};
+         externSession.generateToken(obj, function(err, token){
+            if(err)
+                res.json({err: err});
+            else
+                res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
+         });
+    });
 
     // router.get('/playplease/:token', function(req, res){
     //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
-    //         log.info('can play ' + req.session.name);
     //         externSession.getPath(req.session.name, function(err, rep){
     //             if(!err){
     //                 req.session.nbLeft = req.session.nbLeft - 1;

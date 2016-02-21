@@ -22,7 +22,7 @@ exports.conf = {
     pathPlay: '/play/:token',
     pathTokenLogin: '/tokenLogin',
     pathLogin: '/login',
-    cleanAtStartup: true, // delete existing media not in db at startUp.
+    cleanAtStartup: false, // delete existing media not in db at startUp.
     logsPerPage : 20, //could be a non fixed value.
     fromMail: 'info@azerty.gq', 
     ndd: 'http://azerty.gq',
@@ -47,7 +47,8 @@ exports.rethink = {
         song: 'songs',
         log: 'logs',
         live: 'live',
-        request: 'logRequests'
+        request: 'logRequests',
+        share: 'share'
     }
 };
 

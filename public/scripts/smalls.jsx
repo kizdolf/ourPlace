@@ -154,6 +154,15 @@ exports.ItemMenu = React.createClass({
         $.post(url, data);
         this.props.closeMenu();
     },
+    share: function(){
+        var url     = '/api/getToken/',
+            data    = {type: this.props.e.type, id: this.props.e.id},
+            print   = '';
+        $.post(url, data, function(res){
+            print = (res.url) ? res.url 'error, try, again';
+            console.log(print);
+        });
+    },
     componentDidMount: function(){
         // var top = this.props.e.e.y + 8;
         console.log(this.props.e);
@@ -195,9 +204,10 @@ exports.ItemMenu = React.createClass({
                         : ''
                     }
                     <span className="oneOpt" onClick={this.edit}><img src="img/ic_edit_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Edit</span></span>
-                    <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_comment_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Comment</span></span>
+                    // <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_comment_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Comment</span></span>
                     <span className="oneOpt" onClick={this.delete}><img src="img/ic_delete_black_24dp.png" alt="del" className="imgOpt"/><span className="txtOpt">Delete</span></span>
                     <span className="oneOpt" id="getLink" onClick={this.getLink}><img src="img/ic_link_black_48px.svg" alt="share" className="imgOpt"/><span className="txtOpt">Get link</span></span>
+                    <span className="oneOpt" id="getLink" onClick={this.share}><img src="img/ic_link_black_48px.svg" alt="share" className="imgOpt"/><span className="txtOpt">Share!</span></span>
                 </div>
                 {
                     this.state.showOnTop ?
