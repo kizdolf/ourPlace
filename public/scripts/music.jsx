@@ -54,15 +54,23 @@ var InputBox = React.createClass({
         });
     },
     sendFromYT: function(){
-        var url = ($('#inYT').val()).split('&')[0];
-        $('#inYT').val('');
-        $('#addMusBtn').html('Uploading...');
-        $.post('/api/fromYoutube', {url: url}, (data)=>{ //jshint ignore:line
-            $('#addMusBtn').html('Done!');
+        var url = ($('#inputs').val()).split('&')[0];
+        var btn = $('#addMusBtn');
+        if(url.indexOf('youtube') == -1){
+            btn.html('Not a youtube link..');
             setTimeout(()=>{
-                $('#addMusBtn').html('Add a other one.');
+                btn.html('Try a other one.');
             }, 1500);
-        });
+        }else{
+            $('#inputs').val('');
+            btn.html('Uploading...');
+            $.post('/api/fromYoutube', {url: url}, (data)=>{ //jshint ignore:line
+                btn.html('Done!');
+                setTimeout(()=>{
+                    btn.html('Add a other one.');
+                }, 1500);
+            });
+        }
     },
     componentDidMount: function(){
         $('#changeAutoPlay').click(function(){
@@ -72,7 +80,7 @@ var InputBox = React.createClass({
     search: function(e){
         var v = e.target.value;
         this.setState({search: v});
-        this.props.search(v);
+        if(v.indexOf('.youtube.') == -1)this.props.search(v);
     },
     clear : function(){
         this.setState({search: ''});
@@ -80,24 +88,15 @@ var InputBox = React.createClass({
     },
     render: function(){
         return(
-            <div className="inputBox">
-                <div className="col-lg-3">
-                    <div className="input-group">
-                        <input className="search form-control" type="text" placeholder="Search something" onChange={this.search} value={this.state.search} />
-                        <span className="input-group-btn">
-                            <button onClick={this.clear} className="btn btn-default" type="button">Clear</button>
-                        </span>
+            <div>
+                <div className="inputBox input-group">
+                    <div className="inputBtns">
+                        <button id="changeAutoPlay" type="button" className="btn btn-default">{(this.props.autoPlay == true) ? 'Unset' : 'Set'} Autoplay</button>
+                        <button onClick={this.clear} type="button" className="btn btn-default" type="button">Clear</button>
+                        <button onClick={this.sendFromYT} id="addMusBtn"  type="button" className="btn btn-default" type="button">Add the music!</button>
                     </div>
+                    <input id="inputs" className="add form-control" type="text" placeholder="...Type a search or paste a YouTube music link." onChange={this.search} value={this.state.search}/>
                 </div>
-                <div className="col-lg-3">
-                    <div className="input-group">
-                        <input  id="inYT" className="add form-control" type="text" placeholder="Paste a You Tube url here."/>
-                        <span className="input-group-btn">
-                            <button onClick={this.sendFromYT} id="addMusBtn" className="btn btn-default" type="button">Add the music!</button>
-                        </span>
-                    </div>
-                </div>
-                <button id="changeAutoPlay" className="btn btn-xs">{(this.props.autoPlay == true) ? 'Unset' : 'Set'} Autoplay</button>
             </div>
         );
     }
