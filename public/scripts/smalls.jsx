@@ -155,8 +155,14 @@ exports.ItemMenu = React.createClass({
         this.props.closeMenu();
     },
     componentDidMount: function(){
-        var left = this.props.e.e.x - ($('#optsItem').width() + 10);
-        var top = this.props.e.e.y + 8;
+        // var top = this.props.e.e.y + 8;
+        console.log(this.props.e);
+        // var left = this.props.e.e.x;
+        var top = this.props.e.e.y;
+        var it = $('.itemCls');
+        console.log()
+        var left = this.props.e.e.x - (it.width() + 10 + parseInt(it.css('marginRight')) + parseInt(it.css('marginBottom')));
+
         $('#optsItem').css('top', top + 'px');
         $('#optsItem').css('left', left + 'px');
         $(document).mouseup(function (e){
@@ -167,9 +173,17 @@ exports.ItemMenu = React.createClass({
                 this.props.closeMenu();
             }
         }.bind(this));
+        var stateObj = { reason: "menuClick" };
+        window.history.pushState(stateObj, "menu");
+        window.onpopstate = function(event) {
+          this.close();
+        }.bind(this);
+
     },
     componentWillUnmount: function(){
+        this.close();
         $(document).unbind('mouseup');
+        window.onpopstate = function(event) {return true;};
     },
     render: function(){
         return(

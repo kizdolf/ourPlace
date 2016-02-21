@@ -25,7 +25,7 @@ var Note = React.createClass({
             return (moment(parseInt(d)).format('ddd DD MMMM YYYY HH:mm'));
         };
         return(
-            <li className="oneNote">
+            <li className="oneNote itemCls">
                 <span className="date">{formatDate(this.props.data.date)}</span>
                 <div className="contentNote" dangerouslySetInnerHTML={setContent(this.props.data.content)} />
                 <img

@@ -28,7 +28,7 @@ var MusicItem = React.createClass({
         // <Dropzone onDrop={this.onDrop}>
         var meta = this.props.song.meta;
         var name = this.props.song.name;
-        var clss = this.props.now ? 'itemMusic current': 'itemMusic';
+        var clss = this.props.now ? 'itemMusic current itemCls': 'itemMusic itemCls';
         return (
             <li className={clss} ondrop={this.onDrop}>
                 <span onClick={this.play} className="clickable" >

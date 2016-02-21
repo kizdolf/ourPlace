@@ -1,7 +1,28 @@
-body{
-    background:#E8F5E9 !important;
+/*tricks:*/
+.WrapperMenu ::-webkit-scrollbar {
+    width: 6px;
+}
+ 
+.WrapperMenu ::-webkit-scrollbar-track {
+    border-radius: 0px;
+    background: rgba(102, 217, 239, 0.5);
+}
+ 
+.WrapperMenu ::-webkit-scrollbar-thumb {
+    border-radius: 0;
+    border-top: 4px solid;
+    background: #272822;
+    border-bottom: 4px solid;
+    border-top-color: white;
+    border-bottom-color: white;
 }
 
+body{
+    background:#212121 !important;
+}
+p{
+    color: #66D9EF;
+}
 .listMusic{
     list-style-type: none;
     margin: 0;
@@ -64,7 +85,7 @@ body{
 }
 
 .current{
-    background-color: #76FF03 !important;
+    background-color: #A6E22E !important;
 }
 
 .textItem{
@@ -190,11 +211,11 @@ body{
         height: 220px;
         margin: 10px;
         cursor: pointer;
-        background: #81C784;
+        background: #272822;
         display: inline-block;
         word-wrap: break-word;
         padding: 0;
-        box-shadow: 2px 2px 2px 0px #000000;
+        box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
         position: relative;
         width: 180px;
         transition: 0.1s;
@@ -202,14 +223,22 @@ body{
     }
 
     .itemMusic:hover{
-        background: #00E676;
-        box-shadow: -2px -2px 4px 1px rgb(153, 232, 155);
+        background: #FD971F;;
+        box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
+    }
+
+    .itemMusic:hover .Meta{
+        color: #272822;
+    }
+    .current .Meta{
+        color: #272822;
     }
 
     .Meta{
         height: 40%;
         font-family: 'Roboto', sans-serif;
         padding: 0;
+        color: #FD971F;
     }
 
     .cover{
@@ -245,7 +274,7 @@ body{
 
     #curPlaylist{
         clear: both;
-        height: 550px;
+        height: 100%;
         overflow: auto;
     }
 
@@ -265,6 +294,7 @@ body{
         line-height: 30px;
         margin-top: 4px;
         cursor: pointer;
+        color: #F92672;
     }
 
     #curPlaylist ul li:hover .stats{
@@ -300,27 +330,31 @@ body{
     }
 
     #music{
-        max-width: 1200px;
-        margin-left: 250px;
+        /*max-width: 1200px;*/
+        /* margin-left: 250px; */
+        position: absolute;
+        top: 0;
+        left: 250px;
+        height: 100vh;
+        overflow: auto;
+        padding-top: 120px;
     }
 
 }
 
 @media (max-width: 680px){
-    body{
-        margin-top: 60px !important;
-    }
-
     #app{
-        margin-top: 0 !important;
+        margin-top: 48px !important;
     }
 
     #player{
-        height: 150px;
+        height: 100px;
+        background: white;
     }
 
     #music ul{
         padding: 0;
+        margin-left: -2%;
     }
 
     .metaPlaying{
@@ -328,12 +362,15 @@ body{
     }
 
     .metaPlayingImg{
-        height: 90px;
+        height: 100%;
+        max-width: 40%;
         float: left;
     }
 
     .curPlaying{
+        max-width: 60%
         float: left;
+        height: 100%;
     }
 
     .itemPlayingMeta {
@@ -370,13 +407,13 @@ body{
     }
 
     .itemMusic{
-        width: 27%;
-        height: 172px;
-        margin-left: 5%;
+        width: 30%;
+        height: 150px;
+        margin-left: 3%;
         margin-top: 10px;
         cursor: pointer;
         /* display: inline-block; */
-        background: #81C784;
+        background: #272822;
         word-wrap: break-word;
         box-shadow: 1px 1px 2px 0px #A2A2A2;
         position: relative;
@@ -391,9 +428,10 @@ body{
         display: run-in;
         z-index: 2;
         position: absolute;
-        color: #212121;
+        color: #FD971F;
         /* text-shadow: 1px 1px 1px white; */
         font-size: 10px;
+        overflow: auto;
     }
 
     .cover{
@@ -406,9 +444,12 @@ body{
 
     .artist{
         font-size: 10px !important;
+        font-weight: 100 !important;
     }
     .title{
         font-size: 10px !important;
+        font-weight: 100 !important;
+        font-style: normal !important;
     }
 
     .cov{
@@ -450,6 +491,8 @@ body{
     }
 
     .WrapperMenu{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
         top: 0 !important;
         right: 0 !important;
         left: auto !important;
@@ -462,11 +505,12 @@ body{
     }
 
     .oneLink{
-        width: 25% !important;
+        width: 33% !important;
         padding: 0 !important;
         margin: 0 !important;
-        margin-left: 2% !important;
+        margin-left: 0 !important;
         height: 100% !important;
+        border: 1px solid rgba(253, 151, 31, 0.36);
     }
     .notes{
         padding: 0;
@@ -479,9 +523,12 @@ body{
         margin-left: 0 !important;
     }
     #Notes {
+        left: 0 !important;
         display: inline-block !important;
-        width: 80% !important;
-        margin-left: 10% !important;
+        width: 100% !important;
+        padding-top: 54px !important;
+        /* top: 36px !important; */
+        background: #272822;
     }
     .oneNote{
         width: 100% !important;
@@ -579,6 +626,8 @@ body{
 
 #optsItem{
     position: absolute;
+    top: 0;
+    left: 0;
     background: #EFEFF2;
     box-shadow: 1px 1px 10px 1px #8E8E8E;
     width: 110px;
@@ -654,8 +703,14 @@ body{
 }
 
 #Notes{
-    max-width: 1200px;
-    margin-left: 205px;
+    /*max-width: 1200px;*/
+    /* margin-left: 250px; */
+    position: absolute;
+    top: 0;
+    left: 250px;
+    height: 100vh;
+    overflow: auto;
+    padding-top: 120px;
 }
 
 #Notes .ulNotes {
@@ -804,12 +859,14 @@ body{
 
 .WrapperMenu{
     position: fixed;
-    top: 120px;
+    top: 0;
+    padding-top: 120px;
+    padding-bottom: 60px;
     left: 0;
-    height: 600px;
+    height: 100vh;
     width: 250px;
     z-index: 1000;
-    background: rgb(185, 185, 185);
+    /* background: #212121; */
 }
 
 .links{
@@ -831,11 +888,13 @@ body{
     /* padding-left: 10px; */
     width: 30%;
     height: 40px;
-    background: rgb(125, 125, 125);
+    background: #272822;
     margin: 1%;
     /* padding-top: 20px; */
 }
 .oneLink a{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
     display: block;
     width: 100%;
     height: 100%;
@@ -844,8 +903,7 @@ body{
     /* line-height: 40px; */
     font-size: 23px;
     /* padding: 0 10px 0px 10px; */
-    color: black;
-    font-family: monospace;
+    color: #66D9EF;
     text-align: center;
     /* vertical-align: top; */
 }
@@ -917,10 +975,11 @@ body{
 }
 
 .rootStuff{
-    background: rgba(255, 255, 255, 0.81);
+    /*background: rgba(255, 255, 255, 0.81);*/
     margin: 6%;
     padding: 15px;
     margin-left: 250px;
+    color: white;
 }
 
 .inputBox{
@@ -931,6 +990,10 @@ body{
 
 #songViszu{
     clear: both;
+}
+
+.contentNote p{
+    color: black;
 }
 
 /*

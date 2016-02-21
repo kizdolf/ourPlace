@@ -258,11 +258,11 @@ var Layout = React.createClass({
                             }
                         )
                     }
-                <Visualizer url={this.state.musics[this.state.playList[this.state.index - 1]]} />
             </div>
         );
     }
 });
+                // <Visualizer url={this.state.musics[this.state.playList[this.state.index - 1]]} />
 
 module.exports = {
     Layout: Layout
