@@ -2,7 +2,7 @@
 
 
     var
-        conf        = require('./config').socket,
+        // conf        = require('./config').socket,
         user        = require('./user'),
         io          = require('socket.io'),
         ios         = require('socket.io-express-session');

@@ -40,7 +40,6 @@ exports.main = (function(){
                 if(err) res.json({err: err});
                 else {
                     user.own(req.session.uuid, response);
-                    s.send(response, req.session, true);
                     res.json({done: response});
                 }
             });
@@ -59,7 +58,6 @@ exports.main = (function(){
         var type = req.params.type;
         var id = req.params.id;
         lib.delete(type, id, function(done){
-            s.send(done, req.session, true);
             res.json(done);
         });
     });
@@ -69,7 +67,6 @@ exports.main = (function(){
     router.post('/fromYoutube', function(req, res){
         var url = req.body.url;
         lib.fromYoutube(url, (bool)=>{
-            s.send(true, req.session, true);
             res.json(bool);
         });
     });

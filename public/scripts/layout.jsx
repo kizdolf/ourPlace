@@ -78,6 +78,36 @@ var Layout = React.createClass({
             autoPlay: this.state.autoPlay
         });
     },
+    handlerSocket: function(name, data){
+        if(data.type !== 'song') return false;
+        var musics = this.state.musics;
+        var index = this.state.index;
+        var cb = function(){
+            this.setState({
+                musics: musics,
+                index: index
+            });
+        }.bind(this);
+        if(name == 'new'){
+            musics.unshift(data.obj); 
+            index++;
+            return cb(); 
+        }else{
+            musics.forEach(function(note, i){
+                if(name == 'changed'){
+                    if(note.id === data.obj.id){musics[i] = data.obj; return cb(); }
+                }else{
+                    if(note.id === data.obj){
+                        //get playlist index. 
+                        //check if index is sup to playlist index.
+                        //if yes index--.
+                        musics.splice(i, 1);
+                        return cb(); 
+                    }
+                }
+            });
+        }
+    },
     componentDidMount: function(){
         this.getMusicFromAPI(function(){
             var indexesOrder = Array.from(Array(this.state.musics.length).keys());
@@ -85,8 +115,14 @@ var Layout = React.createClass({
             this.getUserStatus();
         }.bind(this));
         this.socket = io({secure: true});
-        this.socket.on('update', function(data){ //jshint ignore: line
-            this.getMusicFromAPI();
+        this.socket.on('new', function(data){
+            this.handlerSocket('new', data);
+        }.bind(this));
+        this.socket.on('changed', function(data){
+            this.handlerSocket('changed', data);
+        }.bind(this));
+        this.socket.on('delete', function(data){
+            this.handlerSocket('delete', data);
         }.bind(this));
         this.rootKeyCode();
     },

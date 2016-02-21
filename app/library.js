@@ -7,7 +7,6 @@ var
     tbls            = require('./config').rethink.tables,
     tools           = require('./tools.js'),
     user            = require('./user'),
-    s               = require('./socket')(),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
@@ -109,7 +108,6 @@ exports.update = (req, res)=>{
     }
     re.update(tbl, id, obj).then((response)=>{ //call db.
         lo.info('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj});
-        s.send(obj, req.session, true); //trigger sockets.
         res.json(response); //send the db call succesfull result to the front.
     }).catch((e)=>{
         lo.error('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj, error: e});
@@ -238,13 +236,11 @@ exports.addNote = function(req, res){
     var note = req.body.note;
     re.insert(tbls.note, note)
     .then((r)=>{ //jshint ignore: line
-        log.info('note inserted: '+ note.name);
-        s.send(note, req.session, true);
+        lo.info('note inserted',{tbl: tbls.note, note: note, byWho: req.session.uuid});
         user.own(req.session.uuid, r);
         res.json({msg: 'note inserted.'});
     }).catch((e)=>{
-        log.error('err inserting obj');
-        log.error(e);
+        lo.info('inserting note',{tbl: tbls.note, note: note, byWho: req.session.uuid, error: e});
         res.json({msg: 'ERROR! note NOT inserted.'});
     });
 };
