@@ -38,7 +38,7 @@ var MusicItem = React.createClass({
                     <div className="Meta">
                         <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
                         <span className="title">{(meta.title) ? meta.title : name}</span>
-                        {(meta.album) ? <span className="album"><i>{meta.album}</i></span> : ''}
+                        {(meta.album) ? <span className="album">{meta.album}</span> : ''}
                     </div>
                 </span>
                 <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />

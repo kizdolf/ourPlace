@@ -1,5 +1,5 @@
 body{
-    background: rgba(0, 0, 0, 0.51) !important;
+    background:#E8F5E9 !important;
 }
 
 .listMusic{
@@ -64,10 +64,7 @@ body{
 }
 
 .current{
-    /*background: url('../img/playing.gif') no-repeat center !important;*/
-    background-color: rgba(55, 199, 70, 0.49) !important;
-    text-shadow: 0px 1px 1px black;
-    color: white;
+    background-color: #76FF03 !important;
 }
 
 .textItem{
@@ -80,7 +77,63 @@ body{
     margin-bottom: 250px;
 }
 
-@media (min-width: 640px){
+.wrapTimeLine{
+    display: block;
+    width: 90%;
+    height: 13px;
+    font-size: 13px;
+    line-height: 13px;
+    position: fixed;
+    top: 100px;
+    right: 5%;
+    background: rgba(255, 255, 255, 0.84);
+    border-radius: 12px;
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.time{
+    width: 5%;
+    display: inline-block;
+    text-align: center;
+}
+
+.timeLine{
+    width: 90%;
+    display: inline-block;
+    background: rgba(171, 171, 171, 0.56);
+    height: 100%;
+    /* outline: 1px solid black; */
+    padding: 0;
+    border-radius: 20px;
+}
+
+.curElapsed{
+    background: #F7BB12;
+    height: 100%;
+    width: 22px;
+    position: absolute;
+    /* display: inline-block; */
+    height: 22px;
+    margin-top: -5px;
+    margin-left: -5px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 6px 0px #696666;
+    cursor: pointer;
+}
+
+.Elapsed{
+    display: inline-block;
+    background: rgba(156, 232, 87, 0.63);
+    height: 100%;
+    border-radius: 20px;
+    /*transition: 0.3s;*/
+}
+
+@media (min-width: 680px){
 
     #player{
         position: fixed;
@@ -96,36 +149,37 @@ body{
 
     .ctrls{
         text-align: right;
-        width: 45%;
         display: inline-block;
+        float: right;
+        max-width: 46%;
     }
 
     .metaPlaying{
         height: 100%;
         display: inline-block;
-        width: 45%;
+        float: left;
+        max-width: 50%;
     }
 
     .metaPlaying img{
         height: 100%;
-        max-width: 29%;
+        float: left;
     }
 
     .curPlaying{
-        float: right;
-        width: 70%;
+        float: left;
         height: 100%;
+        margin-left: 10px;
     }
 
     .itemPlayingMeta {
         display: block;
-        font-family: monospace;
+        font-family: 'Roboto', sans-serif;
         font-size: 20px;
     }
 
-    .itemPlayingMeta i {
-        font-weight: bold;
-        font-family: inherit;
+    .sMall{
+        font-weight: 100;
     }
 
     .ctrls img:hover{
@@ -136,7 +190,7 @@ body{
         height: 220px;
         margin: 10px;
         cursor: pointer;
-        background: #FFE8BE;
+        background: #81C784;
         display: inline-block;
         word-wrap: break-word;
         padding: 0;
@@ -148,13 +202,13 @@ body{
     }
 
     .itemMusic:hover{
-        background: rgb(244, 244, 244);
-        box-shadow: 2px 2px 2px 0px rgba(153, 232, 155, 0.48);
+        background: #00E676;
+        box-shadow: -2px -2px 4px 1px rgb(153, 232, 155);
     }
 
     .Meta{
         height: 40%;
-        font-family: monospace;
+        font-family: 'Roboto', sans-serif;
         padding: 0;
     }
 
@@ -187,61 +241,7 @@ body{
         max-width: 24%;
     }
 
-    .wrapTimeLine{
-        display: block;
-        width: 90%;
-        height: 13px;
-        font-size: 13px;
-        line-height: 13px;
-        position: fixed;
-        top: 100px;
-        right: 5%;
-        background: rgba(255, 255, 255, 0.84);
-        border-radius: 12px;
-        -moz-user-select: -moz-none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-    .time{
-        width: 5%;
-        display: inline-block;
-        text-align: center;
-    }
-
-    .timeLine{
-        width: 90%;
-        display: inline-block;
-        background: rgba(171, 171, 171, 0.56);
-        height: 100%;
-        /* outline: 1px solid black; */
-        padding: 0;
-        border-radius: 20px;
-    }
-
-    .curElapsed{
-        background: #F7BB12;
-        height: 100%;
-        width: 22px;
-        position: absolute;
-        /* display: inline-block; */
-        height: 22px;
-        margin-top: -5px;
-        margin-left: -5px;
-        border-radius: 50%;
-        box-shadow: 0px 0px 6px 0px #696666;
-        cursor: pointer;
-    }
-
-    .Elapsed{
-        display: inline-block;
-        background: rgba(156, 232, 87, 0.63);
-        height: 100%;
-        border-radius: 20px;
-        /*transition: 0.3s;*/
-    }
+    
 
     #curPlaylist{
         clear: both;
@@ -306,7 +306,11 @@ body{
 
 }
 
-@media (max-width: 600px){
+@media (max-width: 680px){
+    body{
+        margin-top: 60px !important;
+    }
+
     #app{
         margin-top: 0 !important;
     }
@@ -324,7 +328,22 @@ body{
     }
 
     .metaPlayingImg{
-        height: 100%;
+        height: 90px;
+        float: left;
+    }
+
+    .curPlaying{
+        float: left;
+    }
+
+    .itemPlayingMeta {
+        display: block;
+        font-family: 'Roboto', sans-serif;
+        font-size: 20px;
+    }
+
+    .sMall{
+        font-weight: 100;
     }
 
     .ctrls {
@@ -342,40 +361,75 @@ body{
         cursor: pointer;
         width: 20%;
     }
+    
+    .wrapTimeLine{
+        width: 100%;
+        right: 0;
+        top: 40px;
+        z-index: 99999;
+    }
 
     .itemMusic{
-        width: 100%;
-        height: 150px;
-        margin: 1px;
+        width: 27%;
+        height: 172px;
+        margin-left: 5%;
+        margin-top: 10px;
         cursor: pointer;
-        /*line-height: 50px;*/
-        /*text-align: center;*/
-        display: inline-block;
-        background: #FFFFFF;
+        /* display: inline-block; */
+        background: #81C784;
         word-wrap: break-word;
         box-shadow: 1px 1px 2px 0px #A2A2A2;
         position: relative;
+        float: left;
+        list-style-type: none;
     }
 
     .Meta{
-        height: 100%;
-        padding-right: 9px;
-        width: 58%;
-        float: right;
+        height: 40%;
+        font-family: 'Roboto', sans-serif;
+        width: 100%;
+        display: run-in;
+        z-index: 2;
+        position: absolute;
+        color: #212121;
+        /* text-shadow: 1px 1px 1px white; */
+        font-size: 10px;
     }
 
     .cover{
-        height: 100%;
-        width: 38%;
-        float: left;
+        height: 60%;
+        width: 100%;
+        /* float: left; */
+        /* position: absolute; */
+        z-index: 1;
+    }
+
+    .artist{
+        font-size: 10px !important;
+    }
+    .title{
+        font-size: 10px !important;
     }
 
     .cov{
-        heit: auto;
         max-height: 100%;
         /* width: auto; */
         max-width: 100%;
         margin: 0 auto;
+    }
+
+    .timeLine{
+        width: 100% !important;
+    }
+
+    .time{
+        position: absolute;
+        min-width: 38px !important;
+        z-index: 1;
+        opacity: 0.9;
+    }
+    .tot{
+        display: none !important;
     }
 
     .metaPlayer{
@@ -399,14 +453,20 @@ body{
         top: 0 !important;
         right: 0 !important;
         left: auto !important;
-        width: 30% !important;
-        height: auto !important;
+        width: 100% !important;
+        height: 40px !important;
+    }
+
+    .links{
+        height: 100%;
     }
 
     .oneLink{
-        width: 100% !important;
-        margin-left: 0 !important;
-        height: 60px !important;
+        width: 25% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        margin-left: 2% !important;
+        height: 100% !important;
     }
     .notes{
         padding: 0;
@@ -419,7 +479,14 @@ body{
         margin-left: 0 !important;
     }
     #Notes {
+        display: inline-block !important;
+        width: 80% !important;
+        margin-left: 10% !important;
+    }
+    .oneNote{
+        width: 100% !important;
         margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 }
 
@@ -427,16 +494,29 @@ body{
     text-align: right;   
 }
 
-.title, .artist{
+.artist{
     width: 100%;
     display: block;
-    /*font-weight: bold;*/
+    font-weight: 500;
     min-height: 20px;
-    /* line-height: 21px; */
     margin: 0;
     font-size: 14px; 
     padding: 2px;
-    /* text-align: right; */
+}
+
+.title{
+    width: 100%;
+    display: block;
+    font-weight: 500;
+    min-height: 20px;
+    margin: 0;
+    font-size: 14px; 
+    padding: 2px;
+    font-style: italic;
+}
+
+.album{
+    font-weight: 100;
 }
 
 .running{
@@ -846,7 +926,7 @@ body{
 .inputBox{
     display: block;
     width: 100%;
-    height: 80px;
+    height: 95px;
 }
 
 #songViszu{

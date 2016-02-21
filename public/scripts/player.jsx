@@ -20,12 +20,12 @@ var Meta = React.createClass({
     render: function(){
         return(
             <div className="metaPlaying">
+                <img className="metaPlayingImg" src={this.props.song.picture || '/img/default_cover.png'} alt="cover"/>
                 <div className="curPlaying">
                     <span  className="itemPlayingMeta">{this.props.song.title}</span>
-                    <span className="itemPlayingMeta"><i>From: </i>{(this.props.song.artist) ? this.props.song.artist[0] : ''}</span>
-                    <span className="itemPlayingMeta"><i>Album: </i>{this.props.song.album || ''}</span>
+                    <span className="itemPlayingMeta"><span className="sMall">From: </span>{(this.props.song.artist) ? this.props.song.artist[0] : ''}</span>
+                    <span className="itemPlayingMeta"><span className="sMall">Album: </span>{this.props.song.album || ''}</span>
                 </div>
-                <img className="metaPlayingImg" src={this.props.song.picture || '/img/default_cover.png'} alt="cover"/>
             </div>
         );
     }
