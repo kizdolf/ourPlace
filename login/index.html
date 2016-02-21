@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="robots" content="noindex, nofollow">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
         <title>Log in</title>
         <style>
         body{
@@ -66,6 +67,21 @@
         }
 
         </style>
+         <script>
+            (function($) {
+                $(document).ready(function() {            
+                    var token = '', userName = $('#username'), password = $('#password'), logIn = $('#logIn');
+                    $.get('/tokenLogin', function(data){token  = data.token;});
+                    $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
+                    logIn.click(function(){
+                        $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
+                            console.log(data);
+                            if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.err.message);
+                        });
+                    });
+                });
+            })(jQuery);
+        </script>
     </head>
     <body>
         <div id="wrapper">
@@ -81,17 +97,6 @@
                 <button type="button" name="logIn" id="logIn">Log-in!</button>
             </form>
         </div>
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-        <script>
-            var token = '', userName = $('#username'), password = $('#password'), logIn = $('#logIn');
-            $.get('/tokenLogin', function(data){token  = data.token;});
-            $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
-            logIn.click(function(){
-                $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
-                    console.log(data);
-                    if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.err.message);
-                });
-            });
-        </script>
+       
     </body>
 </html>

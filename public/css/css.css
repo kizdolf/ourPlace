@@ -23,6 +23,10 @@ body{
 p{
     color: #66D9EF;
 }
+
+hr{
+    clear: both;
+}
 .listMusic{
     list-style-type: none;
     margin: 0;
@@ -85,7 +89,8 @@ p{
 }
 
 .current{
-    background-color: #A6E22E !important;
+    background-color: #EABF33 !important;
+    color: #272822 !important;
 }
 
 .textItem{
@@ -294,7 +299,7 @@ p{
         line-height: 30px;
         margin-top: 4px;
         cursor: pointer;
-        color: #F92672;
+        color: #EABF33;
     }
 
     #curPlaylist ul li:hover .stats{
@@ -343,6 +348,9 @@ p{
 }
 
 @media (max-width: 680px){
+    html{
+        margin-bottom: 100px;
+    }
     #app{
         margin-top: 48px !important;
     }
@@ -994,6 +1002,16 @@ p{
 
 .contentNote p{
     color: black;
+}
+
+.listUser{
+    list-style-type: none;
+}
+.userItem{
+    width: 350px;
+    float: left;
+    border: 1px solid #FD971F;
+    margin: 5px;
 }
 
 /*

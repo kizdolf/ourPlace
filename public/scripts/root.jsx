@@ -29,15 +29,15 @@ var User = React.createClass({
     },
     render: function(){
         return(
-            <li>
+            <li className="userItem">
                 <h3>{this.props.data.pseudo}</h3>
                 <b>Played tracks: {this.props.data.played}</b>
                 <p>
-                    is root status? : {this.props.data.root ? 'Yes' : 'No' }
-                    <button className="btn btn-default btn-sm" onClick={this.switchRoot}>
-                        Switch status
-                    </button>
+                    is root? : {this.props.data.root ? 'Yes' : 'No' }
                 </p>
+                <button className="btn btn-default btn-sm" onClick={this.switchRoot}>
+                    Switch status
+                </button>
                 <button className="btn btn-warning btn-sm" onClick={this.delete}>Delete</button>
             </li>
         );
@@ -143,7 +143,7 @@ exports.RootBox = React.createClass({
                     <input type="email" placeholder="Email (optional)" id="mail"/>
                     <button className="btn btn-default btn-sm" onClick={this.create}>Create</button>
                 </div>
-                <ul>
+                <ul className="listUser">
                     {mountUsers}
                 </ul>
                 <hr/><h3>Logs en base:</h3>
