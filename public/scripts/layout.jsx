@@ -140,7 +140,7 @@ var Layout = React.createClass({
         });
     },
     componentWillUnmount: function(){
-        this.socket.on('update', function(data){}); //jshint ignore:line
+        this.socket = null;
     },
     play: function(path, type, meta, index){
             if(typeof index === 'undefined'){

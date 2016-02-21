@@ -65,7 +65,7 @@ var root = (req, res)=>{
                 re.getCon((c)=>{
                     r.table(tbls.log).orderBy(r.desc('when')).skip(n).limit(mainConf.logsPerPage)
                     .run(c).then((logs)=>{
-                        res.json(logs);
+                        res.json({logs: logs, page: (n / mainConf.logsPerPage)});
                     }).catch((e)=>{
                         lo.error('getting logs', {error: e, params: {first: first, second: n}, byWho: req.session.uuid});
                     });

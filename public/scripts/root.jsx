@@ -45,8 +45,9 @@ var User = React.createClass({
 });
 
 exports.RootBox = React.createClass({
+    logsPage: 0,
     getInitialState: function(){
-        return {users: [], logs: [], logsPage:0};
+        return {users: [], logs: [], page: 0};
     },
     amIRoot: function(cb){
         $.get('/api/root/amI', (res)=>{
@@ -60,7 +61,7 @@ exports.RootBox = React.createClass({
     },
     refresh: function(){
         this.getAllUsers();
-        this.setState({logsPage: 0});
+        this.logsPage = 0;
         this.getLogs();
     },
     componentDidMount: function(){
@@ -75,15 +76,18 @@ exports.RootBox = React.createClass({
         else return 1;
     },
     getLogs: function(){
-        var url = '/api/root/logs/' + this.state.logsPage;
-        $.get(url, function(logs){
-            if(logs.length == 0 && this.state.logsPage != 0){
+        var url = '/api/root/logs/' + this.logsPage;
+        $.get(url, function(data){
+            var logs = data.logs,
+                page = data.page;
+            if(logs.length == 0 && this.logsPage != 0){
                 console.log('set to 0');
-                this.setState({logsPage: 0});
+                this.logsPage = 0;
                 this.getLogs();
             }else{
                 // logs = logs.sort(this.byDate);
-                this.setState({logs: logs});
+                this.setState({logs: logs, page: page});
+                this.logsPage = page;
             }
         }.bind(this));
     },
@@ -103,14 +107,13 @@ exports.RootBox = React.createClass({
         }
     },
     nextLogs: function(){
-        var next = this.state.logsPage + 1;
-        this.setState({logsPage: next});
+        this.logsPage++;
         this.getLogs();
     },
     prevLogs: function(){
-        var prev = this.state.logsPage -1;
+        var prev = this.logsPage -1;
         if(prev < 0) prev = 0;
-        this.setState({logsPage: prev});
+        this.logsPage = prev;
         this.getLogs();
     },
     render: function(){
@@ -147,7 +150,7 @@ exports.RootBox = React.createClass({
                 <button className="btn btn-default btn-sm" onClick={this.refresh}>Refresh</button>
                 <button className="btn btn-default btn-sm" onClick={this.prevLogs}>Previous Page</button>
                 <button className="btn btn-default btn-sm" onClick={this.nextLogs}>Next Page</button>
-                <span>current Page: {this.state.logsPage}</span>
+                <span>current Page: {this.state.page}</span>
                 <div id="logs">{mountLogs}</div>
             </div>
         );
