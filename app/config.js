@@ -48,7 +48,8 @@ exports.rethink = {
         log: 'logs',
         live: 'live',
         request: 'logRequests',
-        share: 'share'
+        share: 'share',
+        stats: 'userStats'
     }
 };
 

@@ -95,7 +95,12 @@ var Layout = React.createClass({
         }else{
             musics.forEach(function(note, i){
                 if(name == 'changed'){
-                    if(note.id === data.obj.id){musics[i] = data.obj; return cb(); }
+                    if(note.id === data.obj.id){
+                        var playedBy = musics[i].playedBy + 1;
+                        musics[i] = data.obj;
+                        musics[i].playedBy = playedBy;
+                        return cb();
+                    }
                 }else{
                     if(note.id === data.obj){
                         //get playlist index. 
@@ -211,11 +216,9 @@ var Layout = React.createClass({
     },
     addPlayed: function(){
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
+        console.log(sng);
         if(sng){
             this.socket.emit('play', {id: sng.id});
-            var actuals = this.state.musics;
-            actuals[this.state.playList[this.state.index - 1]].playedBy++;
-            this.setState({musics: actuals});
         }
     },
     render: function(){

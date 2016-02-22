@@ -55,19 +55,18 @@ var InputBox = React.createClass({
     },
     sendFromYT: function(){
         var url = ($('#inputs').val()).split('&')[0];
-        var btn = $('#addMusBtn');
+        var input = $('#inputs');
         if(url.indexOf('youtube') == -1){
-            btn.html('Not a youtube link..');
+            input.val('Not a youtube link..');
             setTimeout(()=>{
-                btn.html('Try a other one.');
+                input.val('Try a other one.');
             }, 1500);
         }else{
-            $('#inputs').val('');
-            btn.html('Uploading...');
+            input.val('Uploading...');
             $.post('/api/fromYoutube', {url: url}, (data)=>{ //jshint ignore:line
-                btn.html('Done!');
+                input.val('Done!');
                 setTimeout(()=>{
-                    btn.html('Add a other one.');
+                    input.val('');
                 }, 1500);
             });
         }

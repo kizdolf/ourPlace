@@ -54,7 +54,11 @@ listenChangeNote = (er, cursor)=>{
     if(!er) getChanges(cursor, (obj)=>{ sendTo('note', obj); });
 },
 listenChangeSong = (er, cursor)=>{
-    if(!er) getChanges(cursor, (obj)=>{ sendTo('song', obj);});
+    if(!er){
+        getChanges(cursor, (obj)=>{
+            sendTo('song', obj);
+        });
+    }
 };
 
 r.connect(dbCnf.connect, (e, c)=>{

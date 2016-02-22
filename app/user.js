@@ -14,13 +14,17 @@ var
     var lo = tools.lo;
 
 var played = (id, req)=>{
-    var pseudo = req.session.pseudo;
     var idUser = req.session.uuid;
+    console.log(id);
     re.getCon((c)=>{
-        r.table(tbls.user).filter({pseudo: pseudo})
-        // .update({played: r.row('played').append(id)})
-        .update({played: r.row('played').append({id: id, when: new Date()})})
-        .run(c);
+        r.table(tbls.stats).get(idUser).update({songs: {id : {
+            count: r.row('songs')(id)('count').add(1).default(1),
+            when:  r.row('songs')(id)('when').append(new Date()).default([new Date()])
+        }}}).run(c);
+        // r.table(tbls.user).filter({pseudo: pseudo})
+        // // .update({played: r.row('played').append(id)})
+        // .update({played: r.row('played').append({id: id, when: new Date()})})
+        // .run(c);
         r.table(tbls.song).get(id)
         .update({played: r.row('played').add(1).default(1)})
         .run(c);
@@ -164,10 +168,9 @@ var makeMeRoot = ()=>{
 /*return count ids for user.*/
 var getPlayed = (id, uuid)=>{
     return new Promise((ful, rej)=>{
-        _r.table(tbls.user).get(uuid)('played').filter(
-            function (idSng){ return(idSng.eq(id)); }
-        ).count().run().then((res)=>{
-            ful(res);             
+        _r.table(tbls.stats).get(uuid)('songs')(id)('count')
+        .then((res)=>{
+            ful(res);
         }).catch((e)=>{
             lo.error('catching played:', {byWho: uuid, idSng: id, error: e});
             ful(0);
