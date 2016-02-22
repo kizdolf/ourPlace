@@ -200,20 +200,12 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
 var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
 
 //TODO: add limitation number on demand. sorting options as well.
-exports.allSongs = function(session){
+exports.allSongs = function(session){ //jshint ignore:line
     var files = [];
-    var who = session.uuid;
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
             files = songs.sort(byDate);
-            var lnght = files.length;
-            files.forEach((sng, index)=>{
-                user.getPlayed(sng.id, who).then((nb)=>{
-                    files[index].playedBy = nb;
-                    lnght--;
-                    if(lnght === 0) ful(files);
-                });
-            });
+            ful(files);
         }).catch((e)=>{
             lo.error('get', {msg: 'requesting all songs.', tbl: tbls.song, error: e});
             rej(e);

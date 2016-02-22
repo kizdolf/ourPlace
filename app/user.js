@@ -15,16 +15,16 @@ var
 
 var played = (id, req)=>{
     var idUser = req.session.uuid;
-    console.log(id);
     re.getCon((c)=>{
-        r.table(tbls.stats).get(idUser).update({songs: {id : {
-            count: r.row('songs')(id)('count').add(1).default(1),
-            when:  r.row('songs')(id)('when').append(new Date()).default([new Date()])
-        }}}).run(c);
-        // r.table(tbls.user).filter({pseudo: pseudo})
-        // // .update({played: r.row('played').append(id)})
-        // .update({played: r.row('played').append({id: id, when: new Date()})})
-        // .run(c);
+        r.table(tbls.stats).get(idUser).update({
+            songs: {
+                [id] : {
+                    count: r.row('songs')(id)('count').add(1).default(1),
+                    when:  r.row('songs')(id)('when').append(new Date()).default([new Date()])
+                }
+            },
+            totalSongs: r.row('totalSongs').add(1).default(1)
+        }).run(c);
         r.table(tbls.song).get(id)
         .update({played: r.row('played').add(1).default(1)})
         .run(c);

@@ -25,6 +25,13 @@ module.exports = function(app, session){
             socket.on('play', (data)=>{
                 user.played(data.id, {session: socket.handshake.session});
             });
+
+            socket.on('played', (data)=>{
+                var uuid = socket.handshake.session.uuid;
+                user.getPlayed(data.id, uuid).then((nb)=>{
+                    socket.emit('playedBy', nb);
+                });
+            });
         });
     }
 
