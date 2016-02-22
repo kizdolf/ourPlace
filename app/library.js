@@ -200,7 +200,7 @@ exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
 var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
 
 //TODO: add limitation number on demand. sorting options as well.
-exports.allSongs = function(session){ //jshint ignore:line
+exports.allSongs = function(){
     var files = [];
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
