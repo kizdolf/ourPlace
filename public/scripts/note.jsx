@@ -144,6 +144,7 @@ exports.NoteBox = React.createClass({
             );
         });
         return(
+            <span>
             <div id="Notes">
                 <ul className="notes">
                     <Editor
@@ -152,18 +153,12 @@ exports.NoteBox = React.createClass({
                     />
                     {mountNotes}
                 </ul>
-                {
-                    this.state.showMenu ?
-                        <ItemMenu
-                            e={this.state.toTop}
-                            closeMenu={this.closeMenu}
-                            type='note'
-                            removed={this.removed}
-                        />
-                    : null
-                }
             </div>
-
+            {this.state.showMenu ?
+                <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='note' removed={this.removed} />
+            : null
+            }
+            </span>
         );
     }
 });

@@ -145,13 +145,13 @@ exports.MusicBox = React.createClass({
             if ([39, 37, 40, 38].indexOf(e.keyCode) != -1){
                 var tag = e.target.tagName.toLowerCase();
                 if(tag != 'input' && tag != 'textarea' && tag != 'pre'){
-                    if(e.keyCode == 39 ) this.props.next();
-                    else if(e.keyCode == 37) this.props.prev();
+                    if(e.keyCode == 39 ) this.props.next(1, true);
+                    else if(e.keyCode == 37) this.props.prev(1, true);
                     else{
                         var nb = this.calculateLIsInRow();
                         e.preventDefault();
-                        if(e.keyCode == 40) this.props.next(nb);
-                        else if(e.keyCode == 38) this.props.prev(nb);
+                        if(e.keyCode == 40) this.props.next(nb, true);
+                        else if(e.keyCode == 38) this.props.prev(nb, true);
                         var scrollTo = $('.current');
                         var h = scrollTo.position().top;
                         var less = ((h - 500) < 0) ? h : h - 500;
@@ -191,6 +191,7 @@ exports.MusicBox = React.createClass({
             }.bind(this));
         } else musicNodes = '';
         return (
+            <span>
             <div id="music">
                 <InputBox
                     search={this.search}
@@ -200,8 +201,9 @@ exports.MusicBox = React.createClass({
             <ul classNammusice="listMusic">
                     {musicNodes}
                 </ul>
-                { this.state.showMenu ? <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='song' removed={this.props.removed} /> : '' }
             </div>
+            { this.state.showMenu ? <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='song' removed={this.props.removed} /> : '' }
+            </span>
         );
     }
 });

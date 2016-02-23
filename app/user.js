@@ -167,12 +167,25 @@ var makeMeRoot = ()=>{
 
 /*return count ids for user.*/
 var getPlayed = (id, uuid)=>{
-    return new Promise((ful, rej)=>{
+    return new Promise((ful)=>{
         _r.table(tbls.stats).get(uuid)('songs')(id)('count')
         .then((res)=>{
             ful(res);
         }).catch((e)=>{
             lo.error('catching played:', {byWho: uuid, idSng: id, error: e});
+            ful(0);
+        });
+    });
+};
+
+/*return count ids for user.*/
+var getTotPlayed = (uuid)=>{
+    return new Promise((ful)=>{
+        _r.table(tbls.stats).get(uuid)('totalSongs')
+        .then((res)=>{
+            ful(res);
+        }).catch((e)=>{
+            lo.error('catching totPlayed:', {byWho: uuid, error: e});
             ful(0);
         });
     });
@@ -209,5 +222,6 @@ module.exports = {
     makeMeRoot: makeMeRoot,
     getPlayed: getPlayed,
     setStatus: setStatus,
-    getStatus: getStatus
+    getStatus: getStatus,
+    getTotPlayed: getTotPlayed
 };

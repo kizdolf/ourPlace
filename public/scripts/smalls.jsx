@@ -164,14 +164,9 @@ exports.ItemMenu = React.createClass({
         });
     },
     componentDidMount: function(){
-        // var top = this.props.e.e.y + 8;
-        console.log(this.props.e);
-        // var left = this.props.e.e.x;
         var top = this.props.e.e.y;
         var it = $('.itemCls');
-        console.log()
-        var left = this.props.e.e.x - (it.width() + 10 + parseInt(it.css('marginRight')) + parseInt(it.css('marginBottom')));
-
+        var left = this.props.e.e.x - (10 + parseInt(it.css('marginRight')) + parseInt(it.css('marginBottom')));
         $('#optsItem').css('top', top + 'px');
         $('#optsItem').css('left', left + 'px');
         $(document).mouseup(function (e){

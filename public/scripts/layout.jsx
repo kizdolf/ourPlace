@@ -8,7 +8,6 @@
 var Layout = React.createClass({
     url: '/api/music',
     uploadAPI: '/api/upload',
-    inter: 1000,
     notesUrl: '/api/notes',
     apiAddNote: '/api/note',
     getInitialState: function(){
@@ -35,16 +34,20 @@ var Layout = React.createClass({
         }.bind(this));
     },
     shuffle: function(){
+        /*
+            when setting shuffle we need to retrieve the index in new playlist.
+            when we turn off whuffle we need to retrieve the index in songs.
+        */
         var indexesOrder = this.state.playList;
         if(this.state.shuffling){
-            this.setState({shuffling: false});
+            var newIndex = indexesOrder[this.state.index];
+            this.setState({shuffling: false, index: newIndex});
             indexesOrder =  Array.from(Array(this.state.musics.length - 1).keys());
         }else{
             this.setState({shuffling: true});
             for(var j, x, i = indexesOrder.length; i; j = Math.floor(Math.random() * i), x = indexesOrder[--i], indexesOrder[i] = indexesOrder[j], indexesOrder[j] = x);
             indexesOrder.forEach(function(ind, key){
-                if(ind == this.state.index)
-                    this.setState({index: key});
+                if(ind == this.state.index) this.setState({index: key});
             }.bind(this));
         }
         this.setState({playList: indexesOrder});
@@ -158,15 +161,37 @@ var Layout = React.createClass({
             var toPlay = this.state.musics[this.state.playList[index]];
             this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
     },
+    truePlay: function(indexToPlay, force){
+        var list    = this.state.playList,
+            ln      = list.length,
+            songs   = this.state.musics;
+        if(typeof indexToPlay === 'undefined' || typeof list[indexToPlay] === 'undefined') indexToPlay = 0;
+        var indexInSongs;
+        if(typeof force !== 'undefined' && force === true){
+            indexInSongs = indexToPlay;
+            for (var i = ln - 1; i >= 0; i--) {
+                if (list[i] == indexInSongs){
+                    indexToPlay = i;
+                    break;
+                }
+            };
+        }else indexInSongs = list[indexToPlay];
+        var item = songs[indexInSongs]
+        if(typeof item === 'undefined'){
+            indexToPlay = 0;
+            indexInSongs = 0;
+            item = songs[indexInSongs];
+        }
+        this.setState({path: item.path, type: item.type, current: item.meta, index: indexToPlay});
+    },
     forcePlay: function(id){
         if(id){
-            this.state.playList.forEach((i, key)=>{
+            this.state.playList.forEach(function(i, key){
                 if(this.state.musics[i] && this.state.musics[i].id == id){
-                    toPlay = this.state.musics[i];
-                    this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: key});
+                    this.truePlay(key);
                     return;
                 }
-            });
+            }.bind(this));
         }
     },
     componentDidUpdate: function(prevProps, prevState) {
@@ -175,10 +200,12 @@ var Layout = React.createClass({
             this.setUserStatus();
         }
     },
-    moveInSongs: function(dir, n){
+    moveInSongs: function(dir, n, force){
         var list    = this.state.playList,
             i       = this.state.index,
             ln      = list.length;
+         //force is used to switch between automatic and manual. (mouse and keyboard are manual..)
+        if(force && force === true) i = this.state.playList[i];
         n = parseInt(n); 
         if(typeof n !== "number" || !isFinite(n)) n = 1;
         if(dir == 'prev')
@@ -190,15 +217,10 @@ var Layout = React.createClass({
             console.log({dir: dir, n: n});
             return false;
         }
-        var n = this.state.musics[list[i]];
-        this.play(n.path, n.type, n.meta, i);
+        this.truePlay(i, force);
     },
-    prev: function(n){
-        this.moveInSongs('prev', n);
-    },
-    next: function(n){
-        this.moveInSongs('next', n);
-    },
+    prev: function(n, force){ this.moveInSongs('prev', n, force); },
+    next: function(n, force){ this.moveInSongs('next', n, force); },
     removed: function(name){
         var actuals = this.state.musics;
         var indexes = this.state.playList;
@@ -216,7 +238,6 @@ var Layout = React.createClass({
     },
     addPlayed: function(){
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
-        console.log(sng);
         if(sng){
             this.socket.emit('play', {id: sng.id});
         }
