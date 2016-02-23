@@ -1,6 +1,6 @@
 var 
-fs      = require('fs');
-log     = require('simple-node-logger').createSimpleFileLogger('infos.log');
+fs      = require('fs'),
+log     = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 re      = require('./rethink'),
 cnf     = require('./config').conf,
 tbls    = require('./config').rethink.tables;

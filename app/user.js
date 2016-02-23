@@ -171,8 +171,8 @@ var getPlayed = (id, uuid)=>{
         _r.table(tbls.stats).get(uuid)('songs')(id)('count')
         .then((res)=>{
             ful(res);
-        }).catch((e)=>{
-            lo.error('catching played:', {byWho: uuid, idSng: id, error: e});
+        }).catch(()=>{
+            lo.error('catching played:', {byWho: uuid, idSng: id});
             ful(0);
         });
     });
@@ -184,8 +184,8 @@ var getTotPlayed = (uuid)=>{
         _r.table(tbls.stats).get(uuid)('totalSongs')
         .then((res)=>{
             ful(res);
-        }).catch((e)=>{
-            lo.error('catching totPlayed:', {byWho: uuid, error: e});
+        }).catch(()=>{
+            lo.error('catching totPlayed:', {byWho: uuid});
             ful(0);
         });
     });
