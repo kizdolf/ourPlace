@@ -11,6 +11,11 @@ exports.local = {
 	appPath: '/path/to/app' //(eg: /home/user/ourPlace). DO Not leave the trailing slash.
 };
 
+//not mandatory. see config.
+exports.bugsnag = {
+    token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+};
+
 exports.https = {
     privKey: '/path/to/certificates/privkey.pem',
     certificate: '/path/to/certificates/cert.pem',

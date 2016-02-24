@@ -3,7 +3,13 @@ fs      = require('fs'),
 log     = require('simple-node-logger').createSimpleFileLogger('infos.log'),
 re      = require('./rethink'),
 cnf     = require('./config').conf,
+confRe  = require('./criticalConf'),
 tbls    = require('./config').rethink.tables;
+
+/*debug stuff*/
+var bugsnag = require("bugsnag");
+bugsnag.register(confRe.bugsnag.token);
+
 
 var rm = (path)=>{
     fs.access(path, (err)=>{
@@ -43,6 +49,7 @@ var lo = ()=>{
     return{
         error: (log, attachment)=>{
             logIt('error', log, attachment);
+            bugsnag.notify(new Error(log, {attachment}));
         },
         info: (log, attachment)=>{
             logIt('info', log, attachment);

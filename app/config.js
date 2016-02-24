@@ -26,6 +26,7 @@ exports.conf = {
     logsPerPage : 20, //could be a non fixed value.
     fromMail: 'info@azerty.gq', 
     ndd: 'http://azerty.gq',
+    bugsnag: false,
 };
 
 exports.socket = {
