@@ -17,9 +17,9 @@ it should be accessible visible here: http://azerty.gq   (*but it require a logi
 **Using what else?**
 
  * [freebox-node](https://github.com/kizdolf/freebox-node) **in dev (twice)** used to communicate with a freebox.
- * socket.io : to pass some data, to know when to call the api
+ * socket.io : because sockets. And to not overload the api for small data.
  * express-session && socket.io-express-session to manage session, session are stored in a rethinkdb table, avaible from request or socket. <3
- * Table listener from rethinkdb. It tell me when something happen (and what) on a table. Allow to react properly (still under dev)
+ * Table listener from rethinkdb. It tell me when something happen (and what) on a table. Allow to react properly. 
  * youtube-dl : under the hood, it's used to download youtube song, extract metadata, image etc.
  * webpack : just on file to serve, and help so much the dev phase.
  * mandrill: to send mails. An Api key is needed. Sorry, but if you want to change mail provider, you'll have to code it.
