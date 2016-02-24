@@ -1,8 +1,11 @@
 var
-    React       = require('react'),
-    $           = require('jquery'),
-    Dropzone    = require('react-dropzone'),
-    ItemMenu    = require('./smalls.jsx').ItemMenu;
+    React           = require('react'),
+    $               = require('jquery'),
+    Dropzone        = require('react-dropzone'),
+    Draggable       = require('react-draggable'),
+    DraggableCore   = Draggable.DraggableCore,
+    Dropzone        = require('react-dropzone'),
+    ItemMenu        = require('./smalls.jsx').ItemMenu;
 
 
 var MusicItem = React.createClass({
@@ -16,34 +19,48 @@ var MusicItem = React.createClass({
             this.props.song.id
         );
     },
-    onDrop: function(li){
-        console.log(li);
-        console.log(this.props);
+    handleStart: function (event, ui) {
+        this.props.drag(true);
+        //console.log('Event: ', event);
+        //console.log('Start Position: ', ui.position);
     },
-    onDrag: function(e){
-        console.log(e);
+    handleDrag: function (event, ui) {
+        //console.log('Event: ', event);
+        //console.log('handle Position: ', ui.position);
+    },
+    handleStop: function (event, ui) {
+        this.props.drag(false);
+        //console.log('Event: ', event);
+        //console.log('stop Position: ', ui.position);
     },
     render: function(){
         // console.log(this.props.song.played);
-        // <Dropzone onDrop={this.onDrop}>
         var meta = this.props.song.meta;
         var name = this.props.song.name;
         var clss = this.props.now ? 'itemMusic current itemCls': 'itemMusic itemCls';
+            // <Draggable
+            //     handle="img"
+            //     grid={[20, 20]}
+            //     zindex={1000}
+            //     onStart={this.handleStart}
+            //     onDrag={this.handleDrag}
+            //     onStop={this.handleStop}>
         return (
-            <li className={clss} ondrop={this.onDrop}>
-                <span onClick={this.play} className="clickable" >
-                    <div className="cover" >
-                        <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" />
-                    </div>
-                    <div className="Meta">
-                        <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
-                        <span className="title">{(meta.title) ? meta.title : name}</span>
-                        {(meta.album) ? <span className="album">{meta.album}</span> : ''}
-                    </div>
-                </span>
-                <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
-            </li>
+                <li className={clss} ondrop={this.onDrop}>
+                    <span onClick={this.play} className="clickable" >
+                        <div className="cover" >
+                            <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" draggable={false}/>
+                        </div>
+                        <div className="Meta">
+                            <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
+                            <span className="title">{(meta.title) ? meta.title : name}</span>
+                            {(meta.album) ? <span className="album">{meta.album}</span> : ''}
+                        </div>
+                    </span>
+                    <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
+                </li>
         );
+            // </Draggable>
     }
 });
 
@@ -171,6 +188,10 @@ exports.MusicBox = React.createClass({
     //         }
     //     });
     // },
+    onDrop: function(li){
+        console.log(li);
+        // console.log(this.props);
+    },
     render: function(){
         var musicNodes;
         if(this.props.musics.length > 0){
@@ -180,6 +201,7 @@ exports.MusicBox = React.createClass({
                     var currentlyPlaying = (i == this.props.indexPlaying) ? true: false;
                     return (
                         <MusicItem
+                            drag={this.props.drag}
                             index={i++}
                             key={music.id}
                             song={music}
@@ -190,17 +212,17 @@ exports.MusicBox = React.createClass({
                 }
             }.bind(this));
         } else musicNodes = '';
+            // <Dropzone onDrop={this.onDrop}>
         return (
             <span>
             <div id="music">
                 <InputBox
                     search={this.search}
                     changeAutoPlay={this.props.changeAutoPlay}
-                    autoPlay={this.props.autoPlay}
-                />
-            <ul classNammusice="listMusic">
-                    {musicNodes}
-                </ul>
+                    autoPlay={this.props.autoPlay} />
+                    <ul classNammusice="listMusic">
+                        {musicNodes}
+                    </ul>
             </div>
             { this.state.showMenu ? <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='song' removed={this.props.removed} /> : '' }
             </span>

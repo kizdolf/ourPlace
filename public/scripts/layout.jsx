@@ -20,7 +20,8 @@ var Layout = React.createClass({
             playList: [],
             shuffling: false,
             canUpdateStatus: false,
-            autoPlay: false
+            autoPlay: false,
+            drag: false
         };
     },
     byDate: function(a, b){
@@ -236,6 +237,9 @@ var Layout = React.createClass({
         });
         this.setState({musics: actuals, playList: indexes});
     },
+    drag: function(bool){
+        this.setState({drag: bool});
+    },
     addPlayed: function(){
         var sng = this.state.musics[this.state.playList[this.state.index - 1]];
         if(sng){
@@ -245,7 +249,7 @@ var Layout = React.createClass({
     render: function(){
         return (
             <div>
-                <Upload url={this.uploadAPI} />
+                <Upload url={this.uploadAPI} drag={this.state.drag}/>
                 <Player
                     path={this.state.path}
                     type={this.state.type}
@@ -268,6 +272,7 @@ var Layout = React.createClass({
                         this.props.children &&
                         React.cloneElement(this.props.children,
                             {
+                                drag: this.drag,
                                 noteAPI: this.notesUrl,
                                 play: this.play,
                                 forcePlay: this.forcePlay,

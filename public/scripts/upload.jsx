@@ -34,25 +34,23 @@ exports.Upload = React.createClass({
             ht = $('html'),
             rmClass = function(){
                 dZ.removeClass('willDrop');
-            },
-            putClass = function(evt){
-                // console.log(evt);
-                dZ.addClass('willDrop');
             };
 
-        ht.on({
-            dragenter: putClass,
-            dragover: function(){
-                if(!dZ.hasClass('willDrop'))
-                    putClass();
-            }
-        });
+        ht.on('dragenter', function(evt){
+            if(this.props.drag == false)
+                dZ.addClass('willDrop');
+        }.bind(this));
+        ht.on('dragover', function(evt){
+            if(!dZ.hasClass('willDrop') && this.props.drag == false)
+                dZ.addClass('willDrop');
+        }.bind(this));
         dZ.on({
             dragleave: rmClass,
             drop: rmClass
         });
     },
     onDrop: function(files){
+        if(this.props.drag) return;
         files.forEach(function(file, i) {
             var elem = {name: file.name, pct: 'Starting ...'};
             var current = this.state.uploading;

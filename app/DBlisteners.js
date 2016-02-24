@@ -1,14 +1,6 @@
 'use strict';
 /*
-    Under dev. On change should send socket if needed.
-    We could avoid to the dront to call the api just for one change.
-    At the moment a socket 'update' is fired by the api call. 
-    Once received by the front, the front call the api to retrieve all fields, and then do a diff.
-    That's useless. We just have to trigger the good sockets from here.
-*/
-
-/*
-    Pseudo logic to include:
+    Pseudo logic:
     detect what kind of change.
     init the socket obj with the obj type (note or song)
     switch (kind)
@@ -24,48 +16,42 @@
                 on delete: remove object with the id, behave accordingly.
                 on update: replace obj directly. Should be enough.
 */
-
-global.count = 0;
-
 var r       = require('rethinkdb'),
     cnf     = require('./config.js').rethink,
     dbCnf   = require('./criticalConf.js'),
     s       = require('./socket')();
 
 var
-
+//detect what kind of change for one change val returned by the db.
 getKind = (val)=>{
     var n = val.new_val, o = val.old_val;
     return (n !== null && o === null) ? 'new' : (n === null && o !== null) ? 'delete' : 'changed';
 },
+//trigger the sockets.
 sendTo = (type, obj)=>{
     obj.type = type;
     s.send(obj, '', true, obj.kind);
 },
+//main.
 getChanges = (cursor, cb)=>{
     cursor.each((e, val)=>{
-        var kind = getKind(val);
-        var toSend = {kind: kind};
-        toSend.obj = (kind != 'delete') ? (val.new_val) : (val.old_val.id);
-        cb(toSend);
+        var kind    = getKind(val);
+        cb({
+            kind: kind,
+            obj : (kind != 'delete') ? (val.new_val) : (val.old_val.id)
+        });
     });
 },
 listenChangeNote = (er, cursor)=>{
     if(!er) getChanges(cursor, (obj)=>{ sendTo('note', obj); });
 },
 listenChangeSong = (er, cursor)=>{
-    if(!er){
-        getChanges(cursor, (obj)=>{
-            sendTo('song', obj);
-        });
-    }
+    if(!er) getChanges(cursor, (obj)=>{ sendTo('song', obj); });
 };
 
+/* Listen changes.*/
 r.connect(dbCnf.connect, (e, c)=>{
-    if(e){
-        console.log('erreur=>catch for changes');
-        console.log(e);
-    }else{
+    if(!e){
         r.table(cnf.tables.note).changes().run(c, listenChangeNote);
         r.table(cnf.tables.song).changes().run(c, listenChangeSong);
     }

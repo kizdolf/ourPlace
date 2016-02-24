@@ -238,6 +238,7 @@ hr{
         position: relative;
         width: 180px;
         transition: 0.1s;
+        z-index: 500;
         float: left;
     }
 
@@ -834,7 +835,7 @@ hr{
     position: absolute;
     bottom: 0;
     right: 0;
-    z-index: 5;
+    z-index: 505;
 }
 
 .dropZone{
