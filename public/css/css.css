@@ -23,7 +23,9 @@ body{
 p{
     color: #66D9EF;
 }
-
+input{
+    color: black !important;
+}
 hr{
     clear: both;
 }
@@ -159,6 +161,19 @@ hr{
     /*transition: 0.3s;*/
 }
 
+.itemMusic:hover{
+    background: #FD971F;;
+    box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
+    transform: scale(0.96);
+}
+
+.itemMusic:hover .Meta{
+    color: #272822;
+}
+.current .Meta{
+    color: #272822;
+}
+
 @media (min-width: 680px){
 
     #player{
@@ -226,23 +241,11 @@ hr{
         float: left;
     }
 
-    .itemMusic:hover{
-        background: #FD971F;;
-        box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
-    }
-
-    .itemMusic:hover .Meta{
-        color: #272822;
-    }
-    .current .Meta{
-        color: #272822;
-    }
-
     .Meta{
         height: 40%;
         font-family: 'Roboto', sans-serif;
         padding: 0;
-        color: #FD971F;
+        color: #dbd5c9;
     }
 
     .cover{

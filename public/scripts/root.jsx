@@ -4,19 +4,6 @@ var
     $           = require('jquery');
 
 var User = React.createClass({
-    getInitialState: function(){
-        return{
-            totPlayed: 0
-        }
-    },
-    getStats: function(){
-        this.props.totPlayed(this.props.data.id, function(nb){
-            console.log('get stats 1');
-            console.log(this.props.data.id);
-            console.log(nb);
-            this.setState({totPlayed: nb});
-        }.bind(this));
-    },
     switchRoot: function(){
         var newStatus = !this.props.data.root;
         var id = this.props.data.id;
@@ -44,7 +31,7 @@ var User = React.createClass({
         return(
             <li className="userItem">
                 <h3>{this.props.data.pseudo}</h3>
-                <b>Played tracks: {this.state.totPlayed}</b>
+                <b>Played tracks: {this.props.data.totalSongs}</b>
                 <p>
                     is root? : {this.props.data.root ? 'Yes' : 'No' }
                 </p>
@@ -62,14 +49,6 @@ exports.RootBox = React.createClass({
     logsPage: 0,
     componentWillUnmount: function(){
         this.socket = null;
-    },
-    totPlayed: function(id, cb){
-        this.socket.emit('totPlayed', {id: id});
-        this.socket.on('totPlayedBy', function(data){
-            console.log('data in Parent:');
-            console.log(data);
-            cb(data);
-        }.bind(this));
     },
     getInitialState: function(){
         return {users: [], logs: [], page: 0};
@@ -145,7 +124,7 @@ exports.RootBox = React.createClass({
     render: function(){
         var mountUsers = this.state.users.map((user)=>{
             return(
-                <User data={user} key={user.id} refresh={this.refresh} totPlayed={this.totPlayed}/>
+                <User data={user} key={user.id} refresh={this.refresh} />
             );
         });
         var mountLogs = this.state.logs.map((log)=>{

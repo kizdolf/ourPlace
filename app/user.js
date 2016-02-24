@@ -2,7 +2,6 @@
 
 var
     mainConf        = require('./config').conf,
-    conf            = require('./config').couch,
     conCnf          = require('./criticalConf'),
     re              = require('./rethink.js'),
     r               = require('rethinkdb'),
@@ -46,18 +45,11 @@ var root = (req, res)=>{
                 res.json(isRoot);
             }else if (first == 'users'){
                 if(second && second == 'all'){
-                    var ls = [];
-                    re.getAll(tbls.user).then((users)=>{
-                        users.forEach((user)=>{
-                            var u = {
-                                id: user.id,
-                                pseudo: user.pseudo,
-                                root: user.root,
-                                played: user.played.length
-                            };
-                            ls.push(u);
-                        });
-                        res.json(ls);
+                    _r.table(tbls.user).eqJoin(("id"), _r.table(tbls.stats)).without({
+                        'left' : {'password': true},
+                        'right': {'uuid': true}
+                    }).zip().then((users)=>{
+                        res.json(users);
                     });
                 }else res.json(false);
             }else if (first == 'logs'){
@@ -172,6 +164,9 @@ var getPlayed = (id, uuid)=>{
         .then((res)=>{
             ful(res);
         }).catch(()=>{
+            _r.table(tbls.stats).get(uuid).update({
+                songs: { [id] : { count: 0, when:  [new Date()] } }
+            }).run();
             lo.error('catching played:', {byWho: uuid, idSng: id});
             ful(0);
         });
@@ -185,6 +180,9 @@ var getTotPlayed = (uuid)=>{
         .then((res)=>{
             ful(res);
         }).catch(()=>{
+            _r.table(tbls.stats).get(uuid).update({
+                totalSongs: 0
+            }).run();
             lo.error('catching totPlayed:', {byWho: uuid});
             ful(0);
         });
@@ -197,7 +195,7 @@ var getStatus = (req, res)=>{
     .run().then((resp)=>{
         res.json(resp);
     })
-    .catch((e)=>{
+    .catch(()=>{
         _r.table(tbls.user).get(uuid).update({status: {}});
         res.json({});
     });
@@ -206,9 +204,9 @@ var getStatus = (req, res)=>{
 var setStatus =  (req, res)=>{
     var status = req.body;
     var uuid = req.session.uuid;
-    re.update(tbls.user, uuid, {status: status}).then((resp)=>{
+    re.update(tbls.user, uuid, {status: status}).then(()=>{
         res.json(true);
-    }).catch((e)=>{
+    }).catch(()=>{
         res.json(false);
     });
 };
