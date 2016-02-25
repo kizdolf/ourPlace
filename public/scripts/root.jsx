@@ -108,6 +108,7 @@ exports.RootBox = React.createClass({
                 this.setState({logs: logs, page: page});
                 this.logsPage = page;
             }
+            this.show(this.state.focus);
         }.bind(this));
     },
     create: function(){
@@ -124,19 +125,17 @@ exports.RootBox = React.createClass({
                 this.refresh();
             }.bind(this));
         }
+
     },
     nextLogs: function(){
         this.logsPage++;
         this.getLogs();
-        console.log(this.state.focus)
-        this.show(this.state.focus);
     },
     prevLogs: function(){
         var prev = this.logsPage -1;
         if(prev < 0) prev = 0;
         this.logsPage = prev;
         this.getLogs();
-        this.show(this.state.focus);
     },
     show: function(id){
         this.setState({focus : id});
