@@ -98,7 +98,6 @@ var createUser = function(pseudo, password, email, cb){
     o = {
         pseudo : pseudo,
         password: hash,
-        played: [],
         root: false
     },
     tbl = tbls.user;
@@ -110,21 +109,29 @@ var createUser = function(pseudo, password, email, cb){
             re.insert(tbl, o).then((res)=>{
                 log.info('user ' + pseudo + ' was created: ');
                 log.info(res);
-
-                mandrill('/messages/send', {
-                    message: {
-                        to: [{email: email, name: pseudo}],
-                        from_email: cnf.fromMail,
-                        subject: "An account was created for you on OurPlace!",
-                        text: "Hello " + pseudo + ", someone created a account for you. You can log in here: <a href='" + cnf.ndd + "'>OurPlace</a>. You should already know the password :)"
-                    }
-                },(e)=>{
-                    if (e) lo.error('unable to send mail:', {error: e, mail: email});
-                    else lo.info('mail sent', {to: email});
+                var stats = {
+                    notes: {},
+                    songs: {},
+                    totalSongs: 0,
+                    uuid: res.generated_keys[0]
+                };
+                re.insert(tbls.stats, stats);
+                if(typeof email !== 'undefined' && email !== ""){
+                    mandrill('/messages/send', {
+                        message: {
+                            to: [{email: email, name: pseudo}],
+                            from_email: cnf.fromMail,
+                            subject: "An account was created for you on OurPlace!",
+                            text: "Hello " + pseudo + ", someone created a account for you. You can log in here: <a href='" + cnf.ndd + "'>OurPlace</a>. You should already know the password :)"
+                        }
+                    },(e)=>{
+                        if (e) lo.error('unable to send mail:', {error: e, mail: email});
+                        else lo.info('mail sent', {to: email});
+                        if(cb) cb(true);
+                    });
+                }else{
                     if(cb) cb(true);
-                });
-
-
+                }
             }).catch((err)=>{
                 log.error('error creating user ' + pseudo);
                 log.error(err);
