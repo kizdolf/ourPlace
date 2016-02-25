@@ -36,6 +36,7 @@ var root = (req, res)=>{
     login.isRoot(req).then((isIt)=>{
         var isRoot = isIt;
         if(!isRoot){
+            lo.info('Tried to enter root whitout rights', { who: req.session.uuid, pseudo: req.session.pseudo });
             res.json(false);
         }else{
             var first = req.params.first;
@@ -109,7 +110,7 @@ var rootPost = (req, res)=>{
                 log.info('trying to access root function which do not exist:', req.session, param, req.body);
             }
         }else{//take IP as well
-            log.info('trying to access root function without being root:', req.session, param, req.body);
+            lo.info('Tried to enter root whitout rights', { who: req.session.uuid, pseudo: req.session.pseudo, param: req.body });
         }
     }).catch((e)=>{//take IP as well
         log.error('error isRoot', req.body, req.session, param, e);
@@ -134,7 +135,7 @@ var rootDelete = (req, res)=>{
                 });
             }
         }else{
-            log.info('trying to access root DELETE function without being root:', req.session);
+            lo.info('Tried to enter root whitout rights', { who: req.session.uuid, pseudo: req.session.pseudo});
         }
     }).catch((e)=>{
         log.error('error isRoot', req.session, e);
