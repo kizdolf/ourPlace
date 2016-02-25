@@ -148,45 +148,69 @@ exports.delete = function(type, id, cb){
         -if not, only the root can still upload it.
         -better handle of the erro case after getMetaData.
     I'm sure we can tell story with some code. First try:
+    //Ding Dong, "I'm a file :) \o/"
+//Hi, welcome to you, likeable file :)
+//Do we like you? It's important!
+//No we don't!
+//PAN PAN PAN!
+//See you never.
+//You passed the first test! but will you finish them all ???
+//We convert all songs in ogg format. Because it's the best for cross-browser html5 audio.
+//first let's try to open you.
+//There is usefull stuff here!
+//I just need that, I'll remove it :)
+//All that too actually!
+//Who?
+//Where?
+//Can you specify where?
+//How much?
+//When? Ouh, sorry, we have a clock here.
+//Give me your money!
+//Even your Last Name!
+//Now. I have it. I'll keep safe don't worry.
+//I write it down even.
+//Everything fine mate, was easy :)
+//Fuck that shit. Fracking file did not fucking survived. Looser one.
+//Let's burn it.
+//Remember it.
+//And say it. "Was a nice try kid."
+//So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
 */
-exports.handle = (file, cb)=>{ //Ding Dong, "I'm a file :) \o/"
-    lo.info('file to add:', {file: file}); //Hi, welcome to you, likeable file :)
-    if(accepted_mimes.indexOf(file.mimetype) === -1){ //Do we like you? It's important!
-        lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file}); //No we don't!
-        var path = __dirname + '/../' + file.path; //We'll even fucking kill you!
-        fs.unlinkSync(path); //PAN PAN PAN!
-        cb('does not fit mimes types', null); //See you never.
-    }else{ //You passed the first test! but will you finish them all ???
-        
-        getMetaData(file.path, function(err, meta){ //first let's try to open you.
-            if(!err){ //There is usefull stuff here!
-                //We convert all songs in ogg format. Because it's the best for cross-browser html5 audio.
-                var path = critCnf.local.appPath + '/' + file.path;
-                var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
-                child_process.exec(exec, (err)=>{
-                    if(err) lo.error('converting file to ogg.', {error: err, path: path, file: file});
-                    else{
-                        lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
-                        fs.unlinkSync(path);
-                        file.path = file.path + '.ogg';
-                        var ext = file.originalname.split('.').pop(); //I just need that, I'll remove it :)
-                        var obj = { //All that too actually!
-                            name : file.originalname, //Who?
-                            path : '/' + file.path, //Where?
-                            type : file.mimetype, //Can you specify where?
-                            size : file.size, //How much?
-                            date : new Date(), //When? Ouh, sorry, we have a clock here.
-                            meta : meta, //Give me your money!
-                            ext  : ext //Even your Last Name!
+exports.handle = (file, cb)=>{
+    lo.info('file to add:', {file: file});
+    var path = critCnf.local.appPath + '/' + file.path;
+    if(accepted_mimes.indexOf(file.mimetype) === -1){
+        lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
+        fs.unlinkSync(path);
+        cb('does not fit mimes types', null);
+    }else{
+        var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
+        child_process.exec(exec, (err)=>{
+            if(err) lo.error('converting file to ogg.', {error: err, path: path, file: file});
+            else{
+                lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
+                fs.unlinkSync(path);
+                file.path = file.path + '.ogg';
+                getMetaData(file.path, function(err, meta){
+                    if(!err){
+                        var ext = file.originalname.split('.').pop();
+                        var obj = {
+                            name : file.originalname,
+                            path : '/' + file.path,
+                            type : file.mimetype,
+                            size : file.size,
+                            date : new Date(),
+                            meta : meta,
+                            ext  : ext
                         };
-                        re.insert(tbls.song, obj).then(()=>{ //Now. I have it. I'll keep safe don't worry.
-                            lo.info('insert', {tbl: tbls.song, obj: obj}); //I write it down even.
-                            cb(null, true); //Everything fine mate, was easy :)
-                        }).catch((err)=>{ //Fuck that shit. Fracking file did not fucking survived. Looser one.
-                            tools.rm(__dirname + '/..' + obj.path); //Let's burn it.
-                            lo.error('insert', {tbl: tbls.song, obj: obj, error: err}); //Remember it.
-                            cb(err, null); //And say it. "Was a nice try kid."
-                        }); //So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
+                        re.insert(tbls.song, obj).then(()=>{
+                            lo.info('insert', {tbl: tbls.song, obj: obj});
+                            cb(null, true);
+                        }).catch((err)=>{
+                            tools.rm(__dirname + '/..' + obj.path);
+                            lo.error('insert', {tbl: tbls.song, obj: obj, error: err});
+                            cb(err, null);
+                        });
                     }
                 });
 
