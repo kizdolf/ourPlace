@@ -8,9 +8,6 @@
 */
 'use strict';
 
-/*debug stuff*/
-var bugsnag = require("bugsnag");
-
 var //extern dependencies
     express         = require('express'),
     bodyParser      = require('body-parser'),
@@ -24,15 +21,11 @@ var //extern dependencies
     tools           = require('./app/tools'),
     // externSession   = require('./app/externSession'),
     sessionRe       = require('./app/rethinkSession');
-    //debug init.
-    bugsnag.register(confRe.bugsnag.token);
 
     //main object.
     var app =  express();
     //Logic:
     app
-    //debug requests.
-    .use(bugsnag.requestHandler)
     //intern Session to have the session in sockets.
     .use(sessionRe.Session)
     //externs middlewares
@@ -56,9 +49,7 @@ var //extern dependencies
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong path
-    .use(tools.thisIs404)
-    //debug
-    .use(bugsnag.errorHandler);
+    .use(tools.thisIs404);
 
     //ready for  requests. Http/Https. We have to handle both.
     //Start a HTTP server.

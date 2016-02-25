@@ -1,9 +1,15 @@
 var
     React       = require('react'),
     moment      = require('moment'),
+    highlight   = require('./highlight.js'),
     $           = require('jquery');
 
 var User = React.createClass({
+    getInitialState: function(){
+        return {
+            show: false
+        }
+    },
     switchRoot: function(){
         var newStatus = !this.props.data.root;
         var id = this.props.data.id;
@@ -27,6 +33,9 @@ var User = React.createClass({
             }
         });
     },
+    show: function(){
+        this.props.show(this.props.data.id);
+    },
     render: function(){
         return(
             <li className="userItem">
@@ -39,7 +48,7 @@ var User = React.createClass({
                     Switch status
                 </button>
                 <button className="btn btn-warning btn-sm" onClick={this.delete}>Delete</button>
-                <br/><small>{this.props.data.id}</small>
+                <br/><small onClick={this.show}>{this.props.data.id}</small>
             </li>
         );
     }
@@ -51,7 +60,12 @@ exports.RootBox = React.createClass({
         this.socket = null;
     },
     getInitialState: function(){
-        return {users: [], logs: [], page: 0};
+        return {
+            users: [],
+            logs: [],
+            page: 0,
+            focus: ''
+        };
     },
     amIRoot: function(cb){
         $.get('/api/root/amI', (res)=>{
@@ -114,17 +128,27 @@ exports.RootBox = React.createClass({
     nextLogs: function(){
         this.logsPage++;
         this.getLogs();
+        console.log(this.state.focus)
+        this.show(this.state.focus);
     },
     prevLogs: function(){
         var prev = this.logsPage -1;
         if(prev < 0) prev = 0;
         this.logsPage = prev;
         this.getLogs();
+        this.show(this.state.focus);
+    },
+    show: function(id){
+        this.setState({focus : id});
+        console.log(id);
+        var logs = $('.oneLog');
+        logs.removeHighlight();
+        if (id) logs.highlight(id);
     },
     render: function(){
         var mountUsers = this.state.users.map((user)=>{
             return(
-                <User data={user} key={user.id} refresh={this.refresh} />
+                <User data={user} key={user.id} refresh={this.refresh} show={this.show}/>
             );
         });
         var mountLogs = this.state.logs.map((log)=>{
