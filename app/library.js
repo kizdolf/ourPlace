@@ -170,6 +170,22 @@ var saveFile = (file, meta, cb)=>{
     });
 };
 
+var convertToOgg = (path, file, cb)=>{
+    var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
+    child_process.exec(exec, (err)=>{
+        if(err){
+            lo.error('converting file to ogg.', {error: err, path: path, file: file});
+            fs.unlinkSync(path);
+            cb(true, null);
+        }else{
+            lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
+            fs.unlinkSync(path);
+            file.path = file.path + '.ogg';
+            cb(null, file);
+        }
+    });
+};
+
 exports.handle = (file, cb)=>{
     lo.info('file to add:', {file: file});
     var path = critCnf.local.appPath + '/' + file.path;
@@ -180,18 +196,9 @@ exports.handle = (file, cb)=>{
     }else{
         getMetaData(file.path, function(err, meta){
             if(!err){
-                var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
-                child_process.exec(exec, (err)=>{
-                    if(err){
-                        lo.error('converting file to ogg.', {error: err, path: path, file: file});
-                        fs.unlinkSync(path);
-                        cb('unable to convert file.', null);
-                    }else{
-                        lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
-                        fs.unlinkSync(path);
-                        file.path = file.path + '.ogg';
-                        saveFile(file, meta, cb);
-                    }
+                convertToOgg(path, file, (err, file)=>{
+                    if(err) cb('unable to convert file.', null);
+                    else saveFile(file, meta, cb); 
                 });
             }
         });
