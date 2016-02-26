@@ -21,6 +21,9 @@ var //extern dependencies
     tools           = require('./app/tools'),
     // externSession   = require('./app/externSession'),
     sessionRe       = require('./app/rethinkSession');
+    //globals (tranquille)
+    global.appPath = __dirname;
+
 
     //main object.
     var app =  express();

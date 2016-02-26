@@ -21,7 +21,8 @@ var Layout = React.createClass({
             shuffling: false,
             canUpdateStatus: false,
             autoPlay: false,
-            drag: false
+            drag: false,
+            allowNotif: false
         };
     },
     byDate: function(a, b){
@@ -134,6 +135,29 @@ var Layout = React.createClass({
             this.handlerSocket('delete', data);
         }.bind(this));
         this.rootKeyCode();
+        this.notifications();
+    },
+    notify: function(what){
+        if(this.state.notifications)
+        var notif = new Notification(what);
+
+    },
+    notifications: function(){
+        console.log('notif test');
+        if("Notification" in window){
+            Notification.requestPermission(function(perm){
+                if(perm == 'granted'){
+                    Notification.permission = perm;
+                    if(Notification.permission && Notification.permission !== 'denied'){
+                        console.log('notif test if');
+                        this.setState({notifications: true});
+                    }else{
+                        console.log('notif test else');
+                    }
+                }
+            }.bind(this));
+            console.log('notif test');
+        }
     },
     rootKeyCode: function(){ //alt enter lead you to root interface.
         var down = {};
@@ -184,6 +208,7 @@ var Layout = React.createClass({
             item = songs[indexInSongs];
         }
         this.setState({path: item.path, type: item.type, current: item.meta, index: indexToPlay});
+        this.notify(item.path);
     },
     forcePlay: function(id){
         if(id){
