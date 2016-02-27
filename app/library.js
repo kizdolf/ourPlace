@@ -148,35 +148,45 @@ exports.delete = function(type, id, cb){
         -use this table to check if mimetypes is ok.
         -if not, only the root can still upload it.
         -better handle of the erro case after getMetaData.
-    I'm sure we can tell story with some code. First try:
-    //Ding Dong, "I'm a file :) \o/"
-//Hi, welcome to you, likeable file :)
-//Do we like you? It's important!
-//No we don't!
-//PAN PAN PAN!
-//See you never.
-//You passed the first test! but will you finish them all ???
-//We convert all songs in ogg format. Because it's the best for cross-browser html5 audio.
-//first let's try to open you.
-//There is usefull stuff here!
-//I just need that, I'll remove it :)
-//All that too actually!
-//Who?
-//Where?
-//Can you specify where?
-//How much?
-//When? Ouh, sorry, we have a clock here.
-//Give me your money!
-//Even your Last Name!
-//Now. I have it. I'll keep safe don't worry.
-//I write it down even.
-//Everything fine mate, was easy :)
-//Fuck that shit. Fracking file did not fucking survived. Looser one.
-//Let's burn it.
-//Remember it.
-//And say it. "Was a nice try kid."
-//So he did not surived the inner examination.. I have no clue what will happened to that file. No trace of him!
 */
+
+var saveFile = (file, meta, cb)=>{
+    var ext = file.originalname.split('.').pop();
+    var obj = {
+        name : file.originalname,
+        path : '/' + file.path,
+        type : file.mimetype,
+        size : file.size,
+        date : new Date(),
+        meta : meta,
+        ext  : ext
+    };
+    re.insert(tbls.song, obj).then(()=>{
+        lo.info('insert', {tbl: tbls.song, obj: obj});
+        cb(null, true);
+    }).catch((err)=>{
+        tools.rm(__dirname + '/..' + obj.path);
+        lo.error('insert', {tbl: tbls.song, obj: obj, error: err});
+        cb(err, null);
+    });
+};
+
+var convertToOgg = (path, file, cb)=>{
+    var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
+    child_process.exec(exec, (err)=>{
+        if(err){
+            lo.error('converting file to ogg.', {error: err, path: path, file: file});
+            fs.unlinkSync(path);
+            cb(true, null);
+        }else{
+            lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
+            fs.unlinkSync(path);
+            file.path = file.path + '.ogg';
+            cb(null, file);
+        }
+    });
+};
+
 exports.handle = (file, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
@@ -185,41 +195,16 @@ exports.handle = (file, cb)=>{
         fs.unlinkSync(path);
         cb('does not fit mimes types', null);
     }else{
-        var exec = 'avconv -v info -nostats  -y -i ' + path + ' -acodec libvorbis ' + path + '.ogg';
-        child_process.exec(exec, (err)=>{
-            if(err) lo.error('converting file to ogg.', {error: err, path: path, file: file});
-            else{
-                lo.info('converted file to ogg.', {path: path, file: file, newPath: (path + '.ogg')});
-                fs.unlinkSync(path);
-                file.path = file.path + '.ogg';
-                getMetaData(file.path, function(err, meta){
-                    if(!err){
-                        var ext = file.originalname.split('.').pop();
-                        var obj = {
-                            name : file.originalname,
-                            path : '/' + file.path,
-                            type : file.mimetype,
-                            size : file.size,
-                            date : new Date(),
-                            meta : meta,
-                            ext  : ext
-                        };
-                        re.insert(tbls.song, obj).then(()=>{
-                            lo.info('insert', {tbl: tbls.song, obj: obj});
-                            cb(null, true);
-                        }).catch((err)=>{
-                            tools.rm(__dirname + '/..' + obj.path);
-                            lo.error('insert', {tbl: tbls.song, obj: obj, error: err});
-                            cb(err, null);
-                        });
-                    }
+        getMetaData(file.path, function(err, meta){
+            if(!err){
+                convertToOgg(path, file, (err, file)=>{
+                    if(err) cb('unable to convert file.', null);
+                    else saveFile(file, meta, cb); 
                 });
-
-            } //you know what? if you're already dead I don't even give a fuck (actually it don't fail, because it's useless to fail here.)
-        }); //Have a good night!
-
-    } //Enjoy!
-}; //Bacios!
+            }
+        });
+    }
+};
 
 //best function ever !
 var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
