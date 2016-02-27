@@ -124,11 +124,12 @@ exports.delete = function(type, id, cb){
     var tbl = tbls[type];
     re.rmById(tbl, id).then((res)=>{
         var old = res.changes[0].old_val; //nicely, rethinkDb allow us to see what was the object BEFORE we deleted, but after. I do like that.
+        lo.info('removing item from db', {item: old, type: type});
         if (old.path){
-            var path = critCnf.local.appPath + old.path;
+            var path = global.appPath + old.path;
             tools.rm(path); //delete the song.
             if(old.meta && old.meta.picture){
-                path = critCnf.local.appPath + old.meta.picture;
+                path = global.appPath + old.meta.picture;
                 tools.rm(path); //delete the pic.
             }
         }
@@ -178,7 +179,7 @@ exports.delete = function(type, id, cb){
 */
 exports.handle = (file, cb)=>{
     lo.info('file to add:', {file: file});
-    var path = critCnf.local.appPath + '/' + file.path;
+    var path = global.appPath + '/' + file.path;
     if(accepted_mimes.indexOf(file.mimetype) === -1){
         lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
         fs.unlinkSync(path);
@@ -270,7 +271,7 @@ So in case of error we nned to check if the download/extraction was killed or no
 */
 exports.fromYoutube = function(url, cb){
     var d = (new Date().toISOString().substring(0,10)),
-        dir = critCnf.local.appPath + '/medias/' + d,
+        dir = global.appPath + '/medias/' + d,
         path = mainConf.mediaPath + '/' + d;
     tools.mkdir(dir);
     var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
