@@ -2,6 +2,7 @@
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
     Menu        = require('./leftMenu.jsx').Menu,
+    Notify      = require('./notify.jsx').Notify,
     Visualizer  = require('./songViszu.jsx').Visualizer,
     Upload      = require('./upload.jsx').Upload;
 
@@ -22,7 +23,8 @@ var Layout = React.createClass({
             canUpdateStatus: false,
             autoPlay: false,
             drag: false,
-            allowNotif: false
+            allowNotif: false,
+            notify: {}
         };
     },
     byDate: function(a, b){
@@ -137,11 +139,6 @@ var Layout = React.createClass({
         this.rootKeyCode();
         this.notifications();
     },
-    notify: function(what){
-        if(this.state.notifications)
-        var notif = new Notification(what);
-
-    },
     notifications: function(){
         console.log('notif test');
         if("Notification" in window){
@@ -149,10 +146,7 @@ var Layout = React.createClass({
                 if(perm == 'granted'){
                     Notification.permission = perm;
                     if(Notification.permission && Notification.permission !== 'denied'){
-                        console.log('notif test if');
-                        this.setState({notifications: true});
-                    }else{
-                        console.log('notif test else');
+                        this.setState({allowNotif: true});
                     }
                 }
             }.bind(this));
@@ -207,8 +201,7 @@ var Layout = React.createClass({
             indexInSongs = 0;
             item = songs[indexInSongs];
         }
-        this.setState({path: item.path, type: item.type, current: item.meta, index: indexToPlay});
-        this.notify(item.path);
+        this.setState({path: item.path, type: item.type, current: item.meta, index: indexToPlay, notify: item});
     },
     forcePlay: function(id){
         if(id){
@@ -274,6 +267,7 @@ var Layout = React.createClass({
     render: function(){
         return (
             <div>
+                <Notify can={this.state.allowNotif} what={this.state.notify} />
                 <Upload url={this.uploadAPI} drag={this.state.drag}/>
                 <Player
                     path={this.state.path}
