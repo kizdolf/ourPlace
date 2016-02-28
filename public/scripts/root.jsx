@@ -166,9 +166,9 @@ exports.RootBox = React.createClass({
                 <span id="msg"></span>
                 <div>
                     <p>Create user here:</p>
-                    <input type="text" placeholder="Pseudo" id="pseudo"/>
-                    <input type="text" placeholder="Password" id="pass"/>
-                    <input type="email" placeholder="Email (optional)" id="mail"/>
+                    <input type="text" placeholder="Pseudo" id="pseudo"/><br/>
+                    <input type="text" placeholder="Password" id="pass"/><br/>
+                    <input type="email" placeholder="Email (optional)" id="mail"/><br/>
                     <button className="btn btn-default btn-sm" onClick={this.create}>Create</button>
                 </div>
                 <ul className="listUser">
