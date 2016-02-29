@@ -66,12 +66,12 @@ var Layout = React.createClass({
                     index: parseInt(data.index),
                     shuffling: (data.shuffling == "true"),
                     playList: data.playlist.map(function(el){ return parseInt(el); })
-                }
+                };
                 this.setState(state);
                 if(data.autoPlay){
                     var autoPlay = (data.autoPlay == 'true');
                     this.setState({autoPlay: autoPlay});
-                    if(autoPlay) this.play();
+                    if(autoPlay) this.truePlay(this.state.index);
                 }
             }
             this.setState({canUpdateStatus: true});
@@ -96,9 +96,9 @@ var Layout = React.createClass({
             });
         }.bind(this);
         if(name == 'new'){
-            musics.unshift(data.obj); 
+            musics.unshift(data.obj);
             index++;
-            return cb(); 
+            return cb();
         }else{
             musics.forEach(function(note, i){
                 if(name == 'changed'){
@@ -110,11 +110,11 @@ var Layout = React.createClass({
                     }
                 }else{
                     if(note.id === data.obj){
-                        //get playlist index. 
+                        //get playlist index.
                         //check if index is sup to playlist index.
                         //if yes index--.
                         musics.splice(i, 1);
-                        return cb(); 
+                        return cb();
                     }
                 }
             });
@@ -140,7 +140,6 @@ var Layout = React.createClass({
         this.notifications();
     },
     notifications: function(){
-        console.log('notif test');
         if("Notification" in window){
             Notification.requestPermission(function(perm){
                 if(perm == 'granted'){
@@ -150,7 +149,6 @@ var Layout = React.createClass({
                     }
                 }
             }.bind(this));
-            console.log('notif test');
         }
     },
     rootKeyCode: function(){ //alt enter lead you to root interface.
@@ -169,17 +167,6 @@ var Layout = React.createClass({
     componentWillUnmount: function(){
         this.socket = null;
     },
-    play: function(path, type, meta, index){
-            if(typeof index === 'undefined'){
-                if(this.state.index)
-                    index = this.state.index;
-                else
-                    index = 0;
-            }
-
-            var toPlay = this.state.musics[this.state.playList[index]];
-            this.setState({path: toPlay.path, type: toPlay.type, current: toPlay.meta, index: index});
-    },
     truePlay: function(indexToPlay, force){
         var list    = this.state.playList,
             ln      = list.length,
@@ -193,9 +180,9 @@ var Layout = React.createClass({
                     indexToPlay = i;
                     break;
                 }
-            };
+            }
         }else indexInSongs = list[indexToPlay];
-        var item = songs[indexInSongs]
+        var item = songs[indexInSongs];
         if(typeof item === 'undefined'){
             indexToPlay = 0;
             indexInSongs = 0;
@@ -225,7 +212,7 @@ var Layout = React.createClass({
             ln      = list.length;
          //force is used to switch between automatic and manual. (mouse and keyboard are manual..)
         if(force && force === true) i = this.state.playList[i];
-        n = parseInt(n); 
+        n = parseInt(n);
         if(typeof n !== "number" || !isFinite(n)) n = 1;
         if(dir == 'prev')
             while(n--) i = (i - 1 >= 0) ? (i - 1) : (ln - 1);
@@ -276,16 +263,16 @@ var Layout = React.createClass({
                     next={this.next}
                     prev={this.prev}
                     addPlayed={this.addPlayed}
-                    play={this.play}
+                    play={this.truePlay}
                     shuffle={this.shuffle}
                     isShuffling={this.state.shuffling}
                 />
-                <Menu 
+                <Menu
                     musics={this.state.musics}
                     playList={this.state.playList}
                     index={this.state.index}
                     current={this.state.current}
-                    play={this.play}
+                    play={this.truePlay}
                 />
                     {
                         this.props.children &&

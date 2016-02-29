@@ -7,7 +7,7 @@ var ItemPlaylist = React.createClass({
     getInitialState: function(){
         return{
             played: 0
-        }
+        };
     },
     getStats: function(){
         this.props.played(this.props.song.id, function(data){
@@ -47,7 +47,7 @@ var CurPlaylist = React.createClass({
     play: function(song){
         this.props.playList.forEach(function(i, index){
             if(this.props.musics[i].id == song.id){
-                this.props.play(song.path, song.type, song.meta, index);
+                this.props.play(index);
                 return;
             }
         }.bind(this));
@@ -61,7 +61,7 @@ var CurPlaylist = React.createClass({
                 var clss = (current.id == song.id) ? 'current' : '';
                 return(
                     <ItemPlaylist play={this.play} song={song} clss={clss} show={toDisplay} key={i} played={this.played}/>
-                )
+                );
             }
         }.bind(this));
         return(
@@ -71,7 +71,7 @@ var CurPlaylist = React.createClass({
                     {mountElems}
                 </ul>
             </div>
-        )
+        );
     }
 
 });
@@ -85,7 +85,7 @@ exports.Menu = React.createClass({
                     <li className="oneLink"><Link to="/">Music</Link></li>
                     <li className="oneLink"><Link to="/rss">Rss</Link></li>
                 </ul>
-                <CurPlaylist 
+                <CurPlaylist
                     musics={this.props.musics}
                     playList={this.props.playList}
                     index={this.props.index}
@@ -95,5 +95,3 @@ exports.Menu = React.createClass({
         );
     }
 });
-
-
