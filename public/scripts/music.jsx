@@ -1,12 +1,7 @@
 var
     React           = require('react'),
     $               = require('jquery'),
-    Dropzone        = require('react-dropzone'),
-    Draggable       = require('react-draggable'),
-    DraggableCore   = Draggable.DraggableCore,
-    Dropzone        = require('react-dropzone'),
     ItemMenu        = require('./smalls.jsx').ItemMenu;
-
 
 var MusicItem = React.createClass({
     play: function(){
@@ -19,48 +14,25 @@ var MusicItem = React.createClass({
             this.props.song.id
         );
     },
-    handleStart: function (event, ui) {
-        this.props.drag(true);
-        //console.log('Event: ', event);
-        //console.log('Start Position: ', ui.position);
-    },
-    handleDrag: function (event, ui) {
-        //console.log('Event: ', event);
-        //console.log('handle Position: ', ui.position);
-    },
-    handleStop: function (event, ui) {
-        this.props.drag(false);
-        //console.log('Event: ', event);
-        //console.log('stop Position: ', ui.position);
-    },
     render: function(){
-        // console.log(this.props.song.played);
         var meta = this.props.song.meta;
         var name = this.props.song.name;
         var clss = this.props.now ? 'itemMusic current itemCls': 'itemMusic itemCls';
-            // <Draggable
-            //     handle="img"
-            //     grid={[20, 20]}
-            //     zindex={1000}
-            //     onStart={this.handleStart}
-            //     onDrag={this.handleDrag}
-            //     onStop={this.handleStop}>
         return (
-                <li className={clss} ondrop={this.onDrop}>
-                    <span onClick={this.play} className="clickable" >
-                        <div className="cover" >
-                            <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" draggable={false}/>
-                        </div>
-                        <div className="Meta">
-                            <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
-                            <span className="title">{(meta.title) ? meta.title : name}</span>
-                            {(meta.album) ? <span className="album">{meta.album}</span> : ''}
-                        </div>
-                    </span>
-                    <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
-                </li>
+            <li className={clss}>
+                <span onClick={this.play} className="clickable" >
+                    <div className="cover" >
+                        <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" draggable={false}/>
+                    </div>
+                    <div className="Meta">
+                        <span className="artist">{(meta.artist) ? meta.artist[0] : ''}</span>
+                        <span className="title">{(meta.title) ? meta.title : name}</span>
+                        {(meta.album) ? <span className="album">{meta.album}</span> : ''}
+                    </div>
+                </span>
+                <img className="itemMenu" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
+            </li>
         );
-            // </Draggable>
     }
 });
 
@@ -100,16 +72,16 @@ var InputBox = React.createClass({
     },
     clear : function(){
         this.setState({search: ''});
-        this.props.search('');  
+        this.props.search('');
     },
     render: function(){
         return(
             <div>
                 <div className="inputBox input-group">
                     <div className="inputBtns">
-                        <button id="changeAutoPlay" type="button" className="btn btn-default">{(this.props.autoPlay == true) ? 'Unset' : 'Set'} Autoplay</button>
-                        <button onClick={this.clear} type="button" className="btn btn-default" type="button">Clear</button>
-                        <button onClick={this.sendFromYT} id="addMusBtn"  type="button" className="btn btn-default" type="button">Add the music!</button>
+                        <button id="changeAutoPlay" type="button" className="btn btn-default">{(this.props.autoPlay === true) ? 'Unset' : 'Set'} Autoplay</button>
+                        <button onClick={this.clear} type="button" className="btn btn-default" >Clear</button>
+                        <button onClick={this.sendFromYT} id="addMusBtn" className="btn btn-default" type="button">Add the music!</button>
                     </div>
                     <input id="inputs" className="add form-control" type="text" placeholder="...Type a search or paste a YouTube music link." onChange={this.search} value={this.state.search}/>
                 </div>
@@ -141,7 +113,7 @@ exports.MusicBox = React.createClass({
             else if(item.meta.title && item.meta.title.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
             else if(item.meta.artist && item.meta.artist[0] && item.meta.artist[0].toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
             else if(item.meta.album && item.meta.album.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-            
+
             if(!show) this.props.musics[i].toShow = false;
             else this.props.musics[i].toShow = true;
         });
@@ -169,28 +141,15 @@ exports.MusicBox = React.createClass({
                         e.preventDefault();
                         if(e.keyCode == 40) this.props.next(nb, true);
                         else if(e.keyCode == 38) this.props.prev(nb, true);
-                        var scrollTo = $('.current');
-                        var h = scrollTo.position().top;
-                        var less = ((h - 500) < 0) ? h : h - 500;
+                        // var scrollTo = $('.current');
+                        // var h = scrollTo.position().top;
+                        // var less = ((h - 500) < 0) ? h : h - 500;
                         // $(window).scrollTop(h);
                         return false;
                     }
                 }
             }else return true;
         }.bind(this));
-        // this.getRightMenu();
-    },
-    // getRightMenu: function(){
-    //     $('#music').mousedown(function(e){
-    //         if( e.button == 2 ) {
-    //             console.log('trigger menu');
-    //             console.log($($(e.target)[0]));
-    //         }
-    //     });
-    // },
-    onDrop: function(li){
-        console.log(li);
-        // console.log(this.props);
     },
     render: function(){
         var musicNodes;
@@ -212,7 +171,6 @@ exports.MusicBox = React.createClass({
                 }
             }.bind(this));
         } else musicNodes = '';
-            // <Dropzone onDrop={this.onDrop}>
         return (
             <span>
             <div id="music">

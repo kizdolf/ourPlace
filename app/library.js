@@ -10,6 +10,7 @@ var
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
+    lo              = tools.lo,
     // ffmetadata      = require('ffmetadata'),
     mm              = require('musicmetadata'),
     accepted_mimes  = [ //should not be here. See config.js
@@ -25,11 +26,7 @@ var
     ];
 
 
-//simple logger is going to disappear. I want log in a db. (is disappearing.)
-var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
-var lo  = tools.lo;
-
-//listen the dbs for changes, we should check if weather or not is already loaded. 
+//listen the dbs for changes, we should check if weather or not is already loaded.
 require('./DBlisteners.js');
 
 
@@ -83,7 +80,7 @@ var getMetaData = (path, cb)=>{
 @params: res : response to express
 update some metadata fields. it DOES NOT Write them in the file.
 TODO: write the new metadata IN the file AND in the db.
-Data in request: 
+Data in request:
     song: {name, val, type},
     note: {name, val, type}
 Data in URL:
@@ -143,7 +140,7 @@ exports.delete = function(type, id, cb){
 /*
     Handler for a new file.
     Should be able to manage several type, not just music.
-    Next dev to do here: 
+    Next dev to do here:
         -put the mimetypes in db, with setter/getter.
         -use this table to check if mimetypes is ok.
         -if not, only the root can still upload it.
@@ -155,7 +152,7 @@ var saveFile = (file, meta, cb)=>{
     var obj = {
         name : file.originalname,
         path : '/' + file.path,
-        type : file.mimetype,
+        type : 'audio/ogg', //to fix!
         size : file.size,
         date : new Date(),
         meta : meta,
@@ -199,7 +196,7 @@ exports.handle = (file, cb)=>{
             if(!err){
                 convertToOgg(path, file, (err, file)=>{
                     if(err) cb('unable to convert file.', null);
-                    else saveFile(file, meta, cb); 
+                    else saveFile(file, meta, cb);
                 });
             }
         });
@@ -261,7 +258,7 @@ exports.fromYoutube = function(url, cb){
     tools.mkdir(dir);
     var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
-    log.info(' dowloading from youtube url : ' + url);
+    lo.info(' dowloading from youtube', {url: url});
     child_process.exec(exec, (err, out)=>{
         if(!err || err.killed === false){
             var ret = JSON.parse(out);
@@ -279,7 +276,6 @@ exports.fromYoutube = function(url, cb){
             };
 
             re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line
-                log.info('obj inserted:');
                 lo.info('insert', {tbl: tbls.song, obj: obj});
                 cb(true);
             }).catch((err)=>{

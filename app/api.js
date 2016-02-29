@@ -20,7 +20,7 @@ user            = require('./user'),
 conf            = require('./config').conf,
 feed            = require('./rss/main');
 
-var s = require('./socket')();
+require('./socket')();
 
 exports.main = (function(){
     // Would it be better to externalise the route(s) in a json file somewhere else?

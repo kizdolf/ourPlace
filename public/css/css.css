@@ -2,12 +2,12 @@
 .WrapperMenu ::-webkit-scrollbar {
     width: 6px;
 }
- 
+
 .WrapperMenu ::-webkit-scrollbar-track {
     border-radius: 0px;
     background: rgba(102, 217, 239, 0.5);
 }
- 
+
 .WrapperMenu ::-webkit-scrollbar-thumb {
     border-radius: 0;
     border-top: 4px solid;
@@ -278,7 +278,7 @@ hr{
         max-width: 24%;
     }
 
-    
+
 
     #curPlaylist{
         clear: both;
@@ -308,7 +308,7 @@ hr{
     #curPlaylist ul li:hover .stats{
         opacity: 1;
     }
-    
+
     #curPlaylist ul li:hover .statsName{
         width: 50%;
     }
@@ -319,7 +319,7 @@ hr{
         overflow: hidden;
         display: block;
     }
-    
+
     .stats{
         color: black;
         position: relative;
@@ -411,7 +411,7 @@ hr{
         cursor: pointer;
         width: 20%;
     }
-    
+
     .wrapTimeLine{
         width: 100%;
         right: 0;
@@ -555,7 +555,7 @@ hr{
 }
 
 .artist{
-    text-align: right;   
+    text-align: right;
 }
 
 .artist{
@@ -564,7 +564,7 @@ hr{
     font-weight: 500;
     min-height: 20px;
     margin: 0;
-    font-size: 14px; 
+    font-size: 14px;
     padding: 2px;
 }
 
@@ -574,7 +574,7 @@ hr{
     font-weight: 500;
     min-height: 20px;
     margin: 0;
-    font-size: 14px; 
+    font-size: 14px;
     padding: 2px;
     font-style: italic;
 }
@@ -1037,6 +1037,21 @@ hr{
 .wrapperOnTop h3{
     color: #FD971F;
 }
+
+.highlight {
+    background-color: #fff34d;
+    -moz-border-radius: 5px; /* FF1+ */
+    -webkit-border-radius: 5px; /* Saf3-4 */
+    border-radius: 5px; /* Opera 10.5, IE 9, Saf5, Chrome */
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); /* FF3.5+ */
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); /* Saf3.0+, Chrome */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7); /* Opera 10.5+, IE 9.0 */
+}
+.highlight {
+    padding:1px 4px;
+    margin:0 -4px;
+}
+
 /*
 possible music list item stuff:
 
