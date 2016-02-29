@@ -70,12 +70,19 @@
          <script>
             (function($) {
                 $(document).ready(function() {
-                    var token = '', userName = $('#username'), password = $('#password'), logIn = $('#logIn');
-                    $.get('/tokenLogin', function(data){token  = data.token;});
+                    var token = '', userName, password = $('#password'), logIn = $('#logIn');
+                    $.get('/welcomeToken', function(data){
+                        token  = data.token;
+                        userName = data.pseudo;
+                        $('.pseudo').html(userName);
+                    });
+
                     $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
+
                     logIn.click(function(){
-                        $.post('/login', {userName : userName.val(), password: password.val(), token: token}, function(data){
-                            if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.err.message);
+                        $.post('/login', {userName : userName, token: token, welcome: true, password: password.val()}, function(data){
+                            console.log(data);
+                            if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.error);
                         });
                     });
                 });
@@ -84,16 +91,17 @@
     </head>
     <body>
         <div id="wrapper">
-            <h1>Hi!</h1>
+            <h1>Hi! <span class="pseudo"></span> </h1>
             <h4 id="erreur"></h4>
             <p>
-                Since you're not logged in, you cannot see much of the website :s<br>
-                So log in!
+                Someone created an accout for you!
+                You can now choose a password, and Log in!
             </p>
+            <small>The link you got is a one timer, once you close this tab it dies..</small>
             <form>
-                <input type="text" name="username" id="username" placeholder="Username">
+                <p>Password for <b class="pseudo"></b> :
                 <input type="password" name="password" id="password" placeholder="Password">
-                <button type="button" name="logIn" id="logIn">Log-in!</button>
+                <button type="button" name="logIn" id="logIn">Log-in!</button></p>
             </form>
         </div>
 

@@ -13,10 +13,13 @@
 var
 express         = require('express'),
 multer          = require('multer'),
+login           = require('./login'),
 externSession   = require('./externSession'),
 lib             = require('./library'),
 tools           = require('./tools'),
+lo              = tools.lo,
 user            = require('./user'),
+path            = require('path'),
 conf            = require('./config').conf,
 feed            = require('./rss/main');
 
@@ -36,6 +39,7 @@ exports.main = (function(){
 
     router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
         req.files.forEach((file)=>{
+            lo.info('insert', {byWho: req.session.uuid, file: file});
             lib.handle(file, (err, response)=>{
                 if(err) res.json({err: err});
                 else {
@@ -54,10 +58,10 @@ exports.main = (function(){
     router.get('/notes', lib.allNotes);
 
     router.delete('/:type/:id', function(req, res){
-        console.log('delete!');
         var type = req.params.type;
         var id = req.params.id;
         lib.delete(type, id, function(done){
+            lo.info('delete', {byWho: req.session.uuid, type: type, id: id});
             res.json(done);
         });
     });
@@ -67,6 +71,7 @@ exports.main = (function(){
     router.post('/fromYoutube', function(req, res){
         var url = req.body.url;
         lib.fromYoutube(url, (bool)=>{
+            lo.info('from youtube', {byWho: req.session.uuid, url: url});
             res.json(bool);
         });
     });
@@ -92,7 +97,6 @@ exports.main = (function(){
                 res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
          });
     });
-
     // router.get('/playplease/:token', function(req, res){
     //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
     //         externSession.getPath(req.session.name, function(err, rep){

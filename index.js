@@ -41,6 +41,8 @@ var //extern dependencies
     //someone not loged-in can still listen some songs. On condtions.
 	// .use(conf.pathPlay, externSession.play)
     //login mechanisms.
+    .use(conf.WelcomePath, login.welcome)
+    .use(conf.pathTokenWelcome, login.getWelcome)
     .use(conf.pathTokenLogin, login.getToken)
     .use(conf.pathLogin, login.login)
     //loged-in check. at this point if not loged-in bye.
