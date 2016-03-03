@@ -43,6 +43,14 @@ var OnTop = React.createClass({
         });
         this.props.update(values);
     },
+    lowerCase: function(i){
+        console.log('lower');
+        console.log(i);
+        var edit = this.state.editable;
+        edit[i].val = edit[i].val.toLowerCase();
+        console.log(edit[i]);
+        this.setState({editable: edit});
+    },
     render: function(){
         var setContent = function(content){
             return {__html: content};
@@ -50,7 +58,9 @@ var OnTop = React.createClass({
         var i = 0;
         var editNodes = this.state.editable.map(function(o){
             var type = (o.type) ? o.type : 'text';
+                    // <button className="btn btn-xs btn-default" onClick={lower}>&#x21a7;</button>
             if(type == 'text'){
+                var lower = this.lowerCase.bind(this, i);
                 return(
                 <div key={i++}>
                     <p>{o.name}</p> <input type={type} id={o.name} defaultValue={o.val}/>

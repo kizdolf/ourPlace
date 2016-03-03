@@ -7,6 +7,7 @@ var
     tbls            = require('./config').rethink.tables,
     tools           = require('./tools.js'),
     user            = require('./user'),
+    lwip            = require('lwip'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
@@ -33,20 +34,34 @@ require('./DBlisteners.js');
 //extract and save picture. if extract failed just delete pic without blocking process.
 var extractPicture = (meta, path, cb)=>{
     var pic     = new Buffer(meta.picture[0].data), //read picture
-        picName = path.split('/').pop() + '.' + meta.picture[0].format, //deduct name.
+        style   = meta.picture[0].format,
+        picName = path.split('/').pop() + '.' + style, //deduct name.
         comp    = path.split('/');
     comp.pop();
     path = comp.join('/') + '/';
+    var fsPath  = path + picName;
     pic = pic.toString('base64'); //convert the pic in readable data.
-    fs.writeFile(path + picName, pic, 'base64', (err)=>{ //write data in it's own file.
+    fs.writeFile(fsPath, pic, 'base64', (err)=>{ //write data in it's own file.
         if(err){
             lo.error('writing img', {picName: picName, err: err});
             delete meta.picture; //do not keep the useless file.
             cb(meta); //pretend everything was fine.
         }else{
             lo.info('extracted img', {picName: picName, path: path});
-            meta.picture = '/' + path + picName; //save new pic path
-            cb(meta); //and return the updated object!
+            meta.picture = '/' + fsPath; //save new pic path
+            lwip.open(fsPath, style ,(err, img)=>{ //resize the pic.let's store small stuff.
+                if(!err){
+                    var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
+                    img.scale(ratio, (err, img)=>{
+                        if(!err){
+                            img.writeFile(fsPath, style, (err)=>{
+                                if(err) lo.error('resizing image', {img: fsPath, error: err});
+                                cb(meta);
+                            });
+                        }else lo.error('scaling image', {img: fsPath, error: err});
+                    });
+                }else lo.error('opening image (lwip) image', {img: fsPath, error: err});
+            });
         }
     });
 };

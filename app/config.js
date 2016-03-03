@@ -7,6 +7,7 @@ exports.conf = {
     mediaDir: 'medias', //   which directory should we serve for the medias?
     mediaPath: '/medias', //    on which path?
     webPath: '/', //    on which path?
+    WelcomePath: '/welcome/:token',
     apiPrefix: '/api',//API prefix (useless comment right?)
     coversPath: 'medias/covers/', //image are usually encoded in the metadata. It's nice but why store in a db a b64 img?
     bodyParserOpt:{ //options object for body-parser.
@@ -20,25 +21,19 @@ exports.conf = {
         saveUninitialized: true
     },
     pathPlay: '/play/:token',
+    pathTokenWelcome: '/welcomeToken',
     pathTokenLogin: '/tokenLogin',
     pathLogin: '/login',
     cleanAtStartup: false, // delete existing media not in db at startUp.
     logsPerPage : 20, //could be a non fixed value.
-    fromMail: 'info@azerty.gq', 
+    fromMail: 'info@azerty.gq',
     ndd: 'http://azerty.gq',
     bugsnag: false,
+    imgMaxSize: {width: 200, height: 200}
 };
 
 exports.socket = {
     socketPort : 9091
-};
-
-/* Couchbase NEED to be protected somehow.*/
-exports.couch = {
-    host: '149.202.44.123',
-    filesBucket: 'filesForUs',
-    users: 'users',
-    tokenBucket :'token'
 };
 
 exports.rethink = {
@@ -50,7 +45,8 @@ exports.rethink = {
         live: 'live',
         request: 'logRequests',
         share: 'share',
-        stats: 'userStats'
+        stats: 'userStats',
+        tokens: 'tokens'
     }
 };
 
