@@ -28,8 +28,8 @@ exports.conf = {
     logsPerPage : 20, //could be a non fixed value.
     fromMail: 'info@azerty.gq',
     ndd: 'http://azerty.gq',
-    bugsnag: false,
-    imgMaxSize: {width: 200, height: 200}
+    bugsnag: false, //never mind.
+    imgMaxSize: {width: 200, height: 200} //images are scaled automatically. This allow you to keep a good quality if you want.
 };
 
 exports.socket = {

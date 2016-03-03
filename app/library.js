@@ -51,6 +51,7 @@ var extractPicture = (meta, path, cb)=>{
             meta.picture = '/' + fsPath; //save new pic path
             lwip.open(fsPath, style ,(err, img)=>{ //resize the pic.let's store small stuff.
                 if(!err){
+                    //scale should be done with the primary buffer.
                     var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
                     img.scale(ratio, (err, img)=>{
                         if(!err){
