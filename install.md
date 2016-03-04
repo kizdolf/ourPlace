@@ -9,7 +9,9 @@
 
 ## Check versionning.
  * node version 4 minimum (I'm running 5.7.1 at the moment)
+
  > You should use nvm to manage node versions with ease: 
+ 
  ```
     npm install -g nvm
     nvm install 5.7.1
