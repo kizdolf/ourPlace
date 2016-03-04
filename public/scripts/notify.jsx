@@ -18,17 +18,14 @@ var Notify = React.createClass({
             }
         }
     },
-    componentDidMout: function(){
-        window.addEventListener('focus', function() {
-            this.visi(true);
-        }.bind(this));
-
-        window.addEventListener('blur', function() {
-            this.visi(false);
+    componentDidMount: function(){
+        document.addEventListener('visibilitychange', function(){
+            this.visi();
         }.bind(this));
 
     },
-    visi: function(focus){
+    visi: function(){
+        var focus = (this.state.visi) ? true : false;
         this.setState({visi: focus});
     },
     notify: function(what){
