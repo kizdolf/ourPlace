@@ -34,7 +34,7 @@ restart rethinkdb
 ```
 sudo /etc/init.d/rethinkdb restart
 ```
-> Default setting prevent any external connection to rethinkdb. Even to the dashboard. We don't give a shit when your working on localhost (_dashboard avaible at localhost:8080 ny default_) but it's not that nice when you're running it on a server. So here it is: https://www.rethinkdb.com/docs/security/ 
+> Default setting prevent any external connection to rethinkdb. Even to the dashboard. We don't give a shit when we're working on localhost (_dashboard avaible at localhost:8080 by default_) but it's not that nice when you're running it on a server. So here it is: https://www.rethinkdb.com/docs/security/ 
 You should really read that up. Or at least run the iptables commands.
 
 Then create tables. Trough rethinkdb dashboard, I'll probably make a script soon, in the while go to your rethinkdb dashboard, tab **Data Explorer**. 
