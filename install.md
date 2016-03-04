@@ -62,3 +62,14 @@ as for now there is the table list:
 
 ]
 ```
+## Finish the install and run!
+```
+cd /path/to/ourPlace
+npm install
+```
+ * create **app/criticalConf.js** and populate it like the exemple file.
+ * update the app/config.js file with your info/choices
+```
+forever start index.js
+```
+enjoy.
