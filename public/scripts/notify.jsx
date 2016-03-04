@@ -5,7 +5,8 @@ var Notify = React.createClass({
     getInitialState: function(){
         return {
             id: '',
-            notifs : []
+            notifs : [],
+            visi: true
         };
     },
     componentDidUpdate: function(){
@@ -17,21 +18,36 @@ var Notify = React.createClass({
             }
         }
     },
+    componentDidMout: function(){
+        window.addEventListener('focus', function() {
+            this.visi(true);
+        }.bind(this));
+
+        window.addEventListener('blur', function() {
+            this.visi(false);
+        }.bind(this));
+
+    },
+    visi: function(focus){
+        this.setState({visi: focus});
+    },
     notify: function(what){
         this.state.notifs.forEach((notif)=>{
             notif.close();
         });
-        var options = {
-            body: what.meta.title,
-            icon: what.meta.picture || '/img/default_cover.png',
-        },
-        notif = new Notification('Playing:', options),
-        notifs = this.state.notifs;
-        notifs.push(notif);
-        this.setState({notifs: notifs});
-        setTimeout(()=>{
-            notif.close();
-        },3500);
+        if(this.state.visi === false){
+            var options = {
+                body: what.meta.title,
+                icon: what.meta.picture || '/img/default_cover.png',
+            },
+            notif = new Notification('Playing:', options),
+            notifs = this.state.notifs;
+            notifs.push(notif);
+            this.setState({notifs: notifs});
+            setTimeout(()=>{
+                notif.close();
+            },3500);
+        }
     },
     render: function(){
         return false;
