@@ -113,16 +113,16 @@ exports.RootBox = React.createClass({
     },
     create: function(){
         var pseudo = $('#pseudo').val();
-        var pass = $('#pass').val();
         var mail = $('#mail').val();
-        console.log('create ' + pseudo + ' with ' + pass);
-        if(pseudo.length <= 3 || pass.length <= 3){
-            $('#msg').html('not long enough. min 3 char');
+        if(pseudo.length < 3 || mail.length < 5){
+            $('#msg').html('Pseudo not long enough. min 3 letters');
         }else{
             $('#msg').html('');
-            $.post('/api/root/new', {pseudo: pseudo, password: pass, email: mail}, function(res){
-                console.log(res);
+            $.post('/api/root/new', {pseudo: pseudo, password: '', email: mail}, function(res){
+                $('#msg').html('User ' + pseudo + ' was created :)');
                 this.refresh();
+                $('#pseudo').val('');
+                $('#mail').val('');
             }.bind(this));
         }
 
@@ -166,9 +166,8 @@ exports.RootBox = React.createClass({
                 <span id="msg"></span>
                 <div>
                     <p>Create user here:</p>
-                    <input type="text" placeholder="Pseudo" id="pseudo"/><br/>
-                    <input type="text" placeholder="Password" id="pass"/><br/>
-                    <input type="email" placeholder="Email (optional)" id="mail"/><br/>
+                    <input type="text" placeholder="Pseudo (min 3 letters)" id="pseudo"/><br/>
+                    <input type="email" placeholder="Email" id="mail"/><br/>
                     <button className="btn btn-default btn-sm" onClick={this.create}>Create</button>
                 </div>
                 <ul className="listUser">

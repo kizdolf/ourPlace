@@ -1052,6 +1052,13 @@ hr{
     margin:0 -4px;
 }
 
+.delog{
+    position: absolute;
+    top: 0;
+    right: 15px;
+    z-index: 9999999;
+}
+
 /*
 possible music list item stuff:
 

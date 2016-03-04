@@ -97,6 +97,15 @@ exports.main = (function(){
                 res.json({url:req.protocol + '://' + req.get('host') + '/play/' + token});
          });
     });
+
+    router.get('/delog', (req, res)=>{
+        lo.info('delog triggered', {who: req.session.uuid, pseudo: req.session.pseudo});
+        res.json({delog: 'done'});
+        req.session.destroy();
+        req.session = {};
+    });
+
+
     // router.get('/playplease/:token', function(req, res){
     //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){
     //         externSession.getPath(req.session.name, function(err, rep){

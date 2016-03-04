@@ -158,10 +158,16 @@ var Layout = React.createClass({
             return true;
         }).keyup(function(e) {
             if (down[18] && down[13]){
-                window.location.href = '#/root';
+                this.goToRoot();
                 down = {};
             } else down[e.keyCode] = false;
             return true;
+        }.bind(this));
+    },
+    goToRoot: function(){
+         $.get('/api/root/amI', (Iam)=>{
+            if(Iam) window.location.href = '#/root';
+            else console.log('sorry, but you\'re not root');
         });
     },
     componentWillUnmount: function(){
@@ -251,9 +257,22 @@ var Layout = React.createClass({
             this.socket.emit('play', {id: sng.id});
         }
     },
+    delog: function(){
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i];
+            var eqPos = cookie.indexOf("="),
+            name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        $.get('/api/delog', function(){
+            location.reload();
+        });
+    },
     render: function(){
         return (
             <div>
+                <button className='btn btn-default btn-xs delog' onClick={this.delog}>delog</button>
                 <Notify can={this.state.allowNotif} what={this.state.notify} />
                 <Upload url={this.uploadAPI} drag={this.state.drag}/>
                 <Player

@@ -52,12 +52,9 @@ var getToken = function(req, res){
 var login = function(req, res, next){
     user.makeMeRoot();
     var params = req.body;
-    console.log(params);
-    console.log(req.session);
     if(params.welcome && params.welcome == 'true' &&
     params.token && params.token == req.session.tokenWelcome &&
     params.password){
-        console.log('login!');
         _r.table(tbls.tokens).get(params.token)
         .then((resp)=>{
             var hash = pass.generate(params.password);
@@ -73,13 +70,12 @@ var login = function(req, res, next){
                     req.session.token = null;
                     req.session.lastAction = new Date();
                     res.json({ok : true});
+                    _r.table(tbls.tokens).get(params.token).delete();
                 }).catch(function(err){
                     res.json({ok: false, err: err});
                 });
             });
         }).catch((e)=>{
-            console.log('e');
-            console.log(e);
             next();
         });
     }else if(params.token == req.session.token){
@@ -148,8 +144,7 @@ var createUser = function(pseudo, password, email, cb){
                 re.insert(tbls.stats, stats);
                 re.insert(tbls.tokens, {uuid: res.generated_keys[0], pseudo: pseudo, token: token})
                 .then(()=>{
-                    // var url = cnf.ndd + '/welcome/' + token;
-                    var url = 'http://localhost:9090/welcome/' + token;
+                    var url = cnf.ndd + '/welcome/' + token;
                     if(typeof email !== 'undefined' && email !== ""){
 
                         var html = "Hello " + pseudo + ", someone created a account for you!<br> You can choose a password here: ";
@@ -196,23 +191,19 @@ var welcome = (req, res, next)=>{
                 req.session.tokenWelcome = token;
                 res.sendFile(path.join(__dirname, '..', 'welcome', 'index.html'), {root : '/'});
             }else next();
-        }else next();
+        }else next(); //delete token in db? heu. not sure.
     });
 };
 
 var getWelcome = (req, res, next)=>{
-    console.log('api');
     var token = req.session.tokenWelcome || false;
-    console.log(token);
     if(token){
         _r.table(tbls.tokens).get(token)
         .then((resp)=>{
-            console.log(resp);
             req.session.welcomeUuid = resp.uuid;
             req.session.welcomePseudo = resp.pseudo;
             res.json({pseudo: resp.pseudo, token: token});
         }).catch((e)=>{
-            console.log(e);
             next();
         });
     }else{

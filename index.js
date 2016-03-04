@@ -54,7 +54,7 @@ var //extern dependencies
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong path
-    .use(tools.thisIs404);
+    .use((req, res)=>{res.redirect('/');});
 
     //ready for  requests. Http/Https. We have to handle both.
     //Start a HTTP server.

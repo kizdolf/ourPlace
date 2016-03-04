@@ -76,13 +76,11 @@
                         userName = data.pseudo;
                         $('.pseudo').html(userName);
                     });
-
-                    $('html').keydown(function(e){ if(e.which === 13) logIn.click(); });
-
                     logIn.click(function(){
+                        $('#password').prepend('<small>Account created. should login, otherwise retype password and log In :)<small>');
                         $.post('/login', {userName : userName, token: token, welcome: true, password: password.val()}, function(data){
-                            console.log(data);
-                            if(data.ok && data.ok === true) location.reload(); else $('#erreur').html(data.error);
+                            if(data.ok && data.ok === true) location.reload();
+                            else $('#erreur').html(data.message.error);
                         });
                     });
                 });

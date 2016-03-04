@@ -11,7 +11,7 @@ exports.local = {
 	appPath: '/path/to/app' //(eg: /home/user/ourPlace). DO Not leave the trailing slash.
 };
 
-//not mandatory. see config.
+//not mandatory. see config. (i don't use it actually.)
 exports.bugsnag = {
     token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 };
