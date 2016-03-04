@@ -68,7 +68,7 @@ cd /path/to/ourPlace
 npm install
 ```
  * create **app/criticalConf.js** and populate it like the exemple file.
- * update the app/config.js file with your info/choices
+ * update the **app/config.js** file with your info/choices
 ```
 forever start index.js
 ```
