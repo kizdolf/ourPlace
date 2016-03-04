@@ -42,7 +42,8 @@ Then create tables. Trough rethinkdb dashboard, I'll probably make a script soon
 You'll have to create a dataBase first, figure out that, then the tables.
 the table list is in the configuration file. There is just missing the indexes. I'll add them soon.
 ```
-.db('dbName').tableCreate('tableName', {primaryKey: 'colName'})
+r.db('dbName').tableCreate('tableName', {primaryKey: 'colName'})
+r.db('dbName').table('tableName').indexCreate('indexColomun')
 
 ```
 as for now there is the table list: 
