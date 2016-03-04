@@ -25,7 +25,7 @@ var Notify = React.createClass({
 
     },
     visi: function(){
-        var focus = (this.state.visi) ? true : false;
+        var focus = (this.state.visi) ? false : true;
         this.setState({visi: focus});
     },
     notify: function(what){
