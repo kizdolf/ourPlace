@@ -8,7 +8,7 @@ Maybe there is somewhere some traces of database password and stuff, I changed t
 
 *before running it:*
 
-**[the full install steps are here (not completely finish)](https://github.com/kizdolf/ourPlace/blob/master/install.md)**
+**[the full install steps are here (not completely finished)](https://github.com/kizdolf/ourPlace/blob/master/install.md)**
 
  * create app/criticalConf.js file, populate it like in the [example file](https://github.com/kizdolf/ourPlace/blob/master/app/example.criticalConf.js).
  * Check this to know a bit more: https://www.rethinkdb.com/docs/security/
