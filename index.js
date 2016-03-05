@@ -51,6 +51,7 @@ var //extern dependencies
     .use(conf.webPath, express.static(conf.webDir))
     //serve medias (this should evolve deeply :/)
     .use(conf.mediaPath, express.static(conf.mediaDir))
+    .use(conf.tmpPath, express.static(conf.tmpDir))
     //use api
     .use(conf.apiPrefix, api.main)
     //wrong path

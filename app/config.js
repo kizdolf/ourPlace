@@ -6,6 +6,8 @@ exports.conf = {
     webDir: 'public', //   which directory should we serve for the front end?
     mediaDir: 'medias', //   which directory should we serve for the medias?
     mediaPath: '/medias', //    on which path?
+    tmpPath: '/tmp', //used to serve streams.
+    tmpDir: 'tmp',
     webPath: '/', //    on which path?
     WelcomePath: '/welcome/:token',
     apiPrefix: '/api',//API prefix (useless comment right?)

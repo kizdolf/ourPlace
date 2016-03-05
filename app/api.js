@@ -13,13 +13,12 @@
 var
 express         = require('express'),
 multer          = require('multer'),
-login           = require('./login'),
+boxStream       = require('./boxStream'),
 externSession   = require('./externSession'),
 lib             = require('./library'),
 tools           = require('./tools'),
 lo              = tools.lo,
 user            = require('./user'),
-path            = require('path'),
 conf            = require('./config').conf,
 feed            = require('./rss/main');
 
@@ -105,6 +104,11 @@ exports.main = (function(){
         req.session = {};
     });
 
+    /*streams!*/
+
+    router.get('/streams/list', boxStream.boxList);
+    router.get('/streams/list/:path', boxStream.box64List);
+    router.get('/streams/stream/:path', boxStream.stream);
 
     // router.get('/playplease/:token', function(req, res){
     //     if(req.session.canPlay && req.session.name && req.session.nbLeft > 0){

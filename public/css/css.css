@@ -347,7 +347,28 @@ hr{
         height: 100vh;
         overflow: auto;
         padding-top: 120px;
-    padding-right: 12%;
+        padding-right: 12%;
+    }
+
+    .streams{
+        /*max-width: 1200px;*/
+        /* margin-left: 250px; */
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        padding-left: 250px;
+        height: 100vh;
+        overflow: auto;
+        padding-top: 120px;
+        padding-right: 12%;
+    }
+
+    .stream{
+        height: 40px;
+        width: 100%;
+        background: #DAD9D9;
+        cursor: pointer;
+        margin: 5px;
     }
 
 }

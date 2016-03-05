@@ -1,6 +1,6 @@
 {
   "name": "our_place",
-  "version": "1.0.0",
+  "version": "0.5.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,6 @@
     "body-parser": "^1.14.1",
     "bufferutil": "^1.2.1",
     "bugsnag": "^1.7.0",
-    "couchbase": "^2.1.2",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "feed-read": "0.0.1",
