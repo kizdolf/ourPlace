@@ -28,7 +28,7 @@ node_modules
 
 medias/*
 medias/
-tmp/
+tmp/*
 databases/*
 minifyAngular.js
 app.js
