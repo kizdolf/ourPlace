@@ -84,6 +84,7 @@ exports.Menu = React.createClass({
                     <li className="oneLink"><Link to="/notes">Notes</Link></li>
                     <li className="oneLink"><Link to="/">Music</Link></li>
                     <li className="oneLink"><Link to="/rss">Rss</Link></li>
+                    <li className="oneLink"><Link to="/streams">Streams</Link></li>
                 </ul>
                 <CurPlaylist
                     musics={this.props.musics}

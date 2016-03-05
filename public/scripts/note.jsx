@@ -6,8 +6,8 @@ var
     moment      = require('moment'),
     $           = require('jquery');
 
-require('react-medium-editor/node_modules/medium-editor/dist/css/medium-editor.css');
-require('react-medium-editor/node_modules/medium-editor/dist/css/themes/default.css');
+require('./../css/medium-editor.min.css');
+require('./../css/default.min.css');
 
 var Note = React.createClass({
     showMenu: function(e){

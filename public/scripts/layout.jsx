@@ -1,10 +1,11 @@
-    var React       = require('react'),
+    var React   = require('react'),
     $           = require('jquery'),
     Player      = require('./player.jsx').Player,
     Menu        = require('./leftMenu.jsx').Menu,
     Notify      = require('./notify.jsx').Notify,
     Visualizer  = require('./songViszu.jsx').Visualizer,
     Upload      = require('./upload.jsx').Upload;
+
 
 var Layout = React.createClass({
     url: '/api/music',
