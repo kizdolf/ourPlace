@@ -142,13 +142,17 @@ var createUser = function(pseudo, password, email, cb){
                     uuid: res.generated_keys[0]
                 };
                 re.insert(tbls.stats, stats);
+
                 re.insert(tbls.tokens, {uuid: res.generated_keys[0], pseudo: pseudo, token: token})
                 .then(()=>{
+
                     var url = cnf.ndd + '/welcome/' + token;
                     if(typeof email !== 'undefined' && email !== ""){
 
-                        var html = "Hello " + pseudo + ", someone created a account for you!<br> You can choose a password here: ";
-                            html+= "<a href='" + url + "'>OurPlace</a>. <br> Welcome :)";
+
+                        var html = "<body>Hello <h3>" + pseudo + "<h3>, someone created a account for you on OurPlace, (" + cnf.ndd + ")!<br>";
+                            html+= "<b>You can choose a password here: <b>";
+                            html+= "<h4><a href='" + url + "'>OurPlace</a><h4>. <br> Welcome :)</body>";
                         mandrill('/messages/send', {
                             message: {
                                 to: [{email: email, name: pseudo}],
@@ -156,18 +160,23 @@ var createUser = function(pseudo, password, email, cb){
                                 subject: "An account was created for you on OurPlace!",
                                 html: html
                             }
+                        },(res)=>{
+                            lo.info('mail sent', {to: email, url: url, res: res});
                         },(e)=>{
                             if (e) lo.error('unable to send mail:', {error: e, mail: email});
                             else lo.info('mail sent', {to: email});
                             if(cb) cb(true);
                         });
                     }else{
+                        lo.error('wrong mail!', {email: email, url: url});
                         if(cb) cb(true);
                     }
+                }).catch((err)=>{
+                    lo.error('error inserting token', {pseudo: pseudo, err: err});
+                    if(cb) cb(false);
                 });
             }).catch((err)=>{
-                log.error('error creating user ' + pseudo);
-                log.error(err);
+                lo.error('error creating user', {pseudo: pseudo, err: err});
                 if(cb) cb(false);
             });
         }
