@@ -50,10 +50,11 @@ var getToken = function(req, res){
     res.json({token: newToken});
 };
 
-var logedIn = (req, res, userName, password, cb)=>{
+var logedIn = (req, res, userName, password, cb, txtLog)=>{
     userExist(userName, password)
     .then(function(user){
-        lo.info('loged in', {pseudo: userName, who: user.id});
+        if(txtLog) lo.info('loged in', {pseudo: userName, who: user.id, txt: txtLog});
+        else lo.info('loged in', {pseudo: userName, who: user.id});
         req.session.uuid = user.id;
         req.session.logued = true;
         req.session.pseudo = userName;
@@ -85,10 +86,7 @@ var login = function(req, res, next){
             uuid: req.session.welcomeUuid                           // you're loged-in and password is set.
         })
         .then((resp)=>{
-            if(!resp[0]){
-                console.log('resp null:');
-                console.log(resp);
-            }else{
+            if(resp[0]){
                 resp = resp[0];
                 var hash = pass.generate(params.password);
                 _r.table(tbls.user).get(resp.uuid).update({password: hash})
@@ -97,17 +95,13 @@ var login = function(req, res, next){
                         if(ok){                                                 // It's now a normal user.
                             re.delSome(tbls.tokens, {token: params.token})
                             .then((done)=>{
-                                console.log('token deleted:' + params.token + ' => [' + done + ']');
                                 params.password = '';
                                 delete req.session.welcomeUuid;
                                 delete req.session.welcomePseudo;
                                 res.json({ok : true});
-                            }).catch((e)=>{
-                                console.log('err delete:');
-                                console.log(e);
-                            });
+                            }).catch((e)=>{ });
                         }else res.json({ok: false, err: err});
-                    });
+                    }, 'welcome');
                 });
             }
         }).catch((e)=>{
@@ -154,7 +148,7 @@ var createUser = function(pseudo, password, email, session, cb){
     tbl = tbls.user;
     re.getSome(tbl, {pseudo: o.pseudo}).then((ex)=>{
         if(ex[0]){
-            log.error('Try to create existing user : ', o.pseudo);
+            lo.error('Try to create existing user',{obj: o, byWho: session.uuid});
             cb(false);
         }else{
             re.insert(tbl, o).then((res)=>{
