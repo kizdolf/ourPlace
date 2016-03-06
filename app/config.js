@@ -29,7 +29,7 @@ exports.conf = {
     cleanAtStartup: false, // delete existing media not in db at startUp.
     logsPerPage : 20, //could be a non fixed value.
     fromMail: 'info@azerty.gq',
-    ndd: 'http://azerty.gq',
+    ndd: 'https://azerty.gq',
     bugsnag: false, //never mind.
     imgMaxSize: {width: 200, height: 200} //images are scaled automatically. This allow you to keep a good quality if you want.
 };

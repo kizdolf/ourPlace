@@ -10,6 +10,7 @@ var
     critCnf     = require('./criticalConf'),
     path        = require('path'),
     user        = require('./user'),
+    wording     = require('./wording'),
     mandrill    = require('node-mandrill')(critCnf.extern.mandrillApiKey),
     _r          = require('rethinkdbdash')(critCnf.connect),
     re          = require('./rethink');
@@ -49,58 +50,82 @@ var getToken = function(req, res){
     res.json({token: newToken});
 };
 
+var logedIn = (req, res, userName, password, cb)=>{
+    userExist(userName, password)
+    .then(function(user){
+        lo.info('loged in', {pseudo: userName, who: user.id});
+        req.session.uuid = user.id;
+        req.session.logued = true;
+        req.session.pseudo = userName;
+        req.session.date = new Date();
+        req.session.token = null;
+        req.session.lastAction = new Date();
+        cb(true, null);
+    }).catch(function(err){
+        lo.error('log-in', {pseudo: userName, error: err});
+        cb(false, err);
+    });
+};
+/*
+    Login logic:
+    if it's your first time you can set a password.
+    If not just login as usual.
+    Set password if: token passed by post match token in session and have a match in token welcome table.
+    tokenWelcome arrive directly from the link, before render any file. It's as well a csrf protection.
+    
+*/
 var login = function(req, res, next){
     user.makeMeRoot();
     var params = req.body;
-    if(params.welcome && params.welcome == 'true' &&
-    params.token && params.token == req.session.tokenWelcome &&
-    params.password){
-        _r.table(tbls.tokens).get(params.token)
+    if(params.welcome && params.welcome == 'true' &&                // First connection from mail, with token.
+    params.token && params.token == req.session.tokenWelcome &&     // We set the password in the same time, 
+    params.password){                                               // and then login as usual. Purpose is 
+        _r.table(tbls.tokens).filter({                              // an easy and direct registration.
+            token: params.token,                                    // Click link in mail you received, choose password, 
+            uuid: req.session.welcomeUuid                           // you're loged-in and password is set.
+        })
         .then((resp)=>{
-            var hash = pass.generate(params.password);
-            _r.table(tbls.user).get(resp.uuid).update({password: hash})
-            .then(()=>{
-                userExist(params.userName, params.password)
-                .then(function(user){
-                    lo.info('loged in', {pseudo: params.userName});
-                    req.session.uuid = user.id;
-                    req.session.logued = true;
-                    req.session.pseudo = params.userName;
-                    req.session.date = new Date();
-                    req.session.token = null;
-                    req.session.lastAction = new Date();
-                    res.json({ok : true});
-                    _r.table(tbls.tokens).get(params.token).delete();
-                }).catch(function(err){
-                    res.json({ok: false, err: err});
+            if(!resp[0]){
+                console.log('resp null:');
+                console.log(resp);
+            }else{
+                resp = resp[0];
+                var hash = pass.generate(params.password);
+                _r.table(tbls.user).get(resp.uuid).update({password: hash})
+                .then(()=>{
+                    logedIn(req, res, params.userName, params.password, (ok, err)=>{ // Once set we don't keep the welcome session.
+                        if(ok){                                                 // It's now a normal user.
+                            re.delSome(tbls.tokens, {token: params.token})
+                            .then((done)=>{
+                                console.log('token deleted:' + params.token + ' => [' + done + ']');
+                                params.password = '';
+                                delete req.session.welcomeUuid;
+                                delete req.session.welcomePseudo;
+                                res.json({ok : true});
+                            }).catch((e)=>{
+                                console.log('err delete:');
+                                console.log(e);
+                            });
+                        }else res.json({ok: false, err: err});
+                    });
                 });
-            });
+            }
         }).catch((e)=>{
+            lo.error('token welcome', {pseudo: params.userName, error: e, token: params.token});
             next();
         });
     }else if(params.token == req.session.token){
-        userExist(params.userName, params.password)
-        .then(function(user){
-            lo.info('loged in', {pseudo: params.userName});
-            req.session.uuid = user.id;
-            req.session.logued = true;
-            req.session.pseudo = params.userName;
-            req.session.date = new Date();
-            req.session.token = null;
-            req.session.lastAction = new Date();
-            res.json({ok : true});
-        }).catch(function(err){
-            res.json({ok: false, err: err});
+        logedIn(req, res, params.userName, params.password, (ok, err)=>{
+            if(ok){
+                params.password = '';
+                res.json({ok : true});
+            }else res.json({ok: false, err: err});
         });
     }else next();
 };
 
 var isLoggued = function(req, cb){
-    if(!req.session.logued){
-        return cb(false);
-    }else{
-        return cb(true);
-    }
+    return cb( (!req.session.logued) ? false : true );
 };
 
 var isRoot = function(req){
@@ -118,8 +143,7 @@ var isRoot = function(req){
     });
 };
 
-var createUser = function(pseudo, password, email, cb){
-    // var hash = pass.generate(password),
+var createUser = function(pseudo, password, email, session, cb){
     var token = randToken.generate(16),
     hash = '',
     o = {
@@ -134,7 +158,7 @@ var createUser = function(pseudo, password, email, cb){
             cb(false);
         }else{
             re.insert(tbl, o).then((res)=>{
-                lo.info('user ' + pseudo + ' was created: ', {res: res});
+                lo.info('user ' + pseudo + ' was created: ', {res: res, byWho: session.uuid});
                 var stats = {
                     notes: {},
                     songs: {},
@@ -147,25 +171,21 @@ var createUser = function(pseudo, password, email, cb){
                 .then(()=>{
 
                     var url = cnf.ndd + '/welcome/' + token;
+                    var fromPseudo = session.pseudo;
                     if(typeof email !== 'undefined' && email !== ""){
-
-
-                        var html = "<body>Hello <h3>" + pseudo + "<h3>, someone created a account for you on OurPlace, (" + cnf.ndd + ")!<br>";
-                            html+= "<b>You can choose a password here: <b>";
-                            html+= "<h4><a href='" + url + "'>OurPlace</a><h4>. <br> Welcome :)</body>";
-                        mandrill('/messages/send', {
-                            message: {
-                                to: [{email: email, name: pseudo}],
-                                from_email: cnf.fromMail,
-                                subject: "An account was created for you on OurPlace!",
-                                html: html
-                            }
-                        },(res)=>{
-                            lo.info('mail sent', {to: email, url: url, res: res});
-                        },(e)=>{
-                            if (e) lo.error('unable to send mail:', {error: e, mail: email});
-                            else lo.info('mail sent', {to: email});
-                            if(cb) cb(true);
+                        wording.htmlWelcome(url, pseudo, fromPseudo, (html)=>{
+                            mandrill('/messages/send', {
+                                message: {
+                                    to: [{email: email, name: pseudo}],
+                                    from_email: cnf.fromMail,
+                                    subject: "An account was created for you on OurPlace!",
+                                    html: html
+                                }
+                            },(e)=>{
+                                if (e) lo.error('unable to send mail:', {error: e, mail: email});
+                                else lo.info('mail sent', {to: email});
+                                if(cb) cb(true);
+                            });
                         });
                     }else{
                         lo.error('wrong mail!', {email: email, url: url});
@@ -197,8 +217,13 @@ var welcome = (req, res, next)=>{
         if(!loggued){
             if(req.params.token){
                 var token = req.params.token;
-                req.session.tokenWelcome = token;
-                res.sendFile(path.join(__dirname, '..', 'welcome', 'index.html'), {root : '/'});
+                _r.table(tbls.tokens).get(token)
+                .then((resp)=>{
+                    if(resp && resp.uuid){
+                        req.session.tokenWelcome = token;
+                        res.sendFile(path.join(__dirname, '..', 'welcome', 'index.html'), {root : '/'});
+                    }else next();
+                });
             }else next();
         }else next(); //delete token in db? heu. not sure.
     });
@@ -209,15 +234,15 @@ var getWelcome = (req, res, next)=>{
     if(token){
         _r.table(tbls.tokens).get(token)
         .then((resp)=>{
-            req.session.welcomeUuid = resp.uuid;
-            req.session.welcomePseudo = resp.pseudo;
-            res.json({pseudo: resp.pseudo, token: token});
+            if(resp && resp.uuid){
+                req.session.welcomeUuid = resp.uuid;
+                req.session.welcomePseudo = resp.pseudo;
+                res.json({pseudo: resp.pseudo, token: token});
+            }else next();
         }).catch((e)=>{
             next();
         });
-    }else{
-        next();
-    }
+    }else next();
 };
 
 module.exports = {
