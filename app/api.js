@@ -101,7 +101,6 @@ exports.main = (function(){
         lo.info('delog triggered', {who: req.session.uuid, pseudo: req.session.pseudo});
         res.json({delog: 'done'});
         req.session.destroy();
-        req.session = {};
     });
 
     /*streams!*/

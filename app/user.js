@@ -103,7 +103,7 @@ var rootPost = (req, res)=>{
                     res.json({err: 'this is you. I will not allow you to unRoot yourself...'});
                 }
             }else if (param == 'new'){
-                login.createUser(obj.pseudo, obj.password, (obj.email || ''), (resp)=>{
+                login.createUser(obj.pseudo, obj.password, (obj.email || ''), req.session, (resp)=>{
                     res.json(resp);
                 });
             }else{//take IP as well
