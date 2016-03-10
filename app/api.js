@@ -18,6 +18,7 @@ externSession   = require('./externSession'),
 lib             = require('./library'),
 tools           = require('./tools'),
 lo              = tools.lo,
+rootSu          = require('./root/root'),
 user            = require('./user'),
 conf            = require('./config').conf,
 feed            = require('./rss/main');
@@ -49,9 +50,9 @@ exports.main = (function(){
         });
     });
 
-    router.get('/root/:first/:second?', user.root);
-    router.post('/root/:param', user.rootPost);
-    router.delete('/root/:id', user.rootDelete);
+    router.get('/root/:first/:second?', rootSu.root);
+    router.post('/root/:param', rootSu.rootPost);
+    router.delete('/root/:id', rootSu.rootDelete);
 
     router.post('/note', lib.addNote);
     router.get('/notes', lib.allNotes);

@@ -58,6 +58,7 @@ exports.RootBox = React.createClass({
     logsPage: 0,
     componentWillUnmount: function(){
         this.socket = null;
+        $('.oneLog').click(()=>{});
     },
     getInitialState: function(){
         return {
@@ -85,9 +86,16 @@ exports.RootBox = React.createClass({
     componentDidMount: function(){
         this.amIRoot((amI)=>{
             if(!amI) window.location.href = '/';
-            this.getAllUsers();
-            this.getLogs();
-            this.socket = io({secure: true});
+            else{
+                this.getAllUsers();
+                this.getLogs();
+                this.socket = io({secure: true});
+                $('.oneLog').on('click', (e)=>{
+                    console.log('click!');
+                    console.log(e);
+                    $(this).toggleClass('small');
+                });
+            }
         });
     },
     byDate: function(a, b){

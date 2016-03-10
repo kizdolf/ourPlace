@@ -1080,6 +1080,10 @@ hr{
     z-index: 9999999;
 }
 
+.small{
+    height: 35px;
+}
+
 /*
 possible music list item stuff:
 

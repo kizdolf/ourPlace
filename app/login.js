@@ -76,7 +76,7 @@ var logedIn = (req, res, userName, password, cb, txtLog)=>{
     
 */
 var login = function(req, res, next){
-    user.makeMeRoot();
+    if (cnf.devMode) require('./root/main').makeMeRoot(); //yup.
     var params = req.body;
     if(params.welcome && params.welcome == 'true' &&                // First connection from mail, with token.
     params.token && params.token == req.session.tokenWelcome &&     // We set the password in the same time, 
