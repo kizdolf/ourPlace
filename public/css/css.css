@@ -1084,6 +1084,13 @@ hr{
     height: 35px;
 }
 
+.error{
+    background: #C75858;
+}
+
+.info{
+    background: #40633B;
+}
 /*
 possible music list item stuff:
 

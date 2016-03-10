@@ -159,8 +159,17 @@ exports.RootBox = React.createClass({
             );
         });
         var mountLogs = this.state.logs.map((log)=>{
+            var className = 'oneLog ' + log.level;
+            var toggleLog = (e)=>{
+                var el  = $(e.target);
+                if(el.hasClass('code'))
+                    el.toggleClass('small');
+                else
+                    el.find('.code').toggleClass('small');
+
+            };
             return(
-                <div key={log.id} className="oneLog">
+                <div key={log.id} className={className} onClick={toggleLog}>
                     <span><b>{log.log}</b></span>  |  
                     <span>{moment(log.when).format("dddd, MMMM Do YYYY, h:mm:ss a")}</span>
                     <pre className="code">{JSON.stringify(log, null, '\t')}</pre>
