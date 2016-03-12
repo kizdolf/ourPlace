@@ -3,7 +3,7 @@
     Player      = require('./player.jsx').Player,
     Menu        = require('./leftMenu.jsx').Menu,
     Notify      = require('./notify.jsx').Notify,
-    Visualizer  = require('./songViszu.jsx').Visualizer,
+    // Visualizer  = require('./songViszu.jsx').Visualizer,
     Upload      = require('./upload.jsx').Upload;
 
 
