@@ -18,7 +18,7 @@ var ItemStream = React.createClass({
             $.get('/api/streams/stream/' +this.props.item.path, function(data){
                 console.log('stream file');
                 console.log(data);
-                var win = window.open(data.stream, '_blank');
+                var win = window.open(data.path, '_blank');
                 win.focus();
             }.bind(this));
         }
