@@ -1,14 +1,13 @@
 'use strict';
 
 
-    var
-        // conf        = require('./config').socket,
-        user        = require(global.core + '/user'),
-        io          = require('socket.io'),
-        lo          = require(global.core + '/tools').lo, //jshint ignore:line
-        ios         = require('socket.io-express-session');
+var
+    user        = require(global.core + '/user'),
+    io          = require('socket.io'),
+    lo          = require(global.core + '/tools').lo, //jshint ignore:line
+    ios         = require('socket.io-express-session');
 
-    var sockets  = {};
+var sockets  = {};
 
 module.exports = function(app, session){
 

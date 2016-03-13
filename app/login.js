@@ -162,7 +162,6 @@ var createUser = function(pseudo, password, email, session, cb){
 
                 re.insert(tbls.tokens, {uuid: res.generated_keys[0], pseudo: pseudo, token: token})
                 .then(()=>{
-
                     var url = cnf.ndd + '/welcome/' + token;
                     var fromPseudo = session.pseudo;
                     if(typeof email !== 'undefined' && email !== ""){

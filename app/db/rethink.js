@@ -1,4 +1,5 @@
-var r   = require('rethinkdb'),
+var
+r       = require('rethinkdb'),
 conCnf  = require(global.core + '/criticalConf'),
 _r      = require('rethinkdbdash')(conCnf.connect);
 

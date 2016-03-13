@@ -10,17 +10,17 @@
     But hey, there is'nt that much endpoints. (for now at least)
 */
 var
-express         = require('express'),
-multer          = require('multer'),
 boxStream       = require(global.core + '/boxStream'),
 externSession   = require(global.core + '/externSession'),
 lib             = require(global.core + '/library'),
 tools           = require(global.core + '/tools'),
-lo              = tools.lo,
 rootSu          = require(global.core + '/root/root'),
 user            = require(global.core + '/user'),
 conf            = require(global.core + '/config').conf,
-feed            = require(global.core + '/rss/main');
+feed            = require(global.core + '/rss/main'),
+lo              = tools.lo,
+express         = require('express'),
+multer          = require('multer');
 
 require('./socket')();
 

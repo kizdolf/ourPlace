@@ -6,10 +6,10 @@
 
 var box         = require(global.core + '/freebox-share/index'),
     boxConf     = require(global.core + '/criticalConf').freebox,
-    mime        = require('mime'),
-    appConf     = boxConf.app,
     conf        = require(global.core + '/config').conf,
     fs          = require('fs'),
+    mime        = require('mime'),
+    appConf     = boxConf.app,
     haveBox     = false;
 
 box.getBox(appConf.id, appConf.appName, appConf.version, appConf.device, appConf.ip, ()=>{
