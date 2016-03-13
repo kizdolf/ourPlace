@@ -17,9 +17,9 @@
                 on update: replace obj directly. Should be enough.
 */
 var r       = require('rethinkdb'),
-    cnf     = require('./config.js').rethink,
-    dbCnf   = require('./criticalConf.js'),
-    s       = require('./socket')();
+    cnf     = require(global.core + '/config.js').rethink,
+    dbCnf   = require(global.core + '/criticalConf.js'),
+    s       = require(global.core + '/socket')();
 
 var
 //detect what kind of change for one change val returned by the db.

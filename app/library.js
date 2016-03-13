@@ -1,12 +1,11 @@
 'use strict';
 
 var
-    mainConf        = require('./config').conf,
-    critCnf         = require('./criticalConf'),
-    re              = require('./rethink.js'),
-    tbls            = require('./config').rethink.tables,
-    tools           = require('./tools.js'),
-    user            = require('./user'),
+    mainConf        = require(global.core + '/config').conf,
+    re              = require(global.core + '/db/rethink.js'),
+    tbls            = require(global.core + '/config').rethink.tables,
+    tools           = require(global.core + '/tools.js'),
+    user            = require(global.core + '/user'),
     lwip            = require('lwip'),
     mime            = require('mime'),
     child_process   = require('child_process'),

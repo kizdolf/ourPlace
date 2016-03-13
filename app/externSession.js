@@ -1,9 +1,9 @@
 'use strict';
 
-var 
+var
     randToken   = require('rand-token'),
-    re          = require('./rethink.js'),
-    tbls        = require('./config').rethink.tables;
+    re          = require(global.core + '/db/rethink.js'),
+    tbls        = require(global.core + '/config').rethink.tables;
 
     var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
@@ -18,7 +18,7 @@ var generateToken = function(obj, cb){
     re.insert(tbls.share, ins)
     .then((res)=>{
             log.info(' token inserted:',  res.cas);
-            cb(null, token);                    
+            cb(null, token);
     }).catch((e)=>{
             log.error(' inserting obj');
             log.error(e);

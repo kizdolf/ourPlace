@@ -8,21 +8,22 @@
 */
 'use strict';
 
+//globals (tranquille)
+global.appPath  = __dirname;
+global.core     = global.appPath + '/app';
+
 var //extern dependencies
     express         = require('express'),
     bodyParser      = require('body-parser'),
     fs              = require('fs'),
     http            = require('http'),
     //inner dependencies
-    conf            = require('./app/config').conf,
-    confRe          = require('./app/criticalConf'),
-    api             = require('./app/api'),
-    login           = require('./app/login'),
-    tools           = require('./app/tools'),
-    // externSession   = require('./app/externSession'),
-    sessionRe       = require('./app/rethinkSession');
-    //globals (tranquille)
-    global.appPath = __dirname;
+    conf            = require(global.core + '/config').conf,
+    confRe          = require(global.core + '/criticalConf'),
+    api             = require(global.core + '/api'),
+    login           = require(global.core + '/login'),
+    tools           = require(global.core + '/tools'),
+    sessionRe       = require(global.core + '/db/rethinkSession');
 
 
     //main object.
@@ -72,8 +73,8 @@ var //extern dependencies
         httpsServer     = https.createServer(credentials, app);
         httpsServer.listen(conf.httpsPort);
         //sockets are safe as well, and can use session.
-        require('./app/socket')(httpsServer, sessionRe.Session, sessionRe.store);
-    }else require('./app/socket')(httpServer, sessionRe.Session, sessionRe.store);
+        require(global.core + '/socket')(httpsServer, sessionRe.Session, sessionRe.store);
+    }else require(global.core + '/socket')(httpServer, sessionRe.Session, sessionRe.store);
 
     //because time to time cleaning is good.. launched only on start.
     if(conf.cleanAtStartup){

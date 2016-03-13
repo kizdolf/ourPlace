@@ -1,8 +1,8 @@
 'use strict';
 
 
-var 
-confRe      = require('./criticalConf'),
+var
+confRe      = require(global.core + '/criticalConf'),
 session     = require('express-session'),
 RDBStore    = require('session-rethinkdb')(session);
 

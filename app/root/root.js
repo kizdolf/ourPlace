@@ -1,16 +1,16 @@
 'use strict';
 
 var
-    mainConf        = require('./../config').conf,
-    conCnf          = require('./../criticalConf'),
-    re              = require('./../rethink.js'),
+    mainConf        = require(global.core + '/config').conf,
+    conCnf          = require(global.core + '/criticalConf'),
+    re              = require(global.core + '/db/rethink.js'),
+    tbls            = require(global.core + '/config').rethink.tables,
+    tools           = require(global.core + '/tools.js'),
+    login           = require(global.core + '/login'),
+    lo              = tools.lo,
     r               = require('rethinkdb'),
-    tbls            = require('./../config').rethink.tables,
     _r              = require('rethinkdbdash')(conCnf.connect),
-    tools           = require('./../tools.js'),
-    log             = require('simple-node-logger').createSimpleFileLogger('infos.log'),
-    login           = require('./../login'),
-    lo              = tools.lo;
+    log             = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
 var rootSu = (req, res)=>{
 

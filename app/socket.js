@@ -3,9 +3,9 @@
 
     var
         // conf        = require('./config').socket,
-        user        = require('./user'),
+        user        = require(global.core + '/user'),
         io          = require('socket.io'),
-        lo          = require('./tools').lo, //jshint ignore:line
+        lo          = require(global.core + '/tools').lo, //jshint ignore:line
         ios         = require('socket.io-express-session');
 
     var sockets  = {};
@@ -14,7 +14,7 @@ module.exports = function(app, session){
 
     var module = {};
 
-    if(app && session){
+    if(app && session){ //init.
         io = io(app);
         io.use(ios(session));
         io.on('connection', function(socket){
@@ -36,6 +36,7 @@ module.exports = function(app, session){
         });
     }
 
+    //methods.
     module.send = (what, whom, abroad, name)=>{
         var sok = (abroad && !!abroad) ? io : sockets[whom.sokId];
         if(typeof name === 'undefined') name = 'update';

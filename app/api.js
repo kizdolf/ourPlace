@@ -9,19 +9,18 @@
     Until then everything id handled here.
     But hey, there is'nt that much endpoints. (for now at least)
 */
-
 var
 express         = require('express'),
 multer          = require('multer'),
-boxStream       = require('./boxStream'),
-externSession   = require('./externSession'),
-lib             = require('./library'),
-tools           = require('./tools'),
+boxStream       = require(global.core + '/boxStream'),
+externSession   = require(global.core + '/externSession'),
+lib             = require(global.core + '/library'),
+tools           = require(global.core + '/tools'),
 lo              = tools.lo,
-rootSu          = require('./root/root'),
-user            = require('./user'),
-conf            = require('./config').conf,
-feed            = require('./rss/main');
+rootSu          = require(global.core + '/root/root'),
+user            = require(global.core + '/user'),
+conf            = require(global.core + '/config').conf,
+feed            = require(global.core + '/rss/main');
 
 require('./socket')();
 
@@ -85,7 +84,6 @@ exports.main = (function(){
     router.get('/rss', feed.getRss);
 
     router.get('/user/status', user.getStatus);
-
     router.post('/user/status', user.setStatus);
 
     router.post('/getToken', function(req, res){

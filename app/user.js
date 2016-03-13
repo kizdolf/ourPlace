@@ -1,12 +1,12 @@
 'use strict';
 
 var
-    conCnf          = require('./criticalConf'),
-    re              = require('./rethink.js'),
+    conCnf          = require(global.core + '/criticalConf'),
+    re              = require(global.core + '/db/rethink.js'),
+    tbls            = require(global.core + '/config').rethink.tables,
+    lo              = require(global.core + '/tools.js').lo,
     r               = require('rethinkdb'),
-    tbls            = require('./config').rethink.tables,
-    _r              = require('rethinkdbdash')(conCnf.connect),
-    lo              = require('./tools.js').lo;
+    _r              = require('rethinkdbdash')(conCnf.connect);
 
 var played = (id, req)=>{
     var idUser = req.session.uuid;

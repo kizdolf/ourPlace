@@ -4,11 +4,11 @@
 */
 'use strict';
 
-var box         = require('./freebox-share/index'),
-    boxConf     = require('./criticalConf').freebox,
+var box         = require(global.core + '/freebox-share/index'),
+    boxConf     = require(global.core + '/criticalConf').freebox,
     mime        = require('mime'),
     appConf     = boxConf.app,
-    conf        = require('./config').conf,
+    conf        = require(global.core + '/config').conf,
     fs          = require('fs'),
     haveBox     = false;
 

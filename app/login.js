@@ -1,19 +1,18 @@
 'use strict';
 
 var
+    tbls        = require(global.core + '/config').rethink.tables,
+    cnf         = require(global.core + '/config').conf,
+    critCnf     = require(global.core + '/criticalConf'),
+    wording     = require(global.core + '/wording'),
+    re          = require(global.core + '/db/rethink'),
     randToken   = require('rand-token'),
     pass        = require('password-hash'),
-    tbls        = require('./config').rethink.tables,
-    cnf         = require('./config').conf,
-    isDev       = cnf.devMode,
     randToken   = require('rand-token'),
-    critCnf     = require('./criticalConf'),
     path        = require('path'),
-    user        = require('./user'),
-    wording     = require('./wording'),
     mandrill    = require('node-mandrill')(critCnf.extern.mandrillApiKey),
     _r          = require('rethinkdbdash')(critCnf.connect),
-    re          = require('./rethink');
+    isDev       = cnf.devMode;
 
 var log = require('simple-node-logger').createSimpleFileLogger('infos.log');
 
@@ -73,16 +72,16 @@ var logedIn = (req, res, userName, password, cb, txtLog)=>{
     If not just login as usual.
     Set password if: token passed by post match token in session and have a match in token welcome table.
     tokenWelcome arrive directly from the link, before render any file. It's as well a csrf protection.
-    
+
 */
 var login = function(req, res, next){
     if (cnf.devMode) require('./root/main').makeMeRoot(); //yup.
     var params = req.body;
     if(params.welcome && params.welcome == 'true' &&                // First connection from mail, with token.
-    params.token && params.token == req.session.tokenWelcome &&     // We set the password in the same time, 
-    params.password){                                               // and then login as usual. Purpose is 
+    params.token && params.token == req.session.tokenWelcome &&     // We set the password in the same time,
+    params.password){                                               // and then login as usual. Purpose is
         _r.table(tbls.tokens).filter({                              // an easy and direct registration.
-            token: params.token,                                    // Click link in mail you received, choose password, 
+            token: params.token,                                    // Click link in mail you received, choose password,
             uuid: req.session.welcomeUuid                           // you're loged-in and password is set.
         })
         .then((resp)=>{
