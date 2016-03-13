@@ -4,7 +4,7 @@ var
     tbls        = require(global.core + '/config').rethink.tables,
     cnf         = require(global.core + '/config').conf,
     critCnf     = require(global.core + '/criticalConf'),
-    wording     = require(global.core + '/wording'),
+    wording     = require(global.core + '/send/wording'),
     re          = require(global.core + '/db/rethink'),
     randToken   = require('rand-token'),
     pass        = require('password-hash'),

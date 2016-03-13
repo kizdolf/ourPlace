@@ -27,7 +27,7 @@ var
 
 
 //listen the dbs for changes, we should check if weather or not is already loaded.
-require('./DBlisteners.js');
+require(global.core + '/db/DBlisteners.js');
 
 //extract and save picture. if extract failed just delete pic without blocking process.
 var extractPicture = (meta, path, cb)=>{

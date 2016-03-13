@@ -2,7 +2,7 @@
 var fs = require('fs');
 
 var htmlWelcome = (url, pseudo, fromPseudo, cb)=>{
-    fs.readFile(global.core + '/templates/welcome.html', (err, html)=>{
+    fs.readFile(global.core + '/send/templates/welcome.html', (err, html)=>{
         html = html.toString();
         if(!err){
             html = html.replace(/{{url}}/g, url);
