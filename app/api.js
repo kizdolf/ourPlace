@@ -10,7 +10,7 @@
     But hey, there is'nt that much endpoints. (for now at least)
 */
 var
-boxStream       = require(global.core + '/boxStream'),
+boxStream       = require(global.core + '/video/boxStream'),
 externSession   = require(global.core + '/externSession'),
 lib             = require(global.core + '/library'),
 tools           = require(global.core + '/tools'),
