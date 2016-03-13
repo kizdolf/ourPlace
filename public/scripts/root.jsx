@@ -152,6 +152,9 @@ exports.RootBox = React.createClass({
         logs.removeHighlight();
         if (id) logs.highlight(id);
     },
+    visiToggle: function(){
+        $('.code').toggleClass('small');
+    },
     render: function(){
         var mountUsers = this.state.users.map((user)=>{
             return(
@@ -195,6 +198,7 @@ exports.RootBox = React.createClass({
                 <button className="btn btn-default btn-sm" onClick={this.prevLogs}>Previous Page</button>
                 <button className="btn btn-default btn-sm" onClick={this.nextLogs}>Next Page</button>
                 <span>current Page: {this.state.page}</span>
+                <button className="btn btn-default btn-xs" onClick={this.visiToggle}>deploy/reduce</button>
                 <div id="logs">{mountLogs}</div>
             </div>
         );
