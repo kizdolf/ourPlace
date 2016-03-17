@@ -43,3 +43,5 @@ it should be accessible visible here: http://azerty.gq   (*but it require a logi
 * Documents:  store stuff you want to download later somewhere else. Store stuff you want to share. Do not store personnal stuff. Not if you share this cloud with others people. 
 * Live stats of listening trends (when do you listen the more music, and what)
 * Sharing. Under dev. Share a music anyone can listen, for a period or a number of times.
+
+P.s: this project is as well a lab time to time...
