@@ -129,6 +129,7 @@ var Player = React.createClass({
         }.bind(this);
         this.player.onplay = function(){
             this.setState({playing: true});
+            this.setTabTitle();
         }.bind(this);
         this.player.onended = function(){
             this.props.next();
@@ -143,6 +144,9 @@ var Player = React.createClass({
                 return false;
             }
         }.bind(this));
+    },
+    setTabTitle: function(){
+        $('title').html(this.state.meta.title + ' - Our Place');
     },
     componentDidUpdate: function(prev){
         if(prev.path != this.props.path){
