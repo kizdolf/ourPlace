@@ -278,7 +278,7 @@ exports.fromYoutube = function(url, cb){
             var ret = JSON.parse(out);
             var obj = {
                 name : ret.fulltitle,
-                path : path + '/' +  ret.id + '.' + ret.ext,
+                path : path + '/' +  ret.id + '.ogg',
                 size : ret.filesize,
                 date : new Date(),
                 type : mime.lookup(ret._filename),
