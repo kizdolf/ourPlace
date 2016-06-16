@@ -23,7 +23,8 @@ var
         'audio/ogg',
         'audio/wav',
         'audio/webm',
-        'audio/flac'
+        'audio/flac',
+	'audio/x-flac'
     ];
 
 
