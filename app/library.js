@@ -18,13 +18,13 @@ var
         'audio/x-m4a',
         'audio/aac',
         'audio/mp4',
-	'audio/x-wav',
+        'audio/x-wav',
         'audio/mpeg',
         'audio/ogg',
         'audio/wav',
         'audio/webm',
         'audio/flac',
-	'audio/x-flac'
+        'audio/x-flac'
     ];
 
 

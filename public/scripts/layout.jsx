@@ -33,7 +33,7 @@ var Layout = React.createClass({
     },
     getMusicFromAPI: function(cb){
         $.get(this.url, function(data){
-            data.music = data.music.sort(this.byDate);
+            // data.music = data.music.sort(this.byDate);
             this.setState({musics: data.music});
             if(cb) cb();
         }.bind(this));
