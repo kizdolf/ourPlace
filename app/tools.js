@@ -75,11 +75,12 @@ var resizePic = (fsPath, style, cb) =>{
         if(!err){
             //scale should be done with the primary buffer.
             var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
+            lo().info('resize image ', {img: fsPath, ratio: ratio});  
             img.scale(ratio, (err, img)=>{
                 if(!err){
                     img.writeFile(fsPath, style, (err)=>{
                         if(err){
-                            lo().error('resizing image', {img: fsPath, error: err});  
+                            lo().error('resizing image', {img: fsPath, error: err});
                             cb(false);
                         }else {
                             cb(true);
