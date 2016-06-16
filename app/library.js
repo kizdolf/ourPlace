@@ -6,7 +6,6 @@ var
     tbls            = require(global.core + '/config').rethink.tables,
     tools           = require(global.core + '/tools.js'),
     user            = require(global.core + '/user'),
-    lwip            = require('lwip'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
@@ -49,19 +48,8 @@ var extractPicture = (meta, path, cb)=>{
         }else{
             lo.info('extracted img', {picName: picName, path: path});
             meta.picture = '/' + fsPath; //save new pic path
-            lwip.open(fsPath, style ,(err, img)=>{ //resize the pic.let's store small stuff.
-                if(!err){
-                    //scale should be done with the primary buffer.
-                    var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
-                    img.scale(ratio, (err, img)=>{
-                        if(!err){
-                            img.writeFile(fsPath, style, (err)=>{
-                                if(err) lo.error('resizing image', {img: fsPath, error: err});
-                                cb(meta);
-                            });
-                        }else lo.error('scaling image', {img: fsPath, error: err});
-                    });
-                }else lo.error('opening image (lwip) image', {img: fsPath, error: err});
+            tools.resizePic(fsPath, style, ()=>{
+                cb(meta);
             });
         }
     });
@@ -266,6 +254,8 @@ Use the awesome youtube-dl (https://rg3.github.io/youtube-dl/) to handle the dow
 Some modules exists do to the same, but honestly that's just better.
 Just one thing: if youtube-dl is not up do date it can crash sometimes, but the song is still here.
 So in case of error we nned to check if the download/extraction was killed or not.
+
+TO DO : RESIZE PIC!!!!
 */
 exports.fromYoutube = function(url, cb){
     var d = (new Date().toISOString().substring(0,10)),
@@ -277,28 +267,31 @@ exports.fromYoutube = function(url, cb){
     lo.info(' dowloading from youtube', {url: url});
     child_process.exec(exec, (err, out)=>{
         if(!err || err.killed === false){
-            var ret = JSON.parse(out);
-            var obj = {
-                name : ret.fulltitle,
-                path : path + '/' +  ret.id + '.ogg',
-                size : ret.filesize,
-                date : new Date(),
-                type : mime.lookup(ret._filename),
-                meta : {
-                    picture : path + '/' +  ret.id + '.jpg'
-                },
-                urlOrigin: url,
-                ext : ret.ext
-            };
+            var ret = JSON.parse(out),
+            imgPath = path + '/' +  ret.id + '.jpg';
+            tools.resizePic(imgPath, 'jpg', ()=>{
+                var obj = {
+                    name : ret.fulltitle,
+                    path : path + '/' +  ret.id + '.ogg',
+                    size : ret.filesize,
+                    date : new Date(),
+                    type : mime.lookup(ret._filename),
+                    meta : {
+                        picture : imgPath
+                    },
+                    urlOrigin: url,
+                    ext : ret.ext
+                };
 
-            re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line
-                lo.info('insert', {tbl: tbls.song, obj: obj});
-                cb(true);
-            }).catch((err)=>{
-                tools.rm(__dirname + '/..' + obj.path);
-                tools.rm(__dirname + '/..' + obj.meta.picture);
-                lo.error('error inserting song', {error: err});
-                cb(err);
+                re.insert(tbls.song, obj).then((res)=>{ //jshint ignore: line
+                    lo.info('insert', {tbl: tbls.song, obj: obj});
+                    cb(true);
+                }).catch((err)=>{
+                    tools.rm(__dirname + '/..' + obj.path);
+                    tools.rm(__dirname + '/..' + obj.meta.picture);
+                    lo.error('error inserting song', {error: err});
+                    cb(err);
+                });
             });
         }else{
             lo.error('error with youtube-dl!, trying to update it.', {error: err});

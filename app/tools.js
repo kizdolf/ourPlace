@@ -1,8 +1,10 @@
 var
-fs      = require('fs'),
-re      = require(global.core + '/db/rethink'),
-cnf     = require(global.core + '/config').conf,
-tbls    = require(global.core + '/config').rethink.tables;
+fs          = require('fs'),
+mainConf    = require(global.core + '/config').conf,
+re          = require(global.core + '/db/rethink'),
+cnf         = require(global.core + '/config').conf,
+lwip        = require('lwip'),
+tbls        = require(global.core + '/config').rethink.tables;
 
 var rm = (path)=>{
     fs.access(path, (err)=>{
@@ -68,10 +70,38 @@ var makeItHttps = (req, res, next)=>{
     else res.redirect('https://' + req.headers.host + req.url);
 };
 
+var resizePic = (fsPath, style, cb) =>{
+    lwip.open(fsPath, style ,(err, img)=>{ //resize the pic.let's store small stuff.
+        if(!err){
+            //scale should be done with the primary buffer.
+            var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
+            img.scale(ratio, (err, img)=>{
+                if(!err){
+                    img.writeFile(fsPath, style, (err)=>{
+                        if(err){
+                            lo.error('resizing image', {img: fsPath, error: err});  
+                            cb(false);
+                        }else {
+                            cb(true);
+                        }
+                    });
+                }else{
+                    lo.error('scaling image', {img: fsPath, error: err});
+                    cb(false);
+                }
+            });
+        }else{
+            lo.error('opening image (lwip) image', {img: fsPath, error: err});
+            cb(false);
+        }
+    });
+};
+
 module.exports = {
     rm: rm,
     mkdir: mkdir,
     thisIs404: thisIs404,
     lo: lo(),
-    makeItHttps: makeItHttps
+    makeItHttps: makeItHttps,
+    resizePic: resizePic
 };
