@@ -71,7 +71,7 @@ var makeItHttps = (req, res, next)=>{
 };
 
 var resizePic = (fsPath, style, cb) =>{
-    lwip.open(fsPath, style ,(err, img)=>{ //resize the pic.let's store small stuff.
+    lwip.open(fsPath, style, (err, img)=>{ //resize the pic.let's store small stuff.
         if(!err){
             //scale should be done with the primary buffer.
             var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
@@ -79,19 +79,19 @@ var resizePic = (fsPath, style, cb) =>{
                 if(!err){
                     img.writeFile(fsPath, style, (err)=>{
                         if(err){
-                            lo.error('resizing image', {img: fsPath, error: err});  
+                            lo().error('resizing image', {img: fsPath, error: err});  
                             cb(false);
                         }else {
                             cb(true);
                         }
                     });
                 }else{
-                    lo.error('scaling image', {img: fsPath, error: err});
+                    lo().error('scaling image', {img: fsPath, error: err});
                     cb(false);
                 }
             });
         }else{
-            lo.error('opening image (lwip) image', {img: fsPath, error: err});
+            lo().error('opening image (lwip) image', {img: fsPath, error: err});
             cb(false);
         }
     });

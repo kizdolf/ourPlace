@@ -267,9 +267,11 @@ exports.fromYoutube = function(url, cb){
     lo.info(' dowloading from youtube', {url: url});
     child_process.exec(exec, (err, out)=>{
         if(!err || err.killed === false){
+            lo.info(' dowloaded from youtube', {url: url});
             var ret = JSON.parse(out),
             imgPath = path + '/' +  ret.id + '.jpg';
             tools.resizePic(imgPath, 'jpg', ()=>{
+                lo.info('resize done', {img: imgPath});
                 var obj = {
                     name : ret.fulltitle,
                     path : path + '/' +  ret.id + '.ogg',
