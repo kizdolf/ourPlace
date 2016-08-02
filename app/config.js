@@ -1,25 +1,27 @@
 'use strict';
 
 exports.conf = {
-    mainPort: 80, //  this is 80 in production
-    httpsPort: 443, // but will be redirect here, because security and stuff
-    webDir: 'public', //   which directory should we serve for the front end?
-    mediaDir: 'medias', //   which directory should we serve for the medias?
-    mediaPath: '/medias', //    on which path?
-    tmpPath: '/tmp', //used to serve streams.
-    tmpDir: 'tmp',
-    webPath: '/', //    on which path?
-    WelcomePath: '/welcome/:token',
-    apiPrefix: '/api',//API prefix (useless comment right?)
-    coversPath: 'medias/covers/', //image are usually encoded in the metadata. It's nice but why store in a db a b64 img?
-    bodyParserOpt:{ //options object for body-parser.
+    mainPort:       1906, //  this is 80 in production
+    httpsPort:      443, // but will be redirect here, because security and stuff
+    webDir:         'public', //   which directory should we serve for the front end?
+    mediaDir:       'medias', //   which directory should we serve for the medias?
+    mediaPath:      '/medias', //    on which path?
+    cloudDir:       'cloud', //    on which path?
+    cloudPath:      '/cloud', //    on which path?
+    tmpPath:        '/tmp', //used to serve streams.
+    tmpDir:         'tmp',
+    webPath:        '/', //    on which path?
+    WelcomePath:    '/welcome/:token',
+    apiPrefix:      '/api',//API prefix (useless comment right?)
+    coversPath:     'medias/covers/', //image are usually encoded in the metadata. It's nice but why store in a db a b64 img?
+    bodyParserOpt:  { //options object for body-parser.
         extended: true
     },
-    devMode: false,
-    httpsMode: true,
-    sessionCnf: {
-        secret: 'thisIsSecretForSession',
-        resave: false,
+    devMode:        false,
+    httpsMode:      false,
+    sessionCnf:     {
+        secret:     'thisIsSecretForSession',
+        resave:     false,
         saveUninitialized: true
     },
     pathPlay: '/play/:token',
@@ -49,12 +51,5 @@ exports.rethink = {
         share: 'share',
         stats: 'userStats',
         tokens: 'tokens'
-    }
-};
-
-/*Unused. Need to be rethink. Need to be store in a db as well. To make it updatable.*/
-exports.mimes = {
-    'audio/mp3' : {
-        directory : exports.conf.mediaPath + '/music'
     }
 };

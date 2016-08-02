@@ -30,9 +30,22 @@ exports.main = (function(){
     //take care of where, not more.
     var storage = multer.diskStorage({
         destination: (r, f, cb)=>{
-            var path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
-            tools.mkdir(path);
-            cb(null, (path + '/'));
+            /*
+                Depending on mimetype (f.mimetype) uplaod should happen in 
+                media path or in cloud path. Media for songs, cloud for videos.
+            */
+            var path;
+            if(f.mimetype.indexOf('audio') !== -1){
+                path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
+                tools.mkdir(path);
+                cb(null, (path + '/'));
+            }else if (f.mimetype.indexOf('video') !== -1){
+                path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
+                tools.mkdir(path);
+                cb(null, (path + '/'));
+            }else{
+                cb(false);
+            }
         },
     });
 

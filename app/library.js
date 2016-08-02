@@ -2,29 +2,17 @@
 
 var
     mainConf        = require(global.core + '/config').conf,
-    re              = require(global.core + '/db/rethink.js'),
+    re              = require(global.core + '/db/rethink'),
     tbls            = require(global.core + '/config').rethink.tables,
-    tools           = require(global.core + '/tools.js'),
+    tools           = require(global.core + '/tools'),
     user            = require(global.core + '/user'),
+    cloud           = require(global.core + '/cloud/main'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
     lo              = tools.lo,
     // ffmetadata      = require('ffmetadata'),
-    mm              = require('musicmetadata'),
-    accepted_mimes  = [ //should not be here. See config.js
-        'audio/mp3',
-        'audio/x-m4a',
-        'audio/aac',
-        'audio/mp4',
-        'audio/x-wav',
-        'audio/mpeg',
-        'audio/ogg',
-        'audio/wav',
-        'audio/webm',
-        'audio/flac',
-        'audio/x-flac'
-    ];
+    mm              = require('musicmetadata');
 
 
 //listen the dbs for changes, we should check if weather or not is already loaded.
@@ -191,10 +179,14 @@ var convertToOgg = (path, file, cb)=>{
 exports.handle = (file, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
-    if(accepted_mimes.indexOf(file.mimetype) === -1){
-        lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
-        fs.unlinkSync(path);
-        cb('does not fit mimes types', null);
+    if(file.mimetype.indexOf("audio") === -1){
+        if(file.mimetype.indexOf("video") !== -1){
+            cloud.handle(file, cb);
+        }else{
+            lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
+            fs.unlinkSync(path);
+            cb('does not fit mimes types', null);
+        }
     }else{
         getMetaData(file.path, function(err, meta){
             if(!err){

@@ -27,6 +27,7 @@ build/Release
 node_modules
 
 medias/*
+cloud/*
 medias/
 tmp/*
 databases/*
