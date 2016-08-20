@@ -8,7 +8,7 @@ var
     NoteBox     = require('./note.jsx').NoteBox,
     RssBox      = require('./rss.jsx').RssBox,
     RootBox     = require('./root.jsx').RootBox,
-    StreamBox   = require('./stream.jsx').StreamBox,
+    CloudBox    = require('./cloud.jsx').CloudBox,
     MusicBox    = require('./music.jsx').MusicBox;
 
 ReactDOM.render((
@@ -18,7 +18,7 @@ ReactDOM.render((
             <Route path="rss" component={RssBox} />
             <Route path="notes" component={NoteBox} />
             <Route path="root" component={RootBox} />
-            <Route path="streams" component={StreamBox} />
+            <Route path="cloud" component={CloudBox} />
             <Route path="*" component={MusicBox} />
         </Route>
     </Router>

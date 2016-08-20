@@ -104,7 +104,7 @@ var handleFiles = (list)=>{
     Recover what I fucking deleted.
     I can just retrieve what's out there on the web.
     so stuff from youtube. (better than nothing hein)
-    launch it by hand. It's not something we're SUPPOSED to launch every damn day, riiiiiggght?
+    launch it by hand. It's not something we're not SUPPOSED to launch every damn day, riiiiiggght?
     (just uncomment the call, and run "node parseMedia".)
 */
 var request = require('request');

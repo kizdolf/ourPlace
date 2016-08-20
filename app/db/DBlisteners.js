@@ -47,6 +47,9 @@ listenChangeNote = (er, cursor)=>{
 },
 listenChangeSong = (er, cursor)=>{
     if(!er) getChanges(cursor, (obj)=>{ sendTo('song', obj); });
+},
+listenChangeVideo = (er, cursor)=>{
+    if(!er) getChanges(cursor, (obj)=>{ sendTo('cloud', obj); });
 };
 
 /* Listen changes.*/
@@ -54,5 +57,6 @@ r.connect(dbCnf.connect, (e, c)=>{
     if(!e){
         r.table(cnf.tables.note).changes().run(c, listenChangeNote);
         r.table(cnf.tables.song).changes().run(c, listenChangeSong);
+        r.table(cnf.tables.video).changes().run(c, listenChangeVideo);
     }
 });

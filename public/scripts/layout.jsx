@@ -11,6 +11,7 @@ var Layout = React.createClass({
     url: '/api/music',
     uploadAPI: '/api/upload',
     notesUrl: '/api/notes',
+    cloudUrl: '/api/cloud',
     apiAddNote: '/api/note',
     getInitialState: function(){
         return {
@@ -300,6 +301,7 @@ var Layout = React.createClass({
                             {
                                 drag: this.drag,
                                 noteAPI: this.notesUrl,
+                                cloudAPI: this.cloudUrl,
                                 play: this.play,
                                 forcePlay: this.forcePlay,
                                 prev: this.prev,

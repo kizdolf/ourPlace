@@ -32,6 +32,11 @@ module.exports = function(app, session){
                     socket.emit('playedBy', nb);
                 });
             });
+
+            socket.on('hasDownload', (data)=>{
+                user.played(data.id, {session: socket.handshake.session}, data.type);
+                
+            });
         });
     }
 

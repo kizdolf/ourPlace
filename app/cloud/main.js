@@ -9,15 +9,42 @@
 */
 
 var	tools           = require(global.core + '/tools'),
-	child_process   = require('child_process'),
-	fs              = require('fs'),
-    lo              = tools.lo;
+	conf 			= require(global.core + '/config'),
+	re 				= require(global.core + '/db/rethink'),
+    lo              = tools.lo,
+	tbl 			= conf.rethink.tables.video;
 
-var handle = (file, cb) =>{
-	console.log("handle cloud file.");
-	console.log(file);
+var handle = (file, req, cb) =>{
+	var who = req.session.uuid;
+	lo.info('Saving new video', {byWho: who, file: file});
+	var obj = {
+		path: '/' + file.path,
+		name: file.originalname,
+		mime: file.mimetype,
+		size: file.size,
+		date: new Date(),
+		meta: {}
+	};
+	re.insert(tbl, obj)
+	.then((res)=>{
+		cb(true);
+	}).catch((error)=>{
+		lo.error('saving video in db', {error: error, byWho: who});
+		cb(false);
+	});
+};
+
+var all = (req, res) =>{
+	var who = req.session.uuid;
+	re.getAll(tbl).then((all)=>{
+		res.json(all);
+	}).catch((err)=>{
+		lo.error('saving video in db', {error: err, byWho: who});
+		res.json(false);
+	});
 };
 
 module.exports = {
-	handle: handle
+	handle: handle,
+	all: all
 };

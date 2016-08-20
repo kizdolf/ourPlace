@@ -557,6 +557,10 @@ hr{
     .rootStuff {
         margin-left: 0 !important;
     }
+
+#Videos{
+    
+}
     #Notes {
         left: 0 !important;
         display: inline-block !important;
@@ -739,6 +743,17 @@ hr{
     line-height: 50px;
     margin: 0 auto;
     text-align: center
+}
+
+#Cloud{
+    /*max-width: 1200px;*/
+    /* margin-left: 250px; */
+    position: absolute;
+    top: 0;
+    left: 250px;
+    height: 100vh;
+    overflow: auto;
+    padding-top: 120px;
 }
 
 #Notes{
@@ -1092,7 +1107,27 @@ hr{
 .info{
     background: #40633B;
 }
+
+.oneVideo{
+    color: #dbd5c9;
+    padding: 10px;
+    width: 100%;
+    background: #272822;
+    margin-left: 40px;
+    transition: 0.1s;
+}
+
+.oneVideo:hover{
+    color: #272822;
+    background: #FD971F;
+    box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
+    transform: scale(0.96);
+}
 /*
+
+    color: #dbd5c9;
+
+
 possible music list item stuff:
 
 @media (min-width: 640px)

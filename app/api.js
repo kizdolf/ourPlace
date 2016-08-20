@@ -13,6 +13,7 @@ var
 boxStream       = require(global.core + '/video/boxStream'),
 externSession   = require(global.core + '/externSession'),
 lib             = require(global.core + '/library'),
+cloud           = require(global.core + '/cloud/main'),
 tools           = require(global.core + '/tools'),
 rootSu          = require(global.core + '/root/root'),
 user            = require(global.core + '/user'),
@@ -52,7 +53,7 @@ exports.main = (function(){
     router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
         req.files.forEach((file)=>{
             lo.info('insert', {byWho: req.session.uuid, file: file});
-            lib.handle(file, (err, response)=>{
+            lib.handle(file, req, (err, response)=>{
                 if(err) res.json({err: err});
                 else {
                     user.own(req.session.uuid, response);
@@ -68,6 +69,7 @@ exports.main = (function(){
 
     router.post('/note', lib.addNote);
     router.get('/notes', lib.allNotes);
+    router.get('/cloud', cloud.all);
 
     router.delete('/:type/:id', function(req, res){
         var type = req.params.type;

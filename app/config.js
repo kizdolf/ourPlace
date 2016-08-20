@@ -46,6 +46,7 @@ exports.rethink = {
         note: 'notes',
         song: 'songs',
         log: 'logs',
+        video: 'videos',
         live: 'live',
         request: 'logRequests',
         share: 'share',

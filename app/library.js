@@ -176,12 +176,12 @@ var convertToOgg = (path, file, cb)=>{
     });
 };
 
-exports.handle = (file, cb)=>{
+exports.handle = (file, req, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
     if(file.mimetype.indexOf("audio") === -1){
         if(file.mimetype.indexOf("video") !== -1){
-            cloud.handle(file, cb);
+            cloud.handle(file, req, cb);
         }else{
             lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
             fs.unlinkSync(path);
