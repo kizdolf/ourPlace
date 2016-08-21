@@ -254,7 +254,7 @@ exports.fromYoutube = function(url, cb){
         dir = global.appPath + '/medias/' + d,
         path = mainConf.mediaPath + '/' + d;
     tools.mkdir(dir);
-    var opts = ' --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
+    var opts = ' -4 --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
     var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
     lo.info(' dowloading from youtube', {url: url});
     child_process.exec(exec, (err, out)=>{
