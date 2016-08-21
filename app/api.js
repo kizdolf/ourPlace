@@ -36,6 +36,7 @@ exports.main = (function(){
                 media path or in cloud path. Media for songs, cloud for videos.
             */
             var path;
+            lo.info('new upload to handle.', {file: f});
             if(f.mimetype.indexOf('audio') !== -1){
                 path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
                 tools.mkdir(path);
