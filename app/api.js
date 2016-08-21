@@ -38,14 +38,17 @@ exports.main = (function(){
             var path;
             lo.info('new upload to handle.', {file: f});
             if(f.mimetype.indexOf('audio') !== -1){
+                lo.info('upload accepted as Audio file.', {file: f});
                 path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
                 tools.mkdir(path);
                 cb(null, (path + '/'));
             }else if (f.mimetype.indexOf('video') !== -1){
+                lo.info('upload accepted as Video file.', {file: f});
                 path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
                 tools.mkdir(path);
                 cb(null, (path + '/'));
             }else{
+                lo.error('upload refused!', {file: f});
                 cb(false);
             }
         },

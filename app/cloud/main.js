@@ -28,6 +28,7 @@ var handle = (file, req, cb) =>{
 	re.insert(tbl, obj)
 	.then((res)=>{
 		cb(true);
+	lo.info('Video saved', {byWho: who, file: file, res: res});
 	}).catch((error)=>{
 		lo.error('saving video in db', {error: error, byWho: who});
 		cb(false);
