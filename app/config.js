@@ -33,7 +33,8 @@ exports.conf = {
     fromMail: 'info@azerty.gq',
     ndd: 'https://azerty.gq',
     bugsnag: false, //never mind.
-    imgMaxSize: {width: 200, height: 200} //images are scaled automatically. This allow you to keep a good quality if you want.
+    imgMaxSize: {width: 200, height: 200}, //images are scaled automatically. This allow you to keep a good quality if you want.
+    keepAliveTimeout: 2 * 60 * 1000
 };
 
 exports.socket = {

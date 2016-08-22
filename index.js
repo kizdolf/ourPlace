@@ -48,7 +48,7 @@ var //extern dependencies
     .use(conf.pathLogin, login.login)
     //loged-in check. at this point if not loged-in bye.
     .use(login.shouldLogin)
-    //serve webApp
+    //serve webApp  
     .use(conf.webPath, express.static(conf.webDir))
     //serve medias (this should evolve deeply :/)
     .use(conf.mediaPath, express.static(conf.mediaDir))
@@ -63,6 +63,9 @@ var //extern dependencies
     //Start a HTTP server.
     var httpServer = http.createServer(app);
     httpServer.listen(conf.mainPort);
+    httpServer.on('connection', (socket)=>{
+        socket.setTimeout(conf.keepAliveTimeout);
+    });
     if(conf.httpsMode){
         //https.
         var privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),
