@@ -65,7 +65,7 @@ exports.main = (function(){
                 }
             });
         });
-    });
+    }).set('connection', 'keep-alive');
 
     router.get('/root/:first/:second?', rootSu.root);
     router.post('/root/:param', rootSu.rootPost);

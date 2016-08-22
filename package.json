@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/kizdolf/ourPlace#readme",
   "dependencies": {
+    "agentkeepalive": "^2.2.0",
     "autolinker": "^0.22.0",
     "body-parser": "^1.14.1",
     "bufferutil": "^1.2.1",

@@ -1,6 +1,7 @@
 var React       = require('react'),
     Dropzone    = require('react-dropzone'),
     $           = require('jquery'),
+    Agent       = require('agentkeepalive'),
     request     = require('superagent');
 
 var Uploading = React.createClass({
@@ -56,7 +57,14 @@ exports.Upload = React.createClass({
             var current = this.state.uploading;
             current[file.name] = elem;
             this.setState({ uploading: current });
+            var keepaliveAgent = new Agent({
+                maxSockets: 100,
+                maxFreeSockets: 10,
+                timeout: 60000,
+                keepAliveTimeout: 30 * 1000 // free socket keepalive for 30 seconds
+            });
             request.post(this.props.url)
+            .agent(keepaliveAgent)
             .attach('file', file, file.name)
             .on('progress', function(e){
                 var elem = {name: file.name, pct: parseInt(e.percent).toString() + '%'};
