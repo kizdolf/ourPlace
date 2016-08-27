@@ -15,9 +15,8 @@ var Video = React.createClass({
     render: function(){
         var intel = this.props.data;
         return(
-            <li className="oneVideo">
+            <li onClick={this.download} className="oneVideo">
                 <h3>{intel.name}</h3>
-                <button onClick={this.download} className="btn btn-default">Download</button>
             </li>
         );
     }

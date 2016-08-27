@@ -14,7 +14,7 @@ var	tools           = require(global.core + '/tools'),
     lo              = tools.lo,
 	tbl 			= conf.rethink.tables.video;
 
-var handle = (file, req, cb) =>{
+var handle = (file, req, cb) => {
 	var who = req.session.uuid;
 	lo.info('Saving new video', {byWho: who, file: file});
 	var obj = {

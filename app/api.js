@@ -54,7 +54,9 @@ exports.main = (function(){
         },
     });
 
-    router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
+    router
+    .post('/upload', multer({storage: storage}).any(), (req, res)=>{
+        res.set('connection', 'keep-alive');
         req.files.forEach((file)=>{
             lo.info('insert', {byWho: req.session.uuid, file: file});
             lib.handle(file, req, (err, response)=>{
@@ -65,7 +67,7 @@ exports.main = (function(){
                 }
             });
         });
-    }).set('connection', 'keep-alive');
+    });
 
     router.get('/root/:first/:second?', rootSu.root);
     router.post('/root/:param', rootSu.rootPost);

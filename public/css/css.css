@@ -972,7 +972,7 @@ hr{
     width: 220px;
     height: 320px;
     padding: 5px;
-    background: white;
+    background: rgba(167, 167, 167, 0.59);
     z-index: 1001;
     box-shadow: 1px 1px 5px -2px black;
 }
@@ -988,6 +988,13 @@ hr{
     min-height: 25px;
     box-shadow: 0px 0px 8px 0px grey;
     margin-bottom: 5px;
+    word-break: break-word;
+    background: #3D3E3F;
+    color: #D4BF34;
+}
+.upWrapper{
+    background: #447D88;
+    height: 3px;
 }
 
 .wrapperOnTop{
@@ -1108,10 +1115,15 @@ hr{
     background: #40633B;
 }
 
+.files{
+    list-style-type: none;
+}
+
 .oneVideo{
+    box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
     color: #dbd5c9;
     padding: 10px;
-    width: 100%;
+    margin: 5px;
     background: #272822;
     margin-left: 40px;
     transition: 0.1s;
@@ -1122,6 +1134,7 @@ hr{
     background: #FD971F;
     box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
     transform: scale(0.96);
+    cursor: pointer;
 }
 /*
 

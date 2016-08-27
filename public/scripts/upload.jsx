@@ -1,19 +1,19 @@
 var React       = require('react'),
     Dropzone    = require('react-dropzone'),
     $           = require('jquery'),
-    Agent       = require('agentkeepalive'),
     request     = require('superagent');
 
 var Uploading = React.createClass({
     render: function(){
         var mountCurrent = Object.keys(this.props.now).map(function (key) {
             var pct = this.props.now[key].pct;
-             var clss = "tNow";
+            var clss = "tNow";
             //when upload ends all music are converted to ogg format. So when pct stay at 100 this is what's happening.
             if (pct.indexOf('100') != -1) pct = 'Converting...';
             if (pct.indexOf('error') != -1) clss = "tNow err"; //aie.
             return(
                 <li key={this.props.now[key].name}>
+                    <div className="upWrapper" style={{width: pct}}></div>
                     <span className={clss}>{this.props.now[key].name} : </span><span className="pctNow">{pct}</span>
                 </li>
             );
@@ -57,14 +57,8 @@ exports.Upload = React.createClass({
             var current = this.state.uploading;
             current[file.name] = elem;
             this.setState({ uploading: current });
-            var keepaliveAgent = new Agent({
-                maxSockets: 100,
-                maxFreeSockets: 10,
-                timeout: 60000,
-                keepAliveTimeout: 30 * 1000 // free socket keepalive for 30 seconds
-            });
-            request.post(this.props.url)
-            .agent(keepaliveAgent)
+            request
+            .post(this.props.url)
             .attach('file', file, file.name)
             .on('progress', function(e){
                 var elem = {name: file.name, pct: parseInt(e.percent).toString() + '%'};
