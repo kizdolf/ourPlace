@@ -968,9 +968,9 @@ hr{
     position: fixed;
     overflow: auto;
     bottom: 0;
-    left: 25px;
-    width: 220px;
-    height: 320px;
+    right: 25px;
+    width: 400px;
+    height: 265px;
     padding: 5px;
     background: rgba(167, 167, 167, 0.59);
     z-index: 1001;
