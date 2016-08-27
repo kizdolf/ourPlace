@@ -20,8 +20,10 @@ var Video = React.createClass({
         var intel = this.props.data;
         console.log(intel);
         return(
-            <li onClick={this.download} className="oneVideo">
-                <h3>{intel.name}</h3>
+            <li  className="oneVideo">
+                <span onClick={this.download}>
+                    <h3>{intel.name}</h3>
+                </span>
                 <span className="closeOnTop" onClick={this.deleteFile}>X</span>
             </li>
         );
