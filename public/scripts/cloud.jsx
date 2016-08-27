@@ -24,7 +24,7 @@ var Video = React.createClass({
                 <span onClick={this.download}>
                     <h3>{intel.name}</h3>
                 </span>
-                <span className="closeOnTop" onClick={this.deleteFile}>X</span>
+                <span className="closeOnTop" onClick={this.deleteFile}>Delete File</span>
             </li>
         );
     }
