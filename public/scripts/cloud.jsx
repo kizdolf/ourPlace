@@ -12,11 +12,17 @@ var Video = React.createClass({
         dl = null;
         this.props.hasDownload(intel.id);
     },
+    deleteFile: function(){
+        console.log(this.props.data);
+        this.props.deleteFile(this.props.data.id);
+    },
     render: function(){
         var intel = this.props.data;
+        console.log(intel);
         return(
             <li onClick={this.download} className="oneVideo">
                 <h3>{intel.name}</h3>
+                <span className="closeOnTop" onClick={this.deleteFile}>X</span>
             </li>
         );
     }
@@ -40,6 +46,11 @@ var CloudBox = React.createClass({
             this.setState({videos: data.sort(this.byValue)});
         }.bind(this));
 	},
+    deleteFile: function(id){
+        var type = "video";
+        var url = '/api/' + type + '/' + id;
+        $.ajax({ method: 'DELETE', url : url});
+    },
     handlerSocket: function(name, data){
         if(data.type !== 'cloud') return false;
         var videos = this.state.videos;
@@ -71,7 +82,7 @@ var CloudBox = React.createClass({
 	render: function(){
 		var mountVideos = this.state.videos.map((video)=>{
             return(
-                <Video data={video} hasDownload={this.hasDownload} key={video.id}/>
+                <Video data={video} hasDownload={this.hasDownload} deleteFile={this.deleteFile} key={video.id}/>
             );
         });
 		return(

@@ -35,7 +35,6 @@ module.exports = function(app, session){
 
             socket.on('hasDownload', (data)=>{
                 user.played(data.id, {session: socket.handshake.session}, data.type);
-                
             });
         });
     }
