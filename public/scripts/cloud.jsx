@@ -21,10 +21,13 @@ var Video = React.createClass({
         console.log(intel);
         return(
             <li  className="oneVideo">
-                <span onClick={this.download}>
-                    <h3>{intel.name}</h3>
+                <span className="metaVideo" onClick={this.download}>
+                    <span className="titleVideo">{intel.name}</span>
                 </span>
-                <span className="closeOnTop" onClick={this.deleteFile}>Delete File</span>
+                <div className="optsVideo"> 
+                    <span className="optVideo" onClick={this.deleteFile}>Delete</span>
+                    <span className="optVideo" onClick={this.stream}>Stream</span>
+                </div>
             </li>
         );
     }

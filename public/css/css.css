@@ -746,14 +746,14 @@ hr{
 }
 
 #Cloud{
-    /*max-width: 1200px;*/
-    /* margin-left: 250px; */
+    width: 100vw;
     position: absolute;
     top: 0;
-    left: 250px;
+    padding-left: 250px;
     height: 100vh;
     overflow: auto;
     padding-top: 120px;
+    padding-right: 12%;
 }
 
 #Notes{
@@ -1123,18 +1123,49 @@ hr{
     box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
     color: #dbd5c9;
     padding: 10px;
+    height: 120px;
     margin: 5px;
     background: #272822;
     margin-left: 40px;
     transition: 0.1s;
+    width: 42%;
+    float: left;
+    word-wrap: break-word;
 }
+
+.titleVideo{
+    display: block;
+    font-size: 13px;
+}
+
+.titleVideo:hover{
+    cursor: pointer;
+}
+
+.optVideo{
+    width: 40px;
+    border: 1px solid #EAA63A;
+    margin: 2px;
+    padding: 2px;
+}
+
+.optVideo:hover{
+    background: #EAA63A;
+    cursor: pointer;
+    color: #272822;
+}
+
 
 .oneVideo:hover{
     color: #272822;
     background: #447D88;
     box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
     transform: scale(0.96);
-    cursor: pointer;
+}
+
+.metaVideo{
+    height: 85px;
+    display: block;
 }
 /*
 
