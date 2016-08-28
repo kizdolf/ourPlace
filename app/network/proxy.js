@@ -6,7 +6,7 @@ var http        = require('http'),
     proxy       = httpProxy.createProxyServer({'agent':  new http.Agent({ keepAlive: true })}),
     matchHost   = new RegExp(conf.hostname);
 
-var proxy = (req, res, next)=>{
+var launch = (req, res, next)=>{
     if(!req.hostname.match(matchHost)){
         console.log('redirect:' + req.hostname);
         proxy.web(req, res, {'target': 'http://localhost:9000'}, function(error){
@@ -20,5 +20,5 @@ var proxy = (req, res, next)=>{
 };
 
 module.exports = {
-    launch: proxy
+    launch: launch
 };
