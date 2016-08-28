@@ -7,7 +7,13 @@ var http        = require('http'),
     matchHost   = new RegExp(conf.hostname);
 
 var launch = (req, res, next)=>{
-    if(!req.hostname.match(matchHost)){
+    var matchProxy = ()=>{
+        return (
+            req.hostname.match(matchHost)   ||
+            req.hostname.match('localhost')
+        );
+    };
+    if(!matchProxy()){
         console.log('redirect:' + req.hostname);
         proxy.web(req, res, {'target': 'http://localhost:9000'}, function(error){
             console.log("Error Proxy");

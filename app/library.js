@@ -94,6 +94,10 @@ exports.update = (req, res)=>{
         obj = {
             'content' : changes.note //note are quite straightforwarded. (not sure this is xss proofed honestly.)
         };
+    }else if (req.params.type == 'video'){
+        obj = {
+            meta: changes
+        };
     }
     re.update(tbl, id, obj).then((response)=>{ //call db.
         lo.info('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj});
