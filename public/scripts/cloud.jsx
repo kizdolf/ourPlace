@@ -54,7 +54,7 @@ var CloudBox = React.createClass({
     },
 	getFilesFromApi: function(){
 		$.get(this.props.cloudAPI, function(data){
-            this.setState({videos: data.sort(this.byValue)});
+            this.setState({videos: data});
         }.bind(this));
 	},
     deleteFile: function(id){

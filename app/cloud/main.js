@@ -37,8 +37,12 @@ var handle = (file, req, cb) => {
 
 var all = (req, res) =>{
 	var who = req.session.uuid;
+    var files = [];
 	re.getAll(tbl).then((all)=>{
-		res.json(all);
+		console.log(all);
+        files = all.sort((a, b)=>{ return (a.name > b.name) ? -1 : 1; });
+		console.log(files);
+		res.json(files);
 	}).catch((err)=>{
 		lo.error('saving video in db', {error: err, byWho: who});
 		res.json(false);
