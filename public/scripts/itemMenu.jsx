@@ -238,6 +238,26 @@ exports.ItemMenu = React.createClass({
     //     $(document).unbind('mouseup');
     //     window.onpopstate = function(event) {return true;};
     // },
+    download: function(){
+        var type = this.props.type;
+        var id = this.props.data.id;
+        var intel = this.props.data.download;
+        var dl = document.createElement('a');
+        var name = intel.name;
+        dl.setAttribute('href', intel.path);
+        dl.setAttribute('download', name.replace(/ /g, '-'));
+        dl.click();
+        dl = null;
+        this.socket.emit('hasDownload', {type: type, id: id});
+        this.props.closeMenu();
+    },
+    delete: function(){
+        var type = this.props.data.type;
+        var id = this.props.data.id;
+        var url = '/api/' + type + '/' + id;
+        $.ajax({ method: 'DELETE', url : url});
+        this.props.closeMenu();
+    },
     setPosition: function(pos){
         var it = $('.itemCls');
         var left = pos.x - (10 + parseInt(it.css('marginRight')) + parseInt(it.css('marginBottom')));
@@ -246,6 +266,7 @@ exports.ItemMenu = React.createClass({
     },
     componentDidMount: function(){
         this.setPosition(this.props.data.position);
+        this.socket = io({secure: true});
     },
     render: function(){
                     // <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_comment_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Comment</span></span>

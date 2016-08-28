@@ -24,24 +24,14 @@ var Video = React.createClass({
     },
     render: function(){
         var intel = this.props.data;
-        if(intel.meta){
-            console.log('META');
-            console.log(intel.meta);
-        }
         return(
             <li  className="oneVideo itemCls">
                 <span className="metaVideo" onClick={this.download}>
                     <span className="titleVideo">{intel.name}</span>
                 </span>
                 <div className="optsVideo"> 
-                    <span className="optVideo" onClick={this.deleteFile}>Delete</span>
-                    <span className="optVideo" onClick={this.stream}>Stream</span>
+                    <span className="optVideo" onClick={this.showMenu}>Menu</span>
                 </div>
-                <img
-                    className="itemMenu toptop"
-                    src="img/ic_more_vert_black_24dp_1x.png"
-                    onClick={this.showMenu}
-                />
             </li>
         );
     }
