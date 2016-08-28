@@ -1129,6 +1129,7 @@ hr{
     margin-left: 40px;
     transition: 0.1s;
     width: 42%;
+    max-width: 280px;
     float: left;
     word-wrap: break-word;
 }
