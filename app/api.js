@@ -56,6 +56,7 @@ exports.main = (function(){
 
     router
     .post('/upload', multer({storage: storage}).any(), (req, res)=>{
+        console.log('post on upload launched.');
         res.set('connection', 'keep-alive');
         req.files.forEach((file)=>{
             lo.info('insert', {byWho: req.session.uuid, file: file});

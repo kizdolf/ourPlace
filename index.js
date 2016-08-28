@@ -25,11 +25,30 @@ var //extern dependencies
     tools           = require(global.core + '/tools'),
     sessionRe       = require(global.core + '/db/rethinkSession');
 
+    /*Lab*/
+    var httpProxy   = require('http-proxy');
+    var proxy = httpProxy.createProxyServer({'agent':  new http.Agent({ keepAlive: true })});
+    var matchHost = new RegExp(conf.hostname);
 
     //main object.
     var app =  express();
     //Logic:
     app
+    /*LAB: try proxying to apache on port 9000 to keep 80 on node*/
+    .use(function(req, res, next) {
+        console.log(req.hostname + req.url);
+        if(!req.hostname.match(matchHost)){
+            console.log('redirect:' + req.hostname);
+            proxy.web(req, res, {'target': 'http://localhost:9000'}, function(error){
+                console.log("Error Proxy");
+                console.log(error);
+            });
+        }
+        else{
+            req.socket.setTimeout(60 * 60 * 1000);
+            next();
+        }
+    })
     //intern Session to have the session in sockets.
     .use(sessionRe.Session)
     //externs middlewares
@@ -63,6 +82,7 @@ var //extern dependencies
     //Start a HTTP server.
     var httpServer = http.createServer(app);
     httpServer.listen(conf.mainPort);
+	console.log('listening on port ' + conf.mainPort);
     httpServer.on('connection', (socket)=>{
         socket.setTimeout(conf.keepAliveTimeout);
     });

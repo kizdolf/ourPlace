@@ -1,7 +1,8 @@
 'use strict';
 
 exports.conf = {
-    mainPort:       1906, //  this is 80 in production
+    mainPort:       80 , //  this is 80 in production
+    //mainPort:       3000 , //  this is 80 in production
     httpsPort:      443, // but will be redirect here, because security and stuff
     webDir:         'public', //   which directory should we serve for the front end?
     mediaDir:       'medias', //   which directory should we serve for the medias?
@@ -30,8 +31,9 @@ exports.conf = {
     pathLogin: '/login',
     cleanAtStartup: false, // delete existing media not in db at startUp.
     logsPerPage : 20, //could be a non fixed value.
-    fromMail: 'info@azerty.gq',
-    ndd: 'https://azerty.gq',
+    fromMail: 'info@dkkddk.gq',
+    ndd: 'https://dkkddk.gq',
+    hostname: 'dkkddk.info',
     bugsnag: false, //never mind.
     imgMaxSize: {width: 200, height: 200}, //images are scaled automatically. This allow you to keep a good quality if you want.
     keepAliveTimeout: 30 * 1000
