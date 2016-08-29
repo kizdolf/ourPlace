@@ -162,9 +162,9 @@ hr{
 }
 
 .itemMusic:hover{
-    background: #FD971F;;
+    background: #57909B;
     box-shadow:-1px -1px 5px 1px rgb(68, 125, 136) !important;
-    transform: scale(0.96);
+    transform: scale(1.05);
 }
 
 .itemMusic:hover .Meta{
@@ -1192,10 +1192,10 @@ hr{
 
 
 .oneVideo:hover{
-    color: #272822;
+    /*color: #272822;*/
     background: #447D88;
     box-shadow: -1px -1px 5px 1px rgb(68, 125, 136) !important;
-    transform: scale(0.96);
+    transform: scale(1.05);
 }
 
 .metaVideo{
@@ -1207,6 +1207,8 @@ hr{
     width: 100%;
     overflow: auto;
     border-bottom: 1px solid #447D88;
+    padding-bottom: 50px;
+    margin-bottom: 15px;
 }
 
 .catTitle{
