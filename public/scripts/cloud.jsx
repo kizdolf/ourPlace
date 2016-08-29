@@ -83,8 +83,20 @@ var CloudBox = React.createClass({
         if(data.type !== 'cloud') return false;
         var videos = this.state.videos;
         var cb = function(){this.setState({videos: videos});}.bind(this);
-        if(name == 'new'){videos.unshift(data.obj); return cb(); }
-        else{
+        var types = this.state.types;
+        var item = data.obj;
+        if(item.meta.type){
+            if(types.indexOf(item.meta.type) === -1)
+                types.push(item.meta.type);
+            item.metaCategory = item.meta.type;
+        }else{
+            if(types.indexOf('unknown') === -1)
+                types.push('unknown');
+            item.metaCategory = 'unknown';
+        }
+        if(name == 'new'){
+            videos.unshift(data.obj); return cb(); 
+        }else{
             videos.forEach(function(note, i){
                 if(name == 'changed'){
                     if(note.id === data.obj.id){videos[i] = data.obj; return cb(); }
