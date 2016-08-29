@@ -66,11 +66,11 @@ var CloudBox = React.createClass({
             data.forEach(function(item){
                 // console.log(item.meta);
                 if(item.meta.type){
-                    if(types.indexOf(item.meta.type) == -1)
+                    if(types.indexOf(item.meta.type) === -1)
                         types.push(item.meta.type);
                     item.metaCategory = item.meta.type;
                 }else{
-                    if(types.indexOf('unknown'))
+                    if(types.indexOf('unknown') === -1)
                         types.push('unknown');
                     item.metaCategory = 'unknown';
                 }
