@@ -676,6 +676,18 @@ hr{
     width: 110px;
     z-index: 9999;
     cursor: default;
+    z-index: 101;
+}
+
+#wrapperMenu{
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 0, 0, 0);
+    z-index: 99;
 }
 
 .oneOpt{
@@ -708,6 +720,23 @@ hr{
     height: 100%;
     z-index: 99999;
     padding: 10%;
+    padding-top: 15%;
+}
+
+.editItem{
+    width: 100%;
+    display: block;
+    height: 40px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+}
+
+.editKey{
+    margin-right: 15px;
+}
+
+.editVal{
+    width: 50%;
 }
 
 .topDiv{
@@ -1123,7 +1152,7 @@ hr{
     box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
     color: #dbd5c9;
     padding: 10px;
-    height: 120px;
+    height: 140px;
     margin: 5px;
     background: #272822;
     margin-left: 40px;
@@ -1134,9 +1163,14 @@ hr{
     word-wrap: break-word;
 }
 
+.fieldVideo {
+    width: 100%;
+    display: block;
+}
+
 .titleVideo{
     display: block;
-    font-size: 13px;
+    font-size: 18px;
 }
 
 .titleVideo:hover{
@@ -1165,8 +1199,19 @@ hr{
 }
 
 .metaVideo{
-    height: 85px;
+    height: 100px;
     display: block;
+}
+
+.categoryVideo{
+    width: 100%;
+    overflow: auto;
+    border-bottom: 1px solid #447D88;
+}
+
+.catTitle{
+    color: white;
+    text-align: center;
 }
 /*
 

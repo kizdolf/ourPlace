@@ -13,9 +13,6 @@ var Video = React.createClass({
         dl = null;
         this.props.hasDownload(intel.id);
     },
-    deleteFile: function(){
-        this.props.deleteFile(this.props.data.id);
-    },
     showMenu: function(e){
         this.props.switchMenu({
             position: {x: e.pageX, y: e.pageY},
@@ -23,11 +20,21 @@ var Video = React.createClass({
         });
     },
     render: function(){
-        var intel = this.props.data;
+        var intel = this.props.data,
+            meta = intel.meta,
+            toScreen = {
+                name : meta.name ? meta.name : intel.name,
+                type : meta.type ? 'Category: ' + meta.type: '',
+                season : meta.season ? 'Season: ' + meta.season: '',
+                episode : meta.episode ? 'Episode: ' + meta.episode: '',
+            };
         return(
             <li  className="oneVideo itemCls">
-                <span className="metaVideo" onClick={this.download}>
-                    <span className="titleVideo">{intel.name}</span>
+                <span className="metaVideo Meta" onClick={this.download}>
+                    <span title="Download the file" className="fieldVideo titleVideo">{toScreen.name}</span>
+                    <span className="fieldVideo typeVideo">{toScreen.type}</span>
+                    <span className="fieldVideo seasonVideo">{toScreen.season}</span>
+                    <span className="fieldVideo episodeVideo">{toScreen.episode}</span>
                 </span>
                 <div className="optsVideo"> 
                     <span className="optVideo" onClick={this.showMenu}>Menu</span>
@@ -42,7 +49,8 @@ var CloudBox = React.createClass({
         return {
             videos: [],
             showMenu: false,
-            toMenu: {}
+            toMenu: {},
+            types:[]
         };
     },
     hasDownload: function(id){
@@ -53,15 +61,24 @@ var CloudBox = React.createClass({
        else return 1;
     },
 	getFilesFromApi: function(){
+        var types = [];
 		$.get(this.props.cloudAPI, function(data){
-            this.setState({videos: data});
+            data.forEach(function(item){
+                // console.log(item.meta);
+                if(item.meta.type){
+                    if(types.indexOf(item.meta.type) == -1)
+                        types.push(item.meta.type);
+                    item.metaCategory = item.meta.type;
+                }else{
+                    if(types.indexOf('unknown'))
+                        types.push('unknown');
+                    item.metaCategory = 'unknown';
+                }
+            });
+            types.sort();
+            this.setState({videos: data, types: types});
         }.bind(this));
 	},
-    deleteFile: function(id){
-        var type = "video";
-        var url = '/api/' + type + '/' + id;
-        $.ajax({ method: 'DELETE', url : url});
-    },
     handlerSocket: function(name, data){
         if(data.type !== 'cloud') return false;
         var videos = this.state.videos;
@@ -97,17 +114,27 @@ var CloudBox = React.createClass({
         var toggle = !this.state.showMenu;
         this.setState({showMenu: toggle});
         if(toggle){
-            var season = data.data.meta.season ? data.data.meta.season : '';
-            var episode = data.data.meta.episode ? data.data.meta.episode : '';
-            var name = data.data.meta.name ? data.data.meta.name : data.data.name;
+            var intel   = data.data,
+            season      = intel.meta.season ? intel.meta.season : '',
+            episode     = intel.meta.episode ? intel.meta.episode : '',
+            name        = intel.meta.name ? intel.meta.name : intel.name,
+            types       = ['movie', 'tvshow','other'];
+            if(intel.meta.type){
+                types.forEach(function(type, i){
+                    if(intel.meta.type == type){
+                        types[i] = types[i] + ':selected';
+                        return;
+                    }
+                });
+            }
             var opts = {
                 name: name,
-                download: {name: data.data.name, src: data.data.path},
+                download: {name: intel.name, src: intel.path},
                 share: false,
                 source: false,
                 edit: [
-                    {name : data.data.name},
-                    {type: ['movie', 'tvshow','other']},
+                    {name : name},
+                    {type: types},
                     {season: season},
                     {episode: episode},
                 ],
@@ -115,31 +142,57 @@ var CloudBox = React.createClass({
                 id: data.data.id,
                 position: data.position
             };
-            this.setState({
-                toMenu: opts
-            });
+            this.setState({ toMenu: opts });
         }else{
             this.closeMenu();
         }
     },
 	render: function(){
-		var mountVideos = this.state.videos.map((video)=>{
+        
+        var test = this.state.types.map(function(item){
+                var mountVideosCat = this.state.videos.map(function(video){
+                    if(item != video.metaCategory){
+                        return;
+                    }else{
+                        return(
+                            <Video 
+                                data={video}
+                                hasDownload={this.hasDownload}
+                                key={video.id}
+                                switchMenu={this.switchMenu}
+                            />
+                        );
+                    }
+                }.bind(this));
+                return(
+                    <div className="categoryVideo">
+                        <h3 className="catTitle">{item}</h3>
+                        <ul className="files">
+                            {mountVideosCat}
+                        </ul>
+                    </div>
+                );
+            }.bind(this));
+   
+        var mountVideos = this.state.videos.map((video)=>{
             return(
-                <Video 
-                    data={video}
-                    hasDownload={this.hasDownload}
-                    deleteFile={this.deleteFile}
-                    key={video.id}
-                    switchMenu={this.switchMenu}
-                />
+                <div className="categoryVideo">
+
+                    <Video 
+                        data={video}
+                        hasDownload={this.hasDownload}
+                        key={video.id}
+                        switchMenu={this.switchMenu}
+                    />
+                </div>
             );
         });
 		return(
 			<span>
             <div id="Cloud">
-                <ul className="files">
-                	{mountVideos}
-                </ul>
+                <div className="files">
+                	{test}
+                </div>
             </div>
             {this.state.showMenu ?
                 <ItemMenu

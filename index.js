@@ -66,9 +66,6 @@ var //extern dependencies
     var httpServer = http.createServer(app);
     httpServer.listen(conf.mainPort);
 	console.log('listening on port ' + conf.mainPort);
-    httpServer.on('connection', (socket)=>{
-        socket.setTimeout(conf.keepAliveTimeout);
-    });
     if(conf.httpsMode){
         //https.
         var privateKey  = fs.readFileSync(confRe.https.privKey, 'utf8'),

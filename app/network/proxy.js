@@ -10,7 +10,8 @@ var launch = (req, res, next)=>{
     var matchProxy = ()=>{
         return (
             req.hostname.match(matchHost)   ||
-            req.hostname.match('localhost')
+            req.hostname.match('localhost') ||
+            req.hostname.match('127.0.0.1')
         );
     };
     if(!matchProxy()){

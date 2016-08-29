@@ -3,6 +3,17 @@ var
     $               = require('jquery'),
     ItemMenu        = require('./smalls.jsx').ItemMenu;
 
+/*For later:*/
+// var ext = song.type.split('/')[1];
+    //     if(meta.title){
+    //         name = meta.title + '_';
+    //         name += (meta.artist) ? meta.artist[0] : '';
+    //         name += '.' + ext;
+    //     }else{
+    //         console.log('NON e.meta.title');
+    //         name = e.meta.name;
+    //     }
+
 var MusicItem = React.createClass({
     play: function(){
         this.props.onWishPlay(this.props.song.id);
@@ -13,6 +24,14 @@ var MusicItem = React.createClass({
             this.props.song,
             this.props.song.id
         );
+        // this.props.showOnTop({
+        //     position: {x: e.pageX, y: e.pageY},
+        //     data: this.props.song,
+        // });
+        // this.props.switchMenu({
+        //     position: {x: e.pageX, y: e.pageY},
+        //     data: this.props.data
+        // });
     },
     render: function(){
         var meta = this.props.song.meta;
@@ -102,6 +121,52 @@ exports.MusicBox = React.createClass({
             toTop: {meta: meta, e: e, type:'song', id: id},
             showMenu : !this.state.showMenu
         });
+        //have to change to something like that (new menu).
+
+        // var opts = {
+        //         name: data.data.name,
+        //         type: 'video',
+        //         position: data.position
+                // download: {name: data.data.name, src: data.data.path},
+        //         share: false,
+        //         source: false,
+        //         id: data.data.id,
+        //         edit: [
+        //             {name : data.data.name},
+        //             {type: ['movie', 'tvshow','other']},
+        //             {season: season},
+        //             {episode: episode},
+        //         ],
+        //     };
+
+
+        // var toggle = !this.state.showMenu;
+        // this.setState({showMenu: toggle});
+        // if(toggle){
+        //     var season = data.data.meta.season ? data.data.meta.season : '';
+        //     var episode = data.data.meta.episode ? data.data.meta.episode : '';
+        //     var name = data.data.meta.name ? data.data.meta.name : data.data.name;
+        //     var opts = {
+        //         name: name,
+        //         download: {name: data.data.name, src: data.data.path},
+        //         share: false,
+        //         source: false,
+        //         edit: [
+        //             {name : data.data.name},
+        //             {type: ['movie', 'tvshow','other']},
+        //             {season: season},
+        //             {episode: episode},
+        //         ],
+        //         type: 'video',
+        //         id: data.data.id,
+        //         position: data.position
+        //     };
+        //     this.setState({
+        //         toMenu: opts
+        //     });
+        // }else{
+        //     this.closeMenu();
+        // }
     },
     closeMenu: function(){
         this.setState({showMenu: false});

@@ -1,21 +1,24 @@
 var
     React       = require('react'),
-    Link        = require('react-router').Link,
-    linker      = require('autolinker'),
     $           = require('jquery');
 
 var Selectable = React.createClass({
     render: function(){
         var i = 0;
         var mountOpts = this.props.values.map(function(item){
+            var selected = false;
+            if(item.indexOf(':selected') !== -1){
+                item = item.split(':selected')[0];
+                selected = true;
+            }
             return(
-                <option key={i++} value={item}>{item}</option>
+                <option key={i++} value={item} selected={selected}>{item}</option>
             );
         }.bind(this));
         return(
-            <span>
-                <p>{this.props.name}</p>
-                <select id={this.props.name}>
+            <span className="editItem">
+                <p className="editKey">{this.props.name}</p>
+                <select id={this.props.name} className="editVal">
                     {mountOpts}
                 </select>
                 <br/>
@@ -26,32 +29,6 @@ var Selectable = React.createClass({
 
 
 var OnTop = React.createClass({
-    // getInitialState: function(){
-    //     return {
-    //         editable: [],
-    //         type: '',
-    //         id: ''
-    //     };
-    // },
-    // componentDidMount: function(){
-    //     var editable;
-    //     if(this.props.elem.type === 'song'){
-    //         var artist = (this.props.elem.meta.meta.artist) ? this.props.elem.meta.meta.artist[0] : '';
-    //         editable = [
-    //             {name: 'title', val: this.props.elem.meta.meta.title || '', type: 'text'},
-    //             {name:'album', val: this.props.elem.meta.meta.album || '', type: 'text'},
-    //             {name:'artist', val: artist, type: 'text'}];
-    //     }else if (this.props.elem.type === 'note'){
-    //         editable = [{
-    //             name: 'note', val: this.props.elem.meta.content, type: 'textarea'
-    //         }];
-    //     }
-    //     this.setState({
-    //         id: this.props.elem.id,
-    //         type: this.props.elem.type,
-    //         editable: editable
-    //     });
-    // },
     update: function(){
         var editables = this.props.elem.edit;
         var edit      ={};
@@ -68,24 +45,14 @@ var OnTop = React.createClass({
                 default: 
             }
         });
-        console.log("end");
-        console.log(edit);
         this.props.update(edit);
     },
-    // lowerCase: function(i){
-    //     console.log('lower');
-    //     console.log(i);
-    //     var edit = this.state.editable;
-    //     edit[i].val = edit[i].val.toLowerCase();
-    //     console.log(edit[i]);
-    //     this.setState({editable: edit});
-    // },
-    
     render: function(){
-        var setContent = function(content){
-            return {__html: content};
-        };
+        // var setContent = function(content){
+        //     return {__html: content};
+        // };
         var editable = this.props.elem.edit;
+        console.log(editable);
         var name = this.props.elem.name;
         var i = 0;
         var editableNodes = editable.map(function(item){
@@ -94,17 +61,15 @@ var OnTop = React.createClass({
             switch (typeof value){
                 case 'string':
                     return (
-                        <span key={i++}>
-                        <p>{keyVal}</p> <input type="text" id={keyVal} defaultValue={value} />
+                        <span key={i++} className="editItem">
+                        <p className="editKey">{keyVal}</p> <input className="editVal" type="text" id={keyVal} defaultValue={value} />
                         <br/>
                         </span>
                     );
-                    break;
                 case 'object':
                     return(
                         <Selectable name={keyVal} values={value} id={keyVal}/>
                     );
-                    break;
                 default: 
             }
         }.bind(this));
@@ -135,65 +100,24 @@ exports.ItemMenu = React.createClass({
         this.setState({showOnTop: false});
         this.props.closeMenu();
     },
-    // showOnTop: function(){
-    //     this.setState({
-    //         showOnTop : !this.state.showOnTop
-    //     });
-    // },
     edit: function(){
         this.setState({
             showOnTop : true,
             toTop: {edit: this.props.data.edit, name: this.props.data.name}
         });
-        // this.props.closeMenu();
     },
-    // download: function(){
-    //     var dl = document.createElement('a'), name;
-    //     var song = this.props.e.meta;
-    //     var meta = song.meta;
-    //     dl.setAttribute('href', song.path);
-    //     console.log(song);
-    //     console.log(meta);
-    //     var ext = song.type.split('/')[1];
-    //     if(meta.title){
-    //         name = meta.title + '_';
-    //         name += (meta.artist) ? meta.artist[0] : '';
-    //         name += '.' + ext;
-    //     }else{
-    //         console.log('NON e.meta.title');
-    //         name = e.meta.name;
-    //     }
-    //     dl.setAttribute('download', name.replace(/ /g, '-'));
-    //     dl.click();
-    //     dl = null;
-    //     this.props.closeMenu();
-    // },
-    // delete: function(){
-    //     var id = this.props.e.id;
-    //     var type = this.props.e.type;
-    //     var url = '/api/' + type + '/' + id;
-    //     this.props.closeMenu();
-    //     $.ajax({
-    //         method: 'DELETE',
-    //         url : url,
-    //     }).done(function(msg){ //this is to remove soon. due to db listeners.
-    //         if(msg === true){
-    //             this.props.removed(id);
-    //         }
-    //     }.bind(this));
-    // },
-    // getLink: function(){
-    //     var el = this.props.e.meta;
-    //     if(el.urlOrigin){
-    //         var link = document.createElement('a');
-    //         link.setAttribute('class', 'oneOpt');
-    //         link.innerHTML = el.urlOrigin;
-    //         link.setAttribute('href', el.urlOrigin);
-    //         link.setAttribute('target', '_blank');
-    //         link.click();
-    //     }
-    //     this.props.closeMenu();
-    // },
+    getLink: function(){
+        var el = this.props.data.meta;
+        if(el.urlOrigin){
+            var link = document.createElement('a');
+            link.setAttribute('class', 'oneOpt');
+            link.innerHTML = el.urlOrigin;
+            link.setAttribute('href', el.urlOrigin);
+            link.setAttribute('target', '_blank');
+            link.click();
+        }//else print something.
+        this.props.closeMenu();
+    },
     update: function(data){
         console.log(data);
         console.log(this.props.data);
@@ -212,32 +136,11 @@ exports.ItemMenu = React.createClass({
     //         console.log(print);
     //     });
     // },
-    // componentDidMount: function(){
-    //     var top = this.props.e.e.y;
-    //     var it = $('.itemCls');
-    //     var left = this.props.e.e.x - (10 + parseInt(it.css('marginRight')) + parseInt(it.css('marginBottom')));
-    //     $('#optsItem').css('top', top + 'px');
-    //     $('#optsItem').css('left', left + 'px');
-    //     $(document).mouseup(function (e){
-    //         var opt = $('#optsItem');
-    //         var onTop = $('.onTop');
-    //         if (!opt.is(e.target) && opt.has(e.target).length === 0 && 
-    //             !onTop.is(e.target) && onTop.has(e.target).length === 0){
-    //             this.props.closeMenu();
-    //         }
-    //     }.bind(this));
-    //     var stateObj = { reason: "menuClick" };
-    //     window.history.pushState(stateObj, "menu");
-    //     window.onpopstate = function(event) {
-    //       this.close();
-    //     }.bind(this);
-
-    // },
-    // componentWillUnmount: function(){
-    //     this.close();
-    //     $(document).unbind('mouseup');
-    //     window.onpopstate = function(event) {return true;};
-    // },
+    componentWillUnmount: function(){
+        this.close();
+        $(document).unbind('mouseup');
+        window.onpopstate = function(event) {return true;};
+    },
     download: function(){
         var type = this.props.type;
         var id = this.props.data.id;
@@ -267,12 +170,24 @@ exports.ItemMenu = React.createClass({
     componentDidMount: function(){
         this.setPosition(this.props.data.position);
         this.socket = io({secure: true});
+        window.history.pushState({ reason: "menuClick" }, "menu"); //is that really good?
+        $(document).mouseup(function (e){
+            var opt = $('#optsItem');
+            var onTop = $('.onTop');
+            if (!opt.is(e.target) && opt.has(e.target).length === 0 && 
+                !onTop.is(e.target) && onTop.has(e.target).length === 0){
+                this.props.closeMenu();
+            }
+        }.bind(this));
+        window.onpopstate = function() {
+          this.close();
+        }.bind(this);
     },
     render: function(){
                     // <span className="oneOpt" onClick={this.showOnTop}><img src="img/ic_comment_black_24dp.png" alt="edit" className="imgOpt"/><span className="txtOpt">Comment</span></span>
         var data = this.props.data;
         return(
-            <span>
+            <span id="wrapperMenu">
                 <div id="optsItem">
                     {data.download ?
                         <span className="oneOpt" onClick={this.download}>
