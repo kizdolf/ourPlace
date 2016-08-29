@@ -18,7 +18,7 @@
 }
 
 body{
-    background:#212121 !important;
+    background:#484848 !important;
 }
 p{
     color: #66D9EF;
@@ -163,7 +163,7 @@ hr{
 
 .itemMusic:hover{
     background: #FD971F;;
-    box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
+    box-shadow:-1px -1px 5px 1px rgb(68, 125, 136) !important;
     transform: scale(0.96);
 }
 
@@ -235,7 +235,7 @@ hr{
         display: inline-block;
         word-wrap: break-word;
         padding: 0;
-        box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
+        box-shadow: -1px -1px 5px 1px rgba(27, 25, 25, 0.42);
         position: relative;
         width: 180px;
         transition: 0.1s;
@@ -949,7 +949,7 @@ hr{
     height: 100vh;
     width: 250px;
     z-index: 10;
-    /* background: #212121; */
+    /* background: #484848; */
 }
 
 .links{
@@ -986,7 +986,7 @@ hr{
     /* line-height: 40px; */
     font-size: 23px;
     /* padding: 0 10px 0px 10px; */
-    color: #66D9EF;
+    color: #66D9EF !important;
     text-align: center;
     /* vertical-align: top; */
 }
@@ -1149,7 +1149,7 @@ hr{
 }
 
 .oneVideo{
-    box-shadow: 2px 2px 2px 0px rgba(253, 151, 31, 0.24);
+    box-shadow: -1px -1px 5px 1px rgba(27, 25, 25, 0.42);
     color: #dbd5c9;
     padding: 10px;
     height: 140px;
@@ -1194,7 +1194,7 @@ hr{
 .oneVideo:hover{
     color: #272822;
     background: #447D88;
-    box-shadow: -1px -1px 3px 1px rgba(166, 226, 46, 0.16);
+    box-shadow: -1px -1px 5px 1px rgb(68, 125, 136) !important;
     transform: scale(0.96);
 }
 
