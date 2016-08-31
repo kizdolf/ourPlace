@@ -1,7 +1,7 @@
 'use strict';
 
 exports.conf = {
-    mainPort:       8000 , //  this is 80 in production
+    mainPort:       80 , //  this is 80 in production
     //mainPort:       3000 , //  this is 80 in production
     httpsPort:      443, // but will be redirect here, because security and stuff
     webDir:         'public', //   which directory should we serve for the front end?

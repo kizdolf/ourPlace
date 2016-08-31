@@ -10,6 +10,7 @@
 
 var	WebTorrent      = require('webtorrent'),
 	fs  			= require('fs'),
+	conf            = require(global.core + '/config'),
 	tools           = require(global.core + '/tools'),
 	conf 			= require(global.core + '/config'),
 	re 				= require(global.core + '/db/rethink'),
@@ -29,23 +30,14 @@ var extractFromName = function(name){
 		start = name.split(match1[0])[0];
 		ret.name = start;
 	}else{	
-		var Reg4xN = new RegExp('[0-9]{3}');
-		var match2 = name.match(Reg4xN);
-		if(match2 !== null){
-			ret.season = match2[0].slice(0, -2);
-			ret.episode = match2[0].substring(match2[0].length - 2);
-			start = name.split(match2[0])[0];
+		var RegSxE = new RegExp('[0-9][0-9]?x[0-9][0-9]?');
+		var match3 = name.match(RegSxE);
+		if(match3 !== null){
+			var infos = match3[0].split('x');
+			ret.season = infos[0];
+			ret.episode = infos[1];
+			start = name.split(match3[0])[0];
 			ret.name = start;
-		}else{
-			var RegSxE = new RegExp('[0-9][0-9]?x[0-9][0-9]?');
-			var match3 = name.match(RegSxE);
-			if(match3 !== null){
-				var infos = match3[0].split('x');
-				ret.season = infos[0];
-				ret.episode = infos[1];
-				start = name.split(match3[0])[0];
-				ret.name = start;
-			}
 		}
 	}
 
@@ -70,6 +62,7 @@ var handle = (file, req, cb) => {
 		date: new Date(),
 		meta: extractFromName(file.originalname)
 	};
+	console.log(obj);
 	re.insert(tbl, obj)
 	.then((res)=>{
 		cb(true);
@@ -96,21 +89,24 @@ var newTorrent = (file, req, cb)=>{
 	console.log('new torrent!');
 	console.log(file);
 	var pathTorrent = global.appPath + '/' + file.path;
-	var pathFile = global.appPath + '/cloud/';
+	var d = (new Date().toISOString().substring(0,10));
+	var pathFile = global.appPath +  conf.conf.cloudPath + '/' + d + '/';
+
 	console.log(pathFile);
-	console.log(pathTorrent);
+	console.log(pathTorrent);	
 	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
 		var fileDL = torrent.files[0];
 		torrent.on('download', function (bytes) {
-		  console.log('just downloaded: ' + bytes)
-		  console.log('total downloaded: ' + torrent.downloaded);
-		  console.log('download speed: ' + torrent.downloadSpeed)
-		  console.log('progress: ' + torrent.progress)
+			console.log('progress: ' + torrent.progress * 100 + '%');
+			console.log('uploaded: ' + torrent.uploaded);
 		});
 		torrent.on('done', ()=>{
 			console.log('torrent finished downloading');
-			torrent.files.forEach(function(file){
-				handle(file, req, cb);
+			torrent.files.forEach(function(f){
+				console.log(f.name);
+				f.originalname = f.name;
+				f.path = conf.conf.cloudDir + '/' + d + '/' + f.path;
+				handle(f, req, cb);
 			});
 		});
 	});

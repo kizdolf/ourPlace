@@ -59,13 +59,18 @@ var run = function(cb){
 					.run().then(function(res){
 						console.log('updated');
 						console.log(video.meta);
+						if(i++ == nb){
+							cb();
+						}
 					}).catch(function(err){
 						console.log("err");
 						console.log(err);
+						if(i++ == nb){
+							cb();
+						}
 					});
 				}
-			}
-			if(i++ == nb){
+			}else if(i++ == nb){
 				cb();
 			}
 		});
