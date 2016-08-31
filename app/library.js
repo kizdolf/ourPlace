@@ -1,7 +1,8 @@
 'use strict';
 
 var
-    mainConf        = require(global.core + '/config').conf,
+    conf            = require(global.core + '/config'),
+    mainConf        = conf.conf,
     re              = require(global.core + '/db/rethink'),
     tbls            = require(global.core + '/config').rethink.tables,
     tools           = require(global.core + '/tools'),
@@ -183,24 +184,57 @@ var convertToOgg = (path, file, cb)=>{
 exports.handle = (file, req, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
-    if(file.mimetype.indexOf("audio") === -1){
-        if(file.mimetype.indexOf("video") !== -1){
+    mime = false;
+    conf.OKmimes.forEach(function(mimetype){
+        if(file.mimetype.indexOf(mimetype) !== -1){
+            mime = mimetype;
+            return;
+        }
+    });
+
+    console.log(mime);
+
+    switch (mime){
+        case 'video':
             cloud.handle(file, req, cb);
-        }else{
+            break;
+        case 'audio':
+            getMetaData(file.path, function(err, meta){
+                if(!err){
+                    convertToOgg(path, file, (err, file)=>{
+                        if(err) cb('unable to convert file.', null);
+                        else saveFile(file, meta, cb);
+                    });
+                }
+            });
+            break;
+        case 'torrent':
+            cloud.newTorrent(file, req, cb);
+            break;
+        default:
             lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
             fs.unlinkSync(path);
             cb('does not fit mimes types', null);
-        }
-    }else{
-        getMetaData(file.path, function(err, meta){
-            if(!err){
-                convertToOgg(path, file, (err, file)=>{
-                    if(err) cb('unable to convert file.', null);
-                    else saveFile(file, meta, cb);
-                });
-            }
-        });
     }
+
+    // if(file.mimetype.indexOf("audio") === -1){
+    //     if(file.mimetype.indexOf("video") !== -1){
+    //         cloud.handle(file, req, cb);
+    //     }else{
+    //         lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
+    //         fs.unlinkSync(path);
+    //         cb('does not fit mimes types', null);
+    //     }
+    // }else{
+    //     getMetaData(file.path, function(err, meta){
+    //         if(!err){
+    //             convertToOgg(path, file, (err, file)=>{
+    //                 if(err) cb('unable to convert file.', null);
+    //                 else saveFile(file, meta, cb);
+    //             });
+    //         }
+    //     });
+    // }
 };
 
 //best function ever !

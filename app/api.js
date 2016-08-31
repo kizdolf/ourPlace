@@ -47,6 +47,11 @@ exports.main = (function(){
                 path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
                 tools.mkdir(path);
                 cb(null, (path + '/'));
+            }else if (f.mimetype.indexOf('torrent') !== -1){
+                lo.info('upload accepted as torrent file.', {file: f});
+                path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
+                tools.mkdir(path);
+                cb(null, (path + '/'));
             }else{
                 lo.error('upload refused!', {file: f});
                 cb(false);

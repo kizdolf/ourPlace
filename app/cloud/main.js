@@ -8,11 +8,15 @@
 	Should create a file hash to not have duplicate files.
 */
 
-var	tools           = require(global.core + '/tools'),
+var	WebTorrent      = require('webtorrent'),
+	fs  			= require('fs'),
+	tools           = require(global.core + '/tools'),
 	conf 			= require(global.core + '/config'),
 	re 				= require(global.core + '/db/rethink'),
     lo              = tools.lo,
 	tbl 			= conf.rethink.tables.video;
+
+var ClientTorrent 	= new  WebTorrent();
 
 var extractFromName = function(name){
 	var ret = {};
@@ -25,7 +29,7 @@ var extractFromName = function(name){
 		start = name.split(match1[0])[0];
 		ret.name = start;
 	}else{	
-		var Reg4xN = new RegExp('[0-9]{3}[0-9]?');
+		var Reg4xN = new RegExp('[0-9]{3}');
 		var match2 = name.match(Reg4xN);
 		if(match2 !== null){
 			ret.season = match2[0].slice(0, -2);
@@ -88,7 +92,33 @@ var all = (req, res) =>{
 	});
 };
 
+var newTorrent = (file, req, cb)=>{
+	console.log('new torrent!');
+	console.log(file);
+	var pathTorrent = global.appPath + '/' + file.path;
+	var pathFile = global.appPath + '/cloud/';
+	console.log(pathFile);
+	console.log(pathTorrent);
+	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
+		var fileDL = torrent.files[0];
+		torrent.on('download', function (bytes) {
+		  console.log('just downloaded: ' + bytes)
+		  console.log('total downloaded: ' + torrent.downloaded);
+		  console.log('download speed: ' + torrent.downloadSpeed)
+		  console.log('progress: ' + torrent.progress)
+		});
+		torrent.on('done', ()=>{
+			console.log('torrent finished downloading');
+			torrent.files.forEach(function(file){
+				handle(file, req, cb);
+			});
+		});
+	});
+	cb(true);
+};
+
 module.exports = {
 	handle: handle,
-	all: all
+	all: all,
+	newTorrent: newTorrent
 };
