@@ -9,6 +9,7 @@
 */
 
 var	WebTorrent      = require('webtorrent'),
+    mime            = require('mime'),
 	fs  			= require('fs'),
 	conf            = require(global.core + '/config'),
 	tools           = require(global.core + '/tools'),
@@ -100,13 +101,22 @@ var newTorrent = (file, req, cb)=>{
 			console.log('progress: ' + torrent.progress * 100 + '%');
 			console.log('uploaded: ' + torrent.uploaded);
 		});
+		torrent.on('upload', function(bytes){
+			lo.info('upload from torrent', {uploaded: bytes, amount: torrent.uploaded});
+		});
 		torrent.on('done', ()=>{
 			console.log('torrent finished downloading');
 			torrent.files.forEach(function(f){
+				var fileInfos = {
+					originalname : f.name,
+					path: conf.conf.cloudDir + '/' + d + '/' + f.path,
+					size: f.length,
+					mime : mime.lookup(conf.conf.cloudDir + '/' + d + '/' + f.path)
+				};
 				console.log(f.name);
 				f.originalname = f.name;
 				f.path = conf.conf.cloudDir + '/' + d + '/' + f.path;
-				handle(f, req, cb);
+				handle(fileInfos, req, cb);
 			});
 		});
 	});
