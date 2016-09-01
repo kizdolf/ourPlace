@@ -89,29 +89,31 @@ var all = (req, res) =>{
 };
 
 var newTorrent = (file, req, cb)=>{
-	console.log('new torrent!');
-	console.log(file);
-	var pathTorrent = global.appPath + '/' + file.path;
-	var d = (new Date().toISOString().substring(0,10));
-	var pathFile = global.appPath +  conf.conf.cloudPath + '/' + d + '/';
+	var pathTorrent = global.appPath + '/' + file.path,
+		d = (new Date().toISOString().substring(0,10)),
+		pathFile = global.appPath +  conf.conf.cloudPath + '/' + d + '/';
 
-	console.log(pathFile);
-	console.log(pathTorrent);	
 	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
 		var fileDL = torrent.files[0];
-		torrent.on('download', function (bytes) {
+		torrent.on('download', function () {
 			socket.send({
-					file: fileDL.name,
-					progressDl: torrent.progress * 100,
-					progressUp: torrent.uploaded,
-					remain: torrent.timeRemaining}, req.session.uuid, false, 'torrent');
+				file: fileDL.name,
+				ratio: torrent.ratio,
+				progressDl: torrent.progress * 100,
+				dlSpeed: torrent.downloadSpeed,
+				upSpeed: torrent.uploadSpeed,
+				remain: torrent.timeRemaining
+			}, req.session.uuid, false, 'torrent');
 		});
-		torrent.on('upload', function(bytes){
+		torrent.on('upload', function(){
 			socket.send({
-					file: fileDL.name,
-					progressDl: torrent.progress * 100,
-					progressUp: torrent.uploaded,
-					remain: torrent.timeRemaining}, req.session.uuid, false, 'torrent');
+				file: fileDL.name,
+				ratio: torrent.ratio,
+				progressDl: torrent.progress * 100,
+				dlSpeed: torrent.downloadSpeed,
+				upSpeed: torrent.uploadSpeed,
+				remain: torrent.timeRemaining
+			}, req.session.uuid, false, 'torrent');
 		});
 		torrent.on('done', ()=>{
 			console.log('torrent finished downloading');

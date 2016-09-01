@@ -68,6 +68,22 @@ var Stream = React.createClass({
     }
 });
 
+var Torrent = React.createClass({
+    render: function(){
+        var torrent = this.props.data;
+        return(
+            <div className="oneTorrent Meta">
+                <p className="torOpt">Name: {torrent.name} </p>
+                <p className="torOpt">Ratio: {torrent.ratio} </p>
+                <p className="torOpt">Download: {torrent.progressDL} % </p>
+                <p className="torOpt">Time remaining:  {torrent.remainTime} seconds </p>
+                <p className="torOpt">Download Speed: {torrent.speed.dl}/sec </p>
+                <p className="torOpt">Upload Speed: {torrent.speed.up}/sec </p>
+            </div>
+        );
+    }
+});
+
 var CloudBox = React.createClass({
     getInitialState: function() {
         return {
@@ -75,7 +91,8 @@ var CloudBox = React.createClass({
             showMenu: false,
             toMenu: {},
             types:[],
-            streamPath : false
+            streamPath : false,
+            torrents: {}
         };
     },
     hasDownload: function(id){
@@ -131,6 +148,26 @@ var CloudBox = React.createClass({
             });
         }
     },
+    formatSizeUnits : function (bytes){
+        if      (bytes>=1000000000) {bytes=(bytes/1000000000).toFixed(2)+' GB';}
+        else if (bytes>=1000000)    {bytes=(bytes/1000000).toFixed(2)+' MB';}
+        else if (bytes>=1000)       {bytes=(bytes/1000).toFixed(2)+' KB';}
+        else if (bytes>1)           {bytes=bytes+' bytes';}
+        else if (bytes==1)          {bytes=bytes+' byte';}
+        else                        {bytes='0 byte';}
+        return bytes;
+    },
+    toHHMMSS : function (secs) {
+        var sec_num = parseInt(secs, 10); // don't forget the second param
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}
+        if (seconds < 10) {seconds = "0"+seconds;}
+        return hours+':'+minutes+':'+seconds;
+    },
     componentDidMount: function(){
         this.socket = io({secure: true});
 		this.getFilesFromApi();
@@ -144,8 +181,19 @@ var CloudBox = React.createClass({
             this.handlerSocket('delete', data);
         }.bind(this));
         this.socket.on('torrent', function(data){
-            console.log('torrent!');
-            console.log(data);
+            var torrents = this.state.torrents;
+            var status = {
+                    ratio: data.ratio,
+                    progressDL: Math.round(data.progressDl * 100) / 100,
+                    remainTime : this.toHHMMSS(data.remain),
+                    name: data.file,
+                    speed: {
+                        dl: this.formatSizeUnits(data.dlSpeed),
+                        up: this.formatSizeUnits(data.upSpeed)
+                    }
+                };
+            torrents[data.file] = status;
+            this.setState({torrents: torrents});
         }.bind(this));
     },
     closeMenu: function(){
@@ -215,11 +263,24 @@ var CloudBox = React.createClass({
                     </div>
                 );
             }.bind(this));
+        var j = 0;
+        var tor;
+        var mountTorrents = Object.keys(this.state.torrents).map(function(key){
+            j++;
+            tor = this.state.torrents[key];
+            return(
+                <Torrent data={tor} key={j} />
+            );
+        }.bind(this));
 		return(
 			<span>
             <div id="Cloud">
                 <div className="files">
                 	{test}
+                </div>
+                <div className="torrents">
+                    <h3 className="catTitle">Active Torrents</h3>
+                    {mountTorrents}
                 </div>
             </div>
             {this.state.showMenu ?
