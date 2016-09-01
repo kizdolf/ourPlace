@@ -15,6 +15,7 @@ var	WebTorrent      = require('webtorrent'),
 	tools           = require(global.core + '/tools'),
 	conf 			= require(global.core + '/config'),
 	re 				= require(global.core + '/db/rethink'),
+	socket 			= require(global.core + '/socket')(),
     lo              = tools.lo,
 	tbl 			= conf.rethink.tables.video;
 
@@ -63,7 +64,8 @@ var handle = (file, req, cb) => {
 		date: new Date(),
 		meta: extractFromName(file.originalname)
 	};
-	console.log(obj);
+	if(file.torrent && !!file.torrent)
+		obj.meta.torrent = true;
 	re.insert(tbl, obj)
 	.then((res)=>{
 		cb(true);
@@ -98,11 +100,18 @@ var newTorrent = (file, req, cb)=>{
 	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
 		var fileDL = torrent.files[0];
 		torrent.on('download', function (bytes) {
-			console.log('progress: ' + torrent.progress * 100 + '%');
-			console.log('uploaded: ' + torrent.uploaded);
+			socket.send({
+					file: fileDL.name,
+					progressDl: torrent.progress * 100,
+					progressUp: torrent.uploaded,
+					remain: torrent.timeRemaining}, req.session.uuid, false, 'torrent');
 		});
 		torrent.on('upload', function(bytes){
-			lo.info('upload from torrent', {uploaded: bytes, amount: torrent.uploaded});
+			socket.send({
+					file: fileDL.name,
+					progressDl: torrent.progress * 100,
+					progressUp: torrent.uploaded,
+					remain: torrent.timeRemaining}, req.session.uuid, false, 'torrent');
 		});
 		torrent.on('done', ()=>{
 			console.log('torrent finished downloading');
@@ -111,7 +120,9 @@ var newTorrent = (file, req, cb)=>{
 					originalname : f.name,
 					path: conf.conf.cloudDir + '/' + d + '/' + f.path,
 					size: f.length,
-					mime : mime.lookup(conf.conf.cloudDir + '/' + d + '/' + f.path)
+					mime : mime.lookup(conf.conf.cloudDir + '/' + d + '/' + f.path),
+					torrent: true
+
 				};
 				console.log(f.name);
 				f.originalname = f.name;

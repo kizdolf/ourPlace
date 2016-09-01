@@ -15,7 +15,8 @@ var launch = (req, res, next)=>{
         );
     };
     if(!matchProxy()){
-        console.log('redirect:' + req.hostname);
+//        console.log('redirect:' + req.hostname);
+        console.log(new Date() + ' : redirect hostname : ' + req.hostname + ' from ip ' + req.ip);
         proxy.web(req, res, {'target': 'http://localhost:9000'}, function(error){
             console.log("Error Proxy");
             console.log(error);

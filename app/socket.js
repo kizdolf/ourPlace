@@ -20,7 +20,7 @@ module.exports = function(app, session){
 
             socket.handshake.session.sokId = socket.id;
             socket.handshake.session.save();
-            sockets[socket.id] = socket;
+            sockets[socket.handshake.session.uuid] = socket;
 
             socket.on('play', (data)=>{
                 user.played(data.id, {session: socket.handshake.session});
@@ -41,7 +41,7 @@ module.exports = function(app, session){
 
     //methods.
     module.send = (what, whom, abroad, name)=>{
-        var sok = (abroad && !!abroad) ? io : sockets[whom.sokId];
+        var sok = (abroad && !!abroad) ? io : sockets[whom];
         if(typeof name === 'undefined') name = 'update';
         sok.emit(name, what);
     };

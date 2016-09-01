@@ -59,7 +59,7 @@ var Stream = React.createClass({
     },
     render: function(){
         return(
-            <div id="stream" style="display:{this.state.display}">
+            <div id="stream" style={{display: this.state.display}}>
                 <span onClick={this.close}> Close </span>
                 <video src="this.state.path" autoplay >
                 </video>
@@ -142,6 +142,10 @@ var CloudBox = React.createClass({
         }.bind(this));
         this.socket.on('delete', function(data){
             this.handlerSocket('delete', data);
+        }.bind(this));
+        this.socket.on('torrent', function(data){
+            console.log('torrent!');
+            console.log(data);
         }.bind(this));
     },
     closeMenu: function(){

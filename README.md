@@ -30,7 +30,9 @@ it should be accessible visible here: http://azerty.gq   (*but it require a logi
 
 * Music: Upload it, play it, edit it.
 * Notes: Because I needed it badly. 
-* Rss: under light construction. (slow and dumb as hell)
+* Rss: under light construction. (slow and dumb as hell) [**NOT USED ANYMORE**]
+* Videos: drop a video to upload
+* Torrent: drop a torrent file to download the content and make it appear in the cloud section.
 * Usuable from a mobile. (even if not optimal) 
 * Admin interface (alt+enter). Only if your 'root'. 
 * Nothing more. See the next section for the rest. 
