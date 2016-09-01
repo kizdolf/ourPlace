@@ -172,15 +172,17 @@ exports.MusicBox = React.createClass({
         this.setState({showMenu: false});
     },
     search: function(str){
+        var show, meta;
+        
         this.props.musics.forEach((item, i)=>{
-            var show = false;
+            meta = item.meta;
+            show = false;
             if(item.name.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-            else if(item.meta.title && item.meta.title.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-            else if(item.meta.artist && item.meta.artist[0] && item.meta.artist[0].toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-            else if(item.meta.album && item.meta.album.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-
-            if(!show) this.props.musics[i].toShow = false;
-            else this.props.musics[i].toShow = true;
+            else if(meta.title && meta.title.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            else if(meta.artist && meta.artist[0] && meta.artist[0].toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            else if(meta.album && meta.album.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
+            
+            this.props.musics[i].toShow = (show) ? true : false;
         });
         this.forceUpdate();
     },

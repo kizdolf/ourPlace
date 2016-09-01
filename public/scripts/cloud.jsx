@@ -13,6 +13,9 @@ var Video = React.createClass({
         dl = null;
         this.props.hasDownload(intel.id);
     },
+    stream: function(){
+
+    },
     showMenu: function(e){
         this.props.switchMenu({
             position: {x: e.pageX, y: e.pageY},
@@ -44,13 +47,35 @@ var Video = React.createClass({
     }
 });
 
+var Stream = React.createClass({
+    getInitialState: function() {
+        return {
+            display: 'none',
+            path: ''
+        };
+    },
+    componentDidMount: function() {
+          
+    },
+    render: function(){
+        return(
+            <div id="stream" style="display:{this.state.display}">
+                <span onClick={this.close}> Close </span>
+                <video src="this.state.path" autoplay >
+                </video>
+            </div>
+        );
+    }
+});
+
 var CloudBox = React.createClass({
     getInitialState: function() {
         return {
             videos: [],
             showMenu: false,
             toMenu: {},
-            types:[]
+            types:[],
+            streamPath : false
         };
     },
     hasDownload: function(id){
@@ -85,7 +110,7 @@ var CloudBox = React.createClass({
         var cb = function(){this.setState({videos: videos});}.bind(this);
         var types = this.state.types;
         var item = data.obj;
-        if(item.meta.type){
+        if(item.meta && item.meta.type){
             if(types.indexOf(item.meta.type) === -1)
                 types.push(item.meta.type);
             item.metaCategory = item.meta.type;
@@ -160,8 +185,9 @@ var CloudBox = React.createClass({
         }
     },
 	render: function(){
-        
+        var i =0;
         var test = this.state.types.map(function(item){
+            i++;
                 var mountVideosCat = this.state.videos.map(function(video){
                     if(item != video.metaCategory){
                         return;
@@ -177,7 +203,7 @@ var CloudBox = React.createClass({
                     }
                 }.bind(this));
                 return(
-                    <div className="categoryVideo">
+                    <div className="categoryVideo" key={i}>
                         <h3 className="catTitle">{item}</h3>
                         <ul className="files">
                             {mountVideosCat}
@@ -185,20 +211,6 @@ var CloudBox = React.createClass({
                     </div>
                 );
             }.bind(this));
-   
-        var mountVideos = this.state.videos.map((video)=>{
-            return(
-                <div className="categoryVideo">
-
-                    <Video 
-                        data={video}
-                        hasDownload={this.hasDownload}
-                        key={video.id}
-                        switchMenu={this.switchMenu}
-                    />
-                </div>
-            );
-        });
 		return(
 			<span>
             <div id="Cloud">
@@ -213,6 +225,7 @@ var CloudBox = React.createClass({
                 />
             : null
             }
+            <Stream path={this.state.streamPath}/>
             </span>
 		);
 	}
