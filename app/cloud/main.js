@@ -95,25 +95,32 @@ var newTorrent = (file, req, cb)=>{
 
 	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
 		var fileDL = torrent.files[0];
+		var now =  Date.now();
 		torrent.on('download', function () {
-			socket.send({
-				file: fileDL.name,
-				ratio: torrent.ratio,
-				progressDl: torrent.progress * 100,
-				dlSpeed: torrent.downloadSpeed,
-				upSpeed: torrent.uploadSpeed,
-				remain: torrent.timeRemaining
-			}, req.session.uuid, false, 'torrent');
+			if( Date.now() - now > 500){
+				socket.send({
+					file: fileDL.name,
+					ratio: torrent.ratio,
+					progressDl: torrent.progress * 100,
+					dlSpeed: torrent.downloadSpeed,
+					upSpeed: torrent.uploadSpeed,
+					remain: torrent.timeRemaining
+				}, req.session.uuid, false, 'torrent');
+				now =  Date.now();
+			}
 		});
 		torrent.on('upload', function(){
-			socket.send({
-				file: fileDL.name,
-				ratio: torrent.ratio,
-				progressDl: torrent.progress * 100,
-				dlSpeed: torrent.downloadSpeed,
-				upSpeed: torrent.uploadSpeed,
-				remain: torrent.timeRemaining
-			}, req.session.uuid, false, 'torrent');
+			if( Date.now() - now > 500){
+				socket.send({
+					file: fileDL.name,
+					ratio: torrent.ratio,
+					progressDl: torrent.progress * 100,
+					dlSpeed: torrent.downloadSpeed,
+					upSpeed: torrent.uploadSpeed,
+					remain: torrent.timeRemaining
+				}, req.session.uuid, false, 'torrent');
+				now =  Date.now();
+			}
 		});
 		torrent.on('done', ()=>{
 			console.log('torrent finished downloading');
