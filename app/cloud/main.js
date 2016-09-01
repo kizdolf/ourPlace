@@ -68,11 +68,13 @@ var handle = (file, req, cb) => {
 		obj.meta.torrent = true;
 	re.insert(tbl, obj)
 	.then((res)=>{
-		cb(true);
+		if(cb)
+			cb(true);
 	lo.info('Video saved', {byWho: who, file: file, res: res});
 	}).catch((error)=>{
 		lo.error('saving video in db', {error: error, byWho: who});
-		cb(false);
+		if(cb)
+			cb(false);
 	});
 };
 
@@ -134,9 +136,7 @@ var newTorrent = (file, req, cb)=>{
 				};
 				lo.info('torrent finished downloading', {byWho: req.session.uuid, fileInfos});
 				if(fileInfos.mime.indexOf('video') !== -1)
-					handle(fileInfos, req, cb);
-				else
-					cb(true);
+					handle(fileInfos, req);
 			});
 		});
 	});
