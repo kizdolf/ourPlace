@@ -105,7 +105,7 @@ var newTorrent = (file, req, cb)=>{
 					ratio: torrent.ratio,
 					progressDl: torrent.progress * 100,
 					dlSpeed: torrent.downloadSpeed,
-					upSpeed: torrent.uploadSpeed,
+					upSpeed: ClientTorrent.uploadSpeed,
 					remain: torrent.timeRemaining
 				}, req.session.uuid, false, 'torrent');
 				now =  Date.now();

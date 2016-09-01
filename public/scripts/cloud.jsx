@@ -174,7 +174,7 @@ var CloudBox = React.createClass({
             var status = {
                     ratio: data.ratio,
                     progressDL: Math.round(data.progressDl * 100) / 100,
-                    remainTime : Math.ceil(data.remain),
+                    remainTime : Math.ceil(data.remain / 1000),
                     name: data.file,
                     speed: {
                         dl: this.formatSizeUnits(data.dlSpeed),
