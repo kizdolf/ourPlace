@@ -123,7 +123,6 @@ var newTorrent = (file, req, cb)=>{
 			}
 		});
 		torrent.on('done', ()=>{
-			console.log('torrent finished downloading');
 			torrent.files.forEach(function(f){
 				var fileInfos = {
 					originalname : f.name,
@@ -133,10 +132,11 @@ var newTorrent = (file, req, cb)=>{
 					torrent: true
 
 				};
-				console.log(f.name);
-				f.originalname = f.name;
-				f.path = conf.conf.cloudDir + '/' + d + '/' + f.path;
-				handle(fileInfos, req, cb);
+				lo.info('torrent finished downloading', {byWho: req.session.uuid, fileInfos});
+				if(fileInfos.mime.indexOf('video') !== -1)
+					handle(fileInfos, req, cb);
+				else
+					cb(true);
 			});
 		});
 	});

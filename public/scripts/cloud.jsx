@@ -185,6 +185,13 @@ var CloudBox = React.createClass({
             this.setState({torrents: torrents});
         }.bind(this));
     },
+    componentWillUnmount: function(){
+        this.socket.on('changed', function(data){});//jshint ignore: line
+        this.socket.on('new', function(data){});//jshint ignore: line
+        this.socket.on('delete', function(data){});//jshint ignore: line
+        this.socket.on('torrent', function(data){});//jshint ignore: line
+        // clearInterval(this.load);
+    },
     closeMenu: function(){
         this.setState({showMenu: false, toMenu: {}});
     },
