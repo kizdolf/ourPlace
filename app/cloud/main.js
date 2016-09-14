@@ -13,7 +13,6 @@ var	WebTorrent      = require('webtorrent'),
 	fs  			= require('fs'),
 	conf            = require(global.core + '/config'),
 	tools           = require(global.core + '/tools'),
-	conf 			= require(global.core + '/config'),
 	re 				= require(global.core + '/db/rethink'),
 	socket 			= require(global.core + '/socket')(),
     lo              = tools.lo,
@@ -99,7 +98,7 @@ var newTorrent = (file, req, cb)=>{
 		var fileDL = torrent.files[0];
 		var now =  Date.now();
 		torrent.on('download', function () {
-			if( Date.now() - now > 500){
+			if( Date.now() - now > conf.conf.torrentTriggerSocket){
 				socket.send({
 					file: fileDL.name,
 					ratio: torrent.ratio,
@@ -112,7 +111,7 @@ var newTorrent = (file, req, cb)=>{
 			}
 		});
 		torrent.on('upload', function(){
-			if( Date.now() - now > 500){
+			if( Date.now() - now > conf.conf.torrentTriggerSocket){
 				socket.send({
 					file: fileDL.name,
 					ratio: torrent.ratio,
@@ -125,6 +124,7 @@ var newTorrent = (file, req, cb)=>{
 			}
 		});
 		torrent.on('done', ()=>{
+			/* TODO : Send socket to front.*/
 			torrent.files.forEach(function(f){
 				var fileInfos = {
 					originalname : f.name,
