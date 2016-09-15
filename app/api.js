@@ -35,21 +35,22 @@ exports.main = (function(){
                 Depending on mimetype (f.mimetype) uplaod should happen in 
                 media path or in cloud path. Media for songs, cloud for videos.
             */
-            var path;
+            var path,
+                datePath = '/' + (new Date().toISOString().substring(0,10));
             lo.info('new upload to handle.', {file: f});
             if(f.mimetype.indexOf('audio') !== -1){
                 lo.info('upload accepted as Audio file.', {file: f});
-                path = conf.mediaDir + '/' + (new Date().toISOString().substring(0,10));
+                path = conf.mediaDir + datePath;
                 tools.mkdir(path);
                 cb(null, (path + '/'));
             }else if (f.mimetype.indexOf('video') !== -1){
                 lo.info('upload accepted as Video file.', {file: f});
-                path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
+                path = conf.cloudDir + datePath;
                 tools.mkdir(path);
                 cb(null, (path + '/'));
             }else if (f.mimetype.indexOf('torrent') !== -1){
-                lo.info('upload accepted as torrent file.', {file: f});
-                path = conf.cloudDir + '/' + (new Date().toISOString().substring(0,10));
+                lo.info('upload accepted as Torrent file.', {file: f});
+                path = conf.cloudDir + datePath;
                 tools.mkdir(path);
                 cb(null, (path + '/'));
             }else{
@@ -59,14 +60,13 @@ exports.main = (function(){
         },
     });
 
-    router
-    .post('/upload', multer({storage: storage}).any(), (req, res)=>{
-        console.log('post on upload launched.');
+    router.post('/upload', multer({storage: storage}).any(), (req, res)=>{
         res.set('connection', 'keep-alive');
         req.files.forEach((file)=>{
             lo.info('insert', {byWho: req.session.uuid, file: file});
             lib.handle(file, req, (err, response)=>{
-                if(err) res.json({err: err});
+                if(err)
+                    res.json({err: err});
                 else {
                     user.own(req.session.uuid, response);
                     res.json({done: response});

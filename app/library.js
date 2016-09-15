@@ -85,20 +85,30 @@ exports.update = (req, res)=>{
     var changes = req.body; //chnages to perform
     var obj; //where to perform them.
 
-    if(req.params.type == 'song'){
-        obj = {meta:{
-            'artist': [changes.artist], //because hell, we could have several artists on one track. One day.
-            'album': changes.album,
-            'title': changes.title
-        }};
-    }else if (req.params.type == 'note'){
-        obj = {
-            'content' : changes.note //note are quite straightforwarded. (not sure this is xss proofed honestly.)
-        };
-    }else if (req.params.type == 'video'){
-        obj = {
-            meta: changes
-        };
+    switch (req.params.type){
+        case ('song'):
+            obj = {
+                meta:{
+                    'artist': [changes.artist], //because hell, we could have several artists on one track. One day.
+                    'album': changes.album,
+                    'title': changes.title
+                }
+            };
+            break;
+        case ('note'):
+            obj = {
+                'content' : changes.note //note are quite straightforwarded. (not sure this is xss proofed honestly.)
+            };
+            break;
+        case ('video'):
+            obj = {
+                meta: changes
+            };
+            break;
+        default:
+            lo.error('update type not known', {tbl: tbl, byWho: req.session.uuid, id: id});
+            res.json({error: 'update failed due to unknwon type of data'}); //sorry
+            return;
     }
     re.update(tbl, id, obj).then((response)=>{ //call db.
         lo.info('update', {tbl: tbl, byWho: req.session.uuid, id: id, update: obj});
@@ -216,25 +226,6 @@ exports.handle = (file, req, cb)=>{
             fs.unlinkSync(path);
             cb('does not fit mimes types', null);
     }
-
-    // if(file.mimetype.indexOf("audio") === -1){
-    //     if(file.mimetype.indexOf("video") !== -1){
-    //         cloud.handle(file, req, cb);
-    //     }else{
-    //         lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
-    //         fs.unlinkSync(path);
-    //         cb('does not fit mimes types', null);
-    //     }
-    // }else{
-    //     getMetaData(file.path, function(err, meta){
-    //         if(!err){
-    //             convertToOgg(path, file, (err, file)=>{
-    //                 if(err) cb('unable to convert file.', null);
-    //                 else saveFile(file, meta, cb);
-    //             });
-    //         }
-    //     });
-    // }
 };
 
 //best function ever !
@@ -292,8 +283,16 @@ exports.fromYoutube = function(url, cb){
         dir = global.appPath + '/medias/' + d,
         path = mainConf.mediaPath + '/' + d;
     tools.mkdir(dir);
-    var opts = ' -4 --add-metadata --no-warnings --no-playlist --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis --print-json --cache-dir ' + dir + ' ';
-    var exec = 'youtube-dl' + opts + url + ' -o \'' + dir + '/%(id)s.%(ext)s\'';
+    
+    var program = 'youtube-dl';
+    
+    var opts  = ' -4 --add-metadata --no-warnings --no-playlist';
+        opts += ' --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis';
+        opts += ' --print-json --cache-dir ' + dir + ' ';
+    
+    var destYt = ' -o \'' + dir + '/%(id)s.%(ext)s\'';
+
+    var exec = program + opts + url + destYt;
     lo.info(' dowloading from youtube', {url: url});
     child_process.exec(exec, (err, out)=>{
         if(!err || err.killed === false){
