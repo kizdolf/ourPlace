@@ -194,17 +194,17 @@ var convertToOgg = (path, file, cb)=>{
 exports.handle = (file, req, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
-    mime = false;
+    var  mimeToHandle = false;
     conf.OKmimes.forEach(function(mimetype){
         if(file.mimetype.indexOf(mimetype) !== -1){
-            mime = mimetype;
+            mimeToHandle = mimetype;
             return;
         }
     });
 
-    console.log(mime);
+    console.log(mimeToHandle);
 
-    switch (mime){
+    switch (mimeToHandle){
         case 'video':
             cloud.handle(file, req, cb);
             break;
