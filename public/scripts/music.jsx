@@ -33,13 +33,18 @@ var MusicItem = React.createClass({
         //     data: this.props.data
         // });
     },
+    handleRightClick: function(e){
+        e.preventDefault();
+        this.showMenu(e);
+        return false;
+    },
     render: function(){
         var meta = this.props.song.meta;
         var name = this.props.song.name;
         var clss = this.props.now ? 'itemMusic current itemCls': 'itemMusic itemCls';
         return (
             <li className={clss}>
-                <span onClick={this.play} className="clickable" >
+                <span onClick={this.play} onContextMenu={this.handleRightClick} className="clickable" >
                     <div className="cover" >
                         <img src={meta.picture || '/img/default_cover.png'} alt="cover" className="cov" draggable={false}/>
                     </div>
