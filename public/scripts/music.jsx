@@ -178,7 +178,7 @@ exports.MusicBox = React.createClass({
     },
     search: function(str){
         var show, meta;
-        
+
         this.props.musics.forEach((item, i)=>{
             meta = item.meta;
             show = false;
@@ -186,7 +186,7 @@ exports.MusicBox = React.createClass({
             else if(meta.title && meta.title.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
             else if(meta.artist && meta.artist[0] && meta.artist[0].toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
             else if(meta.album && meta.album.toLowerCase().indexOf(str.toLowerCase()) !== -1) show = true;
-            
+
             this.props.musics[i].toShow = (show) ? true : false;
         });
         this.forceUpdate();
@@ -249,10 +249,11 @@ exports.MusicBox = React.createClass({
                 <InputBox
                     search={this.search}
                     changeAutoPlay={this.props.changeAutoPlay}
-                    autoPlay={this.props.autoPlay} />
-                    <ul classNammusice="listMusic">
-                        {musicNodes}
-                    </ul>
+                    autoPlay={this.props.autoPlay}
+                />
+                <ul className="listMusic">
+                    {musicNodes}
+                </ul>
             </div>
             { this.state.showMenu ? <ItemMenu e={this.state.toTop} closeMenu={this.closeMenu} type='song' removed={this.props.removed} /> : '' }
             </span>

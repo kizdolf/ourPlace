@@ -1123,10 +1123,14 @@ hr{
 }
 
 .inputBox{
-    display: block;
-    width: 80%;
-    height: 95px;
+    position: fixed !important;
+    width: 69%;
+    /*height: 95px;*/
     margin: auto;
+}
+
+.listMusic{
+    margin-top: 60px;
 }
 
 #songViszu{
