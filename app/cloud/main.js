@@ -1,7 +1,7 @@
 'use strict';
 
 /*
-	Manager for cloud video. 
+	Manager for cloud video.
 	Manage upload, database.
 	Should transpile every video in order to make it playable by
 	any browser, but keep the orginal file as well.
@@ -26,17 +26,17 @@ var extractFromName = function(name){
 	var RegSE = new RegExp('[Ss][0-9]{2}[Ee][0-9]{2}');
 	var match1 = name.match(RegSE);
 	if(match1 !== null){
-		ret.season = match1[0].slice(1, 3);
-		ret.episode = match1[0].slice(4, 6);
+		ret.season = parseInt(match1[0].slice(1, 3)).toString();
+		ret.episode = parseInt(match1[0].slice(4, 6)).toString();
 		start = name.split(match1[0])[0];
 		ret.name = start;
-	}else{	
+	}else{
 		var RegSxE = new RegExp('[0-9][0-9]?x[0-9][0-9]?');
 		var match3 = name.match(RegSxE);
 		if(match3 !== null){
 			var infos = match3[0].split('x');
-			ret.season = infos[0];
-			ret.episode = infos[1];
+			ret.season = parseInt(infos[0]).toString();
+			ret.episode = parseInt(infos[1]).toString();
 			start = name.split(match3[0])[0];
 			ret.name = start;
 		}

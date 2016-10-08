@@ -27,21 +27,28 @@ var Video = React.createClass({
             meta = intel.meta,
             toScreen = {
                 name : meta.name ? meta.name : intel.name,
-                type : meta.type ? 'Category: ' + meta.type: '',
-                season : meta.season ? 'Season: ' + meta.season: '',
-                episode : meta.episode ? 'Episode: ' + meta.episode: '',
+                type : meta.type ? 'Category: ' + meta.type: '_null_',
+                season : meta.season ? 'S' + meta.season: '_null_',
+                episode : meta.episode ? 'E' + meta.episode: '_null_',
+                toPrint : this.props.nextOrder ? this.props.nextOrder : false
+                // <span className="fieldVideo typeVideo">{toScreen.type}</span>
             };
+            console.log(toScreen.toPrint);
         return(
-            <li  className="oneVideo itemCls">
-                <span className="metaVideo Meta" onClick={this.download}>
-                    <span title="Download the file" className="fieldVideo titleVideo">{toScreen.name}</span>
-                    <span className="fieldVideo typeVideo">{toScreen.type}</span>
-                    <span className="fieldVideo seasonVideo">{toScreen.season}</span>
-                    <span className="fieldVideo episodeVideo">{toScreen.episode}</span>
+            <li>
+                {
+                    (toScreen.toPrint) ? <span className="orderToPrint">{toScreen.toPrint}</span> : null
+                }
+                <span  className="oneVideo itemCls">
+                    <span className="metaVideo Meta" onClick={this.download}>
+                        <span title="Download the file" className="fieldVideo titleVideo">{toScreen.name}</span>
+                        <span className="fieldVideo seasonVideo">{toScreen.season}</span>
+                        <span className="fieldVideo episodeVideo">{toScreen.episode}</span>
+                    </span>
+                    <div className="optsVideo">
+                        <img className="optVideo" src="img/ic_more_vert_black_24dp_1x.png" onClick={this.showMenu} />
+                    </div>
                 </span>
-                <div className="optsVideo"> 
-                    <span className="optVideo" onClick={this.showMenu}>Menu</span>
-                </div>
             </li>
         );
     }
@@ -55,7 +62,7 @@ var Stream = React.createClass({
         };
     },
     componentDidMount: function() {
-          
+
     },
     render: function(){
         return(
@@ -137,7 +144,7 @@ var CloudBox = React.createClass({
             item.metaCategory = 'unknown';
         }
         if(name == 'new'){
-            videos.unshift(data.obj); return cb(); 
+            videos.unshift(data.obj); return cb();
         }else{
             videos.forEach(function(note, i){
                 if(name == 'changed'){
@@ -201,8 +208,8 @@ var CloudBox = React.createClass({
         if(toggle){
             var intel   = data.data,
             season      = intel.meta.season ? intel.meta.season : '',
-            episode     = intel.meta.episode ? intel.meta.episode : '',
-            name        = intel.meta.name ? intel.meta.name : intel.name,
+            episode     = parseInt(intel.meta.episode ? intel.meta.episode : '').toString(),
+            name        = parseInt(intel.meta.name ? intel.meta.name : intel.name).toString(),
             types       = ['movie', 'tvshow','other'];
             if(intel.meta.type){
                 types.forEach(function(type, i){
@@ -236,13 +243,22 @@ var CloudBox = React.createClass({
         var i =0;
         var test = this.state.types.map(function(item){
             i++;
+                var letterOrder = '';
+                var orderToPrint = false;
                 var mountVideosCat = this.state.videos.map(function(video){
                     if(item != video.metaCategory){
                         return;
                     }else{
+                        var firstLetter = video.meta.name ? (video.meta.name).charAt(0) : (video.name).charAt(0);
+                        if(letterOrder != firstLetter){
+                            orderToPrint = firstLetter;
+                            letterOrder = firstLetter;
+                            console.log(orderToPrint);
+                        }else orderToPrint = false;
                         return(
-                            <Video 
+                            <Video
                                 data={video}
+                                nextOrder={orderToPrint}
                                 hasDownload={this.hasDownload}
                                 key={video.id}
                                 switchMenu={this.switchMenu}
@@ -254,6 +270,13 @@ var CloudBox = React.createClass({
                     <div className="categoryVideo" key={i}>
                         <h3 className="catTitle">{item}</h3>
                         <ul className="files">
+                            <li  className="oneVideo itemCls">
+                                <span className="metaVideo Meta">
+                                    <span title="file name" className="fieldTitle fieldVideo titleVideo">FILE NAME</span>
+                                    <span className="fieldTitle fieldVideo seasonVideo">SEASON</span>
+                                    <span className="fieldTitle fieldVideo episodeVideo">EPISODE</span>
+                                </span>
+                            </li>
                             {mountVideosCat}
                         </ul>
                     </div>
