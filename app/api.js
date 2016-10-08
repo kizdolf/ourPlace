@@ -32,7 +32,7 @@ exports.main = (function(){
     var storage = multer.diskStorage({
         destination: (r, f, cb)=>{
             /*
-                Depending on mimetype (f.mimetype) uplaod should happen in 
+                Depending on mimetype (f.mimetype) uplaod should happen in
                 media path or in cloud path. Media for songs, cloud for videos.
             */
             var path,
@@ -125,8 +125,9 @@ exports.main = (function(){
 
     router.get('/delog', (req, res)=>{
         lo.info('delog triggered', {who: req.session.uuid, pseudo: req.session.pseudo});
-        res.json({delog: 'done'});
-        req.session.destroy();
+        req.session.destroy(()=>{
+            res.json({delog: 'done'});
+        });
     });
 
     /*streams!*/
