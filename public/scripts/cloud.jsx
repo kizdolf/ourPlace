@@ -207,9 +207,9 @@ var CloudBox = React.createClass({
         this.setState({showMenu: toggle});
         if(toggle){
             var intel   = data.data,
-            season      = intel.meta.season ? intel.meta.season : '',
+            season      = parseInt(intel.meta.season ? intel.meta.season : '').toString(),
             episode     = parseInt(intel.meta.episode ? intel.meta.episode : '').toString(),
-            name        = parseInt(intel.meta.name ? intel.meta.name : intel.name).toString(),
+            name        = intel.meta.name ? intel.meta.name : intel.name,
             types       = ['movie', 'tvshow','other'];
             if(intel.meta.type){
                 types.forEach(function(type, i){
