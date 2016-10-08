@@ -32,7 +32,7 @@ exports.conf = {
     cleanAtStartup: false, // delete existing media not in db at startUp.
     logsPerPage : 20, //could be a non fixed value.
     fromMail: 'info@dkkddk.gq',
-    ndd: 'https://dkkddk.gq',
+    ndd: 'http://dkkddk.info',
     hostname: 'dkkddk.info',
     bugsnag: false, //never mind.
     imgMaxSize: {width: 200, height: 200}, //images are scaled automatically. This allow you to keep a good quality if you want.

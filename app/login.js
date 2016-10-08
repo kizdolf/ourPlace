@@ -166,18 +166,43 @@ var createUser = function(pseudo, password, email, session, cb){
                     var fromPseudo = session.pseudo;
                     if(typeof email !== 'undefined' && email !== ""){
                         wording.htmlWelcome(url, pseudo, fromPseudo, (html)=>{
-                            mandrill('/messages/send', {
-                                message: {
-                                    to: [{email: email, name: pseudo}],
-                                    from_email: cnf.fromMail,
-                                    subject: "An account was created for you on OurPlace!",
-                                    html: html
+
+
+                            var nodemailer = require('nodemailer');
+                            // create reusable transporter object using the default SMTP transport
+                            var transporter = nodemailer.createTransport('smtps://' + critCnf.extern.gmailSender + '%40gmail.com:' + critCnf.extern.gmailWeakPassword + '@smtp.gmail.com');
+
+                            // setup e-mail data with unicode symbols
+                            var mailOptions = {
+                                from: cnf.fromMail, // sender address
+                                to: email, // list of receivers
+                                subject: "An account was created for you on Dkkd.info!", // Subject line
+                                // text: 'Hello world 🐴', // plaintext body
+                                html: html // html body
+                            };
+
+                            // send mail with defined transport object
+                            transporter.sendMail(mailOptions, function(e, info){
+                                if(e){
+                                    lo.error('unable to send mail:', {error: e, info: info, mail: email});
+                                }else{
+                                    lo.info('mail sent', {to: email, info: info});
                                 }
-                            },(e)=>{
-                                if (e) lo.error('unable to send mail:', {error: e, mail: email});
-                                else lo.info('mail sent', {to: email});
                                 if(cb) cb(true);
                             });
+
+                            // mandrill('/messages/send', {
+                            //     message: {
+                            //         to: [{email: email, name: pseudo}],
+                            //         from_email: cnf.fromMail,
+                            //         subject: "An account was created for you on Dkkd.info!",
+                            //         html: html
+                            //     }
+                            // },(e)=>{
+                            //     if (e) lo.error('unable to send mail:', {error: e, mail: email});
+                            //     else lo.info('mail sent', {to: email});
+                            //     if(cb) cb(true);
+                            // });
                         });
                     }else{
                         lo.error('wrong mail!', {email: email, url: url});
