@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"no test specified\" && exit 1"
+    "test": "echo \"no test specified\" && exit 1",
+    "dev": "nodejs-dashboard node index.js"
   },
   "repository": {
     "type": "git",
@@ -67,6 +68,7 @@
   "devDependencies": {
     "css-loader": "^0.23.0",
     "jsx-loader": "^0.13.2",
+    "nodejs-dashboard": "^0.1.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.6"
   }

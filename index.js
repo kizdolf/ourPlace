@@ -8,6 +8,8 @@
 */
 'use strict';
 
+/*Dev stats*/ require("nodejs-dashboard");
+
 //globals (tranquille)
 global.appPath  = __dirname;
 global.core     = global.appPath + '/app';
@@ -50,7 +52,7 @@ var //extern dependencies
     .use(conf.pathLogin, login.login)
     //loged-in check. at this point if not loged-in bye.
     .use(login.shouldLogin)
-    //serve webApp  
+    //serve webApp
     .use(conf.webPath, express.static(conf.webDir))
     //serve medias (this should evolve deeply :/)
     .use(conf.mediaPath, express.static(conf.mediaDir))
