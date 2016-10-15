@@ -33,7 +33,6 @@ var Video = React.createClass({
                 toPrint : this.props.nextOrder ? this.props.nextOrder : false
                 // <span className="fieldVideo typeVideo">{toScreen.type}</span>
             };
-            console.log(toScreen.toPrint);
         return(
             <li>
                 {
@@ -113,7 +112,6 @@ var CloudBox = React.createClass({
         var types = [];
 		$.get(this.props.cloudAPI, function(data){
             data.forEach(function(item){
-                // console.log(item.meta);
                 if(item.meta.type){
                     if(types.indexOf(item.meta.type) === -1)
                         types.push(item.meta.type);
@@ -243,45 +241,44 @@ var CloudBox = React.createClass({
         var i =0;
         var test = this.state.types.map(function(item){
             i++;
-                var letterOrder = '';
-                var orderToPrint = false;
-                var mountVideosCat = this.state.videos.map(function(video){
-                    if(item != video.metaCategory){
-                        return;
-                    }else{
-                        var firstLetter = video.meta.name ? (video.meta.name).charAt(0) : (video.name).charAt(0);
-                        if(letterOrder != firstLetter){
-                            orderToPrint = firstLetter;
-                            letterOrder = firstLetter;
-                            console.log(orderToPrint);
-                        }else orderToPrint = false;
-                        return(
-                            <Video
-                                data={video}
-                                nextOrder={orderToPrint}
-                                hasDownload={this.hasDownload}
-                                key={video.id}
-                                switchMenu={this.switchMenu}
-                            />
-                        );
-                    }
-                }.bind(this));
-                return(
-                    <div className="categoryVideo" key={i}>
-                        <h3 className="catTitle">{item}</h3>
-                        <ul className="files">
-                            <li  className="oneVideo itemCls">
-                                <span className="metaVideo Meta">
-                                    <span title="file name" className="fieldTitle fieldVideo titleVideo">FILE NAME</span>
-                                    <span className="fieldTitle fieldVideo seasonVideo">SEASON</span>
-                                    <span className="fieldTitle fieldVideo episodeVideo">EPISODE</span>
-                                </span>
-                            </li>
-                            {mountVideosCat}
-                        </ul>
-                    </div>
-                );
+            var letterOrder = '';
+            var orderToPrint = false;
+            var mountVideosCat = this.state.videos.map(function(video){
+                if(item != video.metaCategory){
+                    return;
+                }else{
+                    var firstLetter = video.meta.name ? (video.meta.name).charAt(0) : (video.name).charAt(0);
+                    if(letterOrder != firstLetter){
+                        orderToPrint = firstLetter;
+                        letterOrder = firstLetter;
+                    }else orderToPrint = false;
+                    return(
+                        <Video
+                            data={video}
+                            nextOrder={orderToPrint}
+                            hasDownload={this.hasDownload}
+                            key={video.id}
+                            switchMenu={this.switchMenu}
+                        />
+                    );
+                }
             }.bind(this));
+            return(
+                <div className="categoryVideo" key={i}>
+                    <h3 className="catTitle">{item}</h3>
+                    <ul className="files">
+                        <li  className="oneVideo itemCls">
+                            <span className="metaVideo Meta">
+                                <span title="file name" className="fieldTitle fieldVideo titleVideo">FILE NAME</span>
+                                <span className="fieldTitle fieldVideo seasonVideo">SEASON</span>
+                                <span className="fieldTitle fieldVideo episodeVideo">EPISODE</span>
+                            </span>
+                        </li>
+                        {mountVideosCat}
+                    </ul>
+                </div>
+            );
+        }.bind(this));
         var j = 0;
         var tor;
         var mountTorrents = Object.keys(this.state.torrents).map(function(key){

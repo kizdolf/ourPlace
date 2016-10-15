@@ -174,7 +174,7 @@ hr{
     color: #272822;
 }
 
-@media (min-width: 680px){
+@media (min-width: 680px){ /* Big screen: */
 
     #player{
         position: fixed;
@@ -418,7 +418,7 @@ hr{
 
 }
 
-@media (max-width: 680px){
+@media (max-width: 680px){ /* Mobile screen size. */
     html{
         margin-bottom: 100px;
     }
@@ -602,9 +602,9 @@ hr{
         margin-left: 0 !important;
     }
 
-#Videos{
+    #Videos{
 
-}
+    }
     #Notes {
         left: 0 !important;
         display: inline-block !important;
@@ -621,6 +621,31 @@ hr{
     .inputBtns{
         position: relative !important;
         width: 100vw;
+    }
+    .inputBox{
+        position: relative !important;
+        /* height: 95px; */
+        margin: auto;
+        /* top: 159px; */
+    }
+    .form-control{
+        width: 88 !important%;
+    }
+    #Cloud{
+        padding-left: 0 !important;
+    }
+    .oneVideo{
+        height: 35px !important;
+    }
+    .metaVideo{
+        position: relative !important;
+        height: 100% !important;
+    }
+    .optsVideo{
+        float: right !important;
+    }
+    .fieldVideo{
+        height: 30px !important;
     }
 }
 
@@ -1131,6 +1156,7 @@ hr{
 
 .listMusic{
     margin-top: 60px;
+    margin-bottom: 130px;
 }
 
 #songViszu{
@@ -1242,6 +1268,11 @@ hr{
     height: 40px;
     font-style: oblique;
     text-align: center;
+}
+
+.fieldTitle:hover{
+    box-shadow: none !important;
+    transform: scale(1);
 }
 
 .titleVideo{
