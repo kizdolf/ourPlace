@@ -1372,21 +1372,23 @@ hr{
   background: #eab348;
   width: 100%;
   height: 18px;
-  display: flex;
 }
 
 .torrentInfo.progressT .background {
   background: #57909b;
   height: inherit;
-  position: absolute;
   z-index: 0;
+  display: block;
 }
 
 .torrentInfo.progressT .progressText {
   color: black;
   z-index: 1;
   width: 20%;
+  display: inline-block;
   text-align: center;
+  position: relative;
+  top: -19px;
 }
 
 .torrentInfo.name {

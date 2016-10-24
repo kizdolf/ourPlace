@@ -31,9 +31,9 @@ var Torrent = React.createClass({
       <div className="oneTorrent">
         <div className="torrentInfos">
           <span className="torrentInfo progressT">
+            <span className="background" style={{width:torrent.progress + '%'}}></span>
             <span className="progressText"> {torrent.progress} % </span>
             <span className="progressText"> {torrent.timeRemaining}</span>
-            <span className="background" style={{width:torrent.progress + '%'}}></span>
           </span>
           <div className="torrentFields">
             <span className="torrentInfo name">{torrent.name} </span>
