@@ -8,65 +8,14 @@ var
     tools           = require(global.core + '/tools'),
     user            = require(global.core + '/user'),
     cloud           = require(global.core + '/cloud/main'),
+    torrent         = require(global.core + '/cloud/torrenting'),
     mime            = require('mime'),
     child_process   = require('child_process'),
     fs              = require('fs'),
-    lo              = tools.lo,
-    // ffmetadata      = require('ffmetadata'),
-    mm              = require('musicmetadata');
-
+    lo              = tools.lo;
 
 //listen the dbs for changes, we should check if weather or not is already loaded.
 require(global.core + '/db/DBlisteners.js');
-
-//extract and save picture. if extract failed just delete pic without blocking process.
-var extractPicture = (meta, path, cb)=>{
-    var pic     = new Buffer(meta.picture[0].data), //read picture
-        style   = meta.picture[0].format,
-        picName = path.split('/').pop() + '.' + style, //deduct name.
-        comp    = path.split('/');
-    comp.pop();
-    path = comp.join('/') + '/';
-    var fsPath  = path + picName;
-    pic = pic.toString('base64'); //convert the pic in readable data.
-    fs.writeFile(fsPath, pic, 'base64', (err)=>{ //write data in it's own file.
-        if(err){
-            lo.error('writing img', {picName: picName, err: err});
-            delete meta.picture; //do not keep the useless file.
-            cb(meta); //pretend everything was fine.
-        }else{
-            lo.info('extracted img', {picName: picName, path: path});
-            meta.picture = '/' + fsPath; //save new pic path
-            tools.resizePic(fsPath, style, ()=>{
-                cb(meta);
-            });
-        }
-    });
-};
-
-/*
-Retrieve metadata from a file. Files are not always easy with that, because of the
-differents format we are facing. We should try to implement other metadata formats actually.
-Maybe later.
-So in case of error an empty object is returned. The app continue to run. See ya!
-*/
-var getMetaData = (path, cb)=>{
-    mm(fs.createReadStream(path), (err, meta)=>{ //send all the algo to mm (music metadata package)
-        if(err){
-            lo.error('getting Metadata. Continuing with empty meta.', {pathWeKnow: path, err: err});
-            cb(null, {}); //do not let 0 metaData prevent the song to be listened.
-        }else{
-            if(meta.picture[0] && meta.picture[0].data){ //there is a pic. Extract it.
-                extractPicture(meta, path, (meta)=>{
-                    cb(null, meta); //and go on..
-                });
-            }else{ //if no picture in file, the prop need to be cleared.
-                delete meta.picture; //dont keep the picture field in the metadata.
-                cb(null, meta);
-            }
-        }
-    });
-};
 
 /**
 @params: req : request from express
@@ -79,7 +28,7 @@ Data in request:
 Data in URL:
     {type, id}
 **/
-exports.update = (req, res)=>{
+const update = (req, res)=>{
     var tbl = tbls[req.params.type]; //song or note?
     var id = req.params.id; //id in db
     var changes = req.body; //chnages to perform
@@ -124,7 +73,7 @@ exports.update = (req, res)=>{
     Should delete the related file as well.
     It's stupid to not. (you could just restart the server and enjoy the autocleaning. yup.)
 */
-exports.delete = function(type, id, cb){
+const deleteItem = function(type, id, cb){
     var tbl = tbls[type];
     re.rmById(tbl, id).then((res)=>{
         var old = res.changes[0].old_val; //nicely, rethinkDb allow us to see what was the object BEFORE we deleted, but after. I do like that.
@@ -191,7 +140,7 @@ var convertToOgg = (path, file, cb)=>{
     });
 };
 
-exports.handle = (file, req, cb)=>{
+const handle = (file, req, cb)=>{
     lo.info('file to add:', {file: file});
     var path = global.appPath + '/' + file.path;
     var  mimeToHandle = false;
@@ -201,15 +150,12 @@ exports.handle = (file, req, cb)=>{
             return;
         }
     });
-
-    console.log(mimeToHandle);
-
     switch (mimeToHandle){
         case 'video':
             cloud.handle(file, req, cb);
             break;
         case 'audio':
-            getMetaData(file.path, function(err, meta){
+            tools.getMetaData(file.path, function(err, meta){
                 if(!err){
                     convertToOgg(path, file, (err, file)=>{
                         if(err) cb('unable to convert file.', null);
@@ -219,7 +165,7 @@ exports.handle = (file, req, cb)=>{
             });
             break;
         case 'torrent':
-            cloud.newTorrent(file, req, cb);
+            torrent.newTorrent(file, req, cb);
             break;
         default:
             lo.info('file ' + file.path + ' is to remove because it does not fit mimes types.', {file: file});
@@ -232,7 +178,7 @@ exports.handle = (file, req, cb)=>{
 var byDate = (a, b)=>{ return (a.date > b.date) ? -1 : 1; };
 
 //TODO: add limitation number on demand. sorting options as well.
-exports.allSongs = function(){
+const allSongs = function(){
     var files = [];
     return new Promise(function(ful, rej){
         re.getAll(tbls.song).then((songs)=>{
@@ -246,7 +192,7 @@ exports.allSongs = function(){
 };
 
 //send all notes. TODO the same as for allSongs.
-exports.allNotes = function(req, res){
+const allNotes = function(req, res){
     re.getAll(tbls.note).then((notes)=>{
         res.json(notes);
     }).catch((e)=>{
@@ -256,7 +202,7 @@ exports.allNotes = function(req, res){
 };
 
 //add a note.
-exports.addNote = function(req, res){
+const addNote = function(req, res){
     var note = req.body.note;
     re.insert(tbls.note, note)
     .then((r)=>{ //jshint ignore: line
@@ -278,18 +224,18 @@ So in case of error we nned to check if the download/extraction was killed or no
 
 TO DO : RESIZE PIC!!!!
 */
-exports.fromYoutube = function(url, cb){
+const fromYoutube = function(url, cb){
     var d = (new Date().toISOString().substring(0,10)),
         dir = global.appPath + '/medias/' + d,
         path = mainConf.mediaPath + '/' + d;
     tools.mkdir(dir);
-    
+
     var program = 'youtube-dl';
-    
+
     var opts  = ' -4 --add-metadata --no-warnings --no-playlist';
         opts += ' --embed-thumbnail --prefer-ffmpeg -x --audio-format vorbis';
         opts += ' --print-json --cache-dir ' + dir + ' ';
-    
+
     var destYt = ' -o \'' + dir + '/%(id)s.%(ext)s\'';
 
     var exec = program + opts + url + destYt;
@@ -331,3 +277,16 @@ exports.fromYoutube = function(url, cb){
         }
     });
 };
+
+
+module.exports = {
+  update: update,
+  delete : deleteItem,
+  handle: handle,
+  allSongs: allSongs,
+  allNotes: allNotes,
+  addNote: addNote,
+  fromYoutube: fromYoutube,
+  convertToOgg: convertToOgg,
+  saveFile: saveFile
+}

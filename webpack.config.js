@@ -26,7 +26,8 @@ module.exports = {
     },
     resolve: {
         extensions: ['', '.js', '.jsx']
-    },
+    }
+    /*,
     plugins: [
          new webpack.optimize.UglifyJsPlugin({
              minimze: true,
@@ -34,5 +35,5 @@ module.exports = {
                  except: ['$super', '$', 'exports', 'require']
              }
          })
-    ]
+    ]*/
 };

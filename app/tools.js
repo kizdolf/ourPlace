@@ -1,9 +1,10 @@
 var
 fs          = require('fs'),
+mm          = require('musicmetadata'),
+sharp       = require('sharp'),
 mainConf    = require(global.core + '/config').conf,
 re          = require(global.core + '/db/rethink'),
 cnf         = require(global.core + '/config').conf,
-lwip        = require('lwip'),
 tbls        = require(global.core + '/config').rethink.tables;
 
 var rm = (path)=>{
@@ -71,29 +72,67 @@ var makeItHttps = (req, res, next)=>{
 };
 
 var resizePic = (fsPath, style, cb) =>{
-    lwip.open(fsPath, style, (err, img)=>{ //resize the pic.let's store small stuff.
-        if(!err){
-            //scale should be done with the primary buffer.
-            var ratio = Math.min(mainConf.imgMaxSize.width / img.width(), mainConf.imgMaxSize.height / img.height());
-            lo().info('resize image ', {img: fsPath, ratio: ratio});  
-            img.scale(ratio, (err, img)=>{
-                if(!err){
-                    img.writeFile(fsPath, style, (err)=>{
-                        if(err){
-                            lo().error('resizing image', {img: fsPath, error: err});
-                            cb(false);
-                        }else {
-                            cb(true);
-                        }
-                    });
-                }else{
-                    lo().error('scaling image', {img: fsPath, error: err});
-                    cb(false);
-                }
-            });
+  const imgSize = mainConf.imgMaxSize
+  sharp(fsPath)
+    .resize(imgSize.width, imgSize.height)
+    .max()
+    .toBuffer()
+    .then((buffer)=>{
+      fs.writeFile(fsPath, buffer, 'base64', (err)=>{
+        if(err){
+          lo().error('resizing image', {img: fsPath, error: err})
+          cb(false)
+        }
+        cb(true);
+      })
+    })
+};
+
+//extract and save picture. if extract failed just delete pic without blocking process.
+var extractPicture = (meta, path, cb)=>{
+    var pic     = new Buffer(meta.picture[0].data), //read picture
+        style   = meta.picture[0].format,
+        picName = path.split('/').pop() + '.' + style, //deduct name.
+        comp    = path.split('/');
+    comp.pop();
+    path = comp.join('/') + '/';
+    var fsPath  = path + picName;
+    pic = pic.toString('base64'); //convert the pic in readable data.
+    fs.writeFile(fsPath, pic, 'base64', (err)=>{ //write data in it's own file.
+        if(err){
+            lo().error('writing img', {picName: picName, err: err});
+            delete meta.picture; //do not keep the useless file.
+            cb(meta); //pretend everything was fine.
         }else{
-            lo().error('opening image (lwip) image', {img: fsPath, error: err});
-            cb(false);
+            lo().info('extracted img', {picName: picName, path: path});
+            meta.picture = '/' + fsPath; //save new pic path
+            resizePic(fsPath, style, ()=>{
+                cb(meta);
+            });
+        }
+    });
+};
+
+/*
+Retrieve metadata from a file. Files are not always easy with that, because of the
+differents format we are facing. We should try to implement other metadata formats actually.
+Maybe later.
+So in case of error an empty object is returned. The app continue to run. See ya!
+*/
+var getMetaData = (path, cb)=>{
+    mm(fs.createReadStream(path), (err, meta)=>{ //send all the algo to mm (music metadata package)
+        if(err){
+            lo().error('getting Metadata. Continuing with empty meta.', {pathWeKnow: path, err: {}});
+            cb(null, {}); //do not let 0 metaData prevent the song to be listened.
+        }else{
+            if(meta.picture[0] && meta.picture[0].data){ //there is a pic. Extract it.
+                extractPicture(meta, path, (meta)=>{
+                    cb(null, meta); //and go on..
+                });
+            }else{ //if no picture in file, the prop need to be cleared.
+                delete meta.picture; //dont keep the picture field in the metadata.
+                cb(null, meta);
+            }
         }
     });
 };
@@ -104,5 +143,6 @@ module.exports = {
     thisIs404: thisIs404,
     lo: lo(),
     makeItHttps: makeItHttps,
-    resizePic: resizePic
+    resizePic: resizePic,
+    getMetaData: getMetaData
 };

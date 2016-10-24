@@ -9,35 +9,32 @@ var
     _r              = require('rethinkdbdash')(conCnf.connect);
 
 var played = (id, req, type)=>{
-    var idUser = req.session.uuid;
+    const idUser = req.session.uuid
+    switch (typeof type) {
+      case 'undefined':
+      case 'song':
+        var tblRow = 'songs', total = 'totalSongs', tblName = tbls.song
+        break;
+      case 'video':
+        var tbl = 'videos', total = 'totalVideos', tblName = tbls.video
+        break;
+      default:
+        return;
+
+    }
     re.getCon((c)=>{
-        if(typeof type === 'undefined' || type == "song"){
-            r.table(tbls.stats).get(idUser).update({
-                songs: {
-                    [id] : {
-                        count: r.row('songs')(id)('count').add(1).default(1),
-                        when:  r.row('songs')(id)('when').append(new Date()).default([new Date()])
-                    }
-                },
-                totalSongs: r.row('totalSongs').add(1).default(1)
-            }).run(c);
-            r.table(tbls.song).get(id)
-            .update({played: r.row('played').add(1).default(1)})
-            .run(c);
-        }else if (type  == 'video'){
-            r.table(tbls.stats).get(idUser).update({
-                videos: {
-                    [id] : {
-                        count: r.row('videos')(id)('count').add(1).default(1),
-                        when:  r.row('videos')(id)('when').append(new Date()).default([new Date()])
-                    }
-                },
-                totalVideos: r.row('totalVideos').add(1).default(1)
-            }).run(c);
-            r.table(tbls.video).get(id)
-            .update({played: r.row('played').add(1).default(1)})
-            .run(c);
-        }
+      r.table(tbls.stats).get(idUser).update({
+          [tblRow]: {
+              [id] : {
+                  count: r.row(tblRow)(id)('count').add(1).default(1),
+                  when:  r.row(tblRow)(id)('when').append(new Date()).default([new Date()])
+              }
+          },
+          [total]: r.row(total).add(1).default(1)
+      }).run(c);
+      r.table(tblName).get(id)
+      .update({played: r.row('played').add(1).default(1)})
+      .run(c);
     });
 };
 

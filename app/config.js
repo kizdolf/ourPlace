@@ -55,7 +55,8 @@ exports.rethink = {
         request: 'logRequests',
         share: 'share',
         stats: 'userStats',
-        tokens: 'tokens'
+        tokens: 'tokens',
+        torrent: 'torrents'
     }
 };
 

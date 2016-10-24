@@ -67,38 +67,21 @@ var Stream = React.createClass({
         return(
             <div id="stream" style={{display: this.state.display}}>
                 <span onClick={this.close}> Close </span>
-                <video src="this.state.path" autoplay >
+                <video src="this.state.path" autoPlay >
                 </video>
             </div>
         );
     }
 });
 
-var Torrent = React.createClass({
-    render: function(){
-        var torrent = this.props.data;
-        return(
-            <div className="oneTorrent Meta">
-                <p className="torOpt">Name: {torrent.name} </p>
-                <p className="torOpt">Ratio: {torrent.ratio} </p>
-                <p className="torOpt">Download: {torrent.progressDL} % </p>
-                <p className="torOpt">Time remaining:  {torrent.remainTime} seconds </p>
-                <p className="torOpt">Download Speed: {torrent.speed.dl}/sec </p>
-                <p className="torOpt">Upload Speed: {torrent.speed.up}/sec </p>
-            </div>
-        );
-    }
-});
-
-var CloudBox = React.createClass({
+var VideoBox = React.createClass({
     getInitialState: function() {
         return {
             videos: [],
             showMenu: false,
             toMenu: {},
             types:[],
-            streamPath : false,
-            torrents: {}
+            streamPath : false
         };
     },
     hasDownload: function(id){
@@ -110,7 +93,7 @@ var CloudBox = React.createClass({
     },
 	getFilesFromApi: function(){
         var types = [];
-		$.get(this.props.cloudAPI, function(data){
+		$.get(this.props.videoAPI, function(data){
             data.forEach(function(item){
                 if(item.meta.type){
                     if(types.indexOf(item.meta.type) === -1)
@@ -173,21 +156,6 @@ var CloudBox = React.createClass({
         }.bind(this));
         this.socket.on('delete', function(data){
             this.handlerSocket('delete', data);
-        }.bind(this));
-        this.socket.on('torrent', function(data){
-            var torrents = this.state.torrents;
-            var status = {
-                    ratio: data.ratio,
-                    progressDL: Math.round(data.progressDl * 100) / 100,
-                    remainTime : Math.ceil(data.remain / 1000),
-                    name: data.file,
-                    speed: {
-                        dl: this.formatSizeUnits(data.dlSpeed),
-                        up: this.formatSizeUnits(data.upSpeed)
-                    }
-                };
-            torrents[data.file] = status;
-            this.setState({torrents: torrents});
         }.bind(this));
     },
     componentWillUnmount: function(){
@@ -279,24 +247,11 @@ var CloudBox = React.createClass({
                 </div>
             );
         }.bind(this));
-        var j = 0;
-        var tor;
-        var mountTorrents = Object.keys(this.state.torrents).map(function(key){
-            j++;
-            tor = this.state.torrents[key];
-            return(
-                <Torrent data={tor} key={j} />
-            );
-        }.bind(this));
 		return(
 			<span>
             <div id="Cloud">
                 <div className="files">
                 	{test}
-                </div>
-                <div className="torrents">
-                    <h3 className="catTitle">Active Torrents</h3>
-                    {mountTorrents}
                 </div>
             </div>
             {this.state.showMenu ?
@@ -307,11 +262,11 @@ var CloudBox = React.createClass({
             : null
             }
             <Stream path={this.state.streamPath}/>
-            </span>
+      </span>
 		);
 	}
 });
 
 module.exports = {
-	CloudBox: CloudBox
+	VideoBox: VideoBox
 };

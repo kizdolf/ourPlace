@@ -14,6 +14,7 @@ boxStream       = require(global.core + '/video/boxStream'),
 externSession   = require(global.core + '/externSession'),
 lib             = require(global.core + '/library'),
 cloud           = require(global.core + '/cloud/main'),
+torrent         = require(global.core + '/cloud/torrenting'),
 tools           = require(global.core + '/tools'),
 rootSu          = require(global.core + '/root/root'),
 user            = require(global.core + '/user'),
@@ -32,11 +33,17 @@ exports.main = (function(){
     var storage = multer.diskStorage({
         destination: (r, f, cb)=>{
             /*
-                Depending on mimetype (f.mimetype) uplaod should happen in
-                media path or in cloud path. Media for songs, cloud for videos.
+                Depending on mimetype (f.mimetype) uplaod happen in a
+                different path. Media for songs, cloud for videos and torrents (should have is own module).
             */
             var path,
-                datePath = '/' + (new Date().toISOString().substring(0,10));
+                datePath = '/' + (new Date().toISOString().substring(0,10)),
+                isTorrent = (mime)=>{
+                    return (
+                        mime.indexOf('torrent') ||
+                        mime.indexOf('srt')
+                    );
+                };
             lo.info('new upload to handle.', {file: f});
             if(f.mimetype.indexOf('audio') !== -1){
                 lo.info('upload accepted as Audio file.', {file: f});
@@ -48,7 +55,7 @@ exports.main = (function(){
                 path = conf.cloudDir + datePath;
                 tools.mkdir(path);
                 cb(null, (path + '/'));
-            }else if (f.mimetype.indexOf('torrent') !== -1){
+            }else if (isTorrent(f.mimetype) !== -1){
                 lo.info('upload accepted as Torrent file.', {file: f});
                 path = conf.cloudDir + datePath;
                 tools.mkdir(path);
@@ -81,7 +88,7 @@ exports.main = (function(){
 
     router.post('/note', lib.addNote);
     router.get('/notes', lib.allNotes);
-    router.get('/cloud', cloud.all);
+    router.get('/video', cloud.all);
 
     router.delete('/:type/:id', function(req, res){
         var type = req.params.type;
@@ -129,6 +136,17 @@ exports.main = (function(){
             res.json({delog: 'done'});
         });
     });
+
+    router.get('/torrents', (req, res) => {
+      lo.info('get all torrents in db', {who : req.session.uuid})
+      torrent.all()
+      .then((torrents) => {
+        res.json(torrents)
+      })
+      .catch((e) => {
+        res.json(false)
+      })
+    })
 
     /*streams!*/
 

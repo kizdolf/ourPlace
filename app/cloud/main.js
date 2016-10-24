@@ -8,18 +8,20 @@
 	Should create a file hash to not have duplicate files.
 */
 
-var	WebTorrent      = require('webtorrent'),
-    mime            = require('mime'),
-	fs  			= require('fs'),
-	conf            = require(global.core + '/config'),
-	tools           = require(global.core + '/tools'),
-	re 				= require(global.core + '/db/rethink'),
-	socket 			= require(global.core + '/socket')(),
+var	mime            = require('mime'),
+	  fs  			      = require('fs'),
+    child_process   = require('child_process'),
+	  conf            = require(global.core + '/config'),
+	  tools           = require(global.core + '/tools'),
+	  re 				      = require(global.core + '/db/rethink'),
+	  socket 			    = require(global.core + '/socket')(),
     lo              = tools.lo,
-	tbl 			= conf.rethink.tables.video;
+	  tbl 			      = conf.rethink.tables.video;
 
-var ClientTorrent 	= new  WebTorrent();
-
+/*
+	Tv-show recognition. Could and should be muc much better.
+	Abd should recognize all types of video infos (movies, definition, etc) not just season/episode.
+*/
 var extractFromName = function(name){
 	var ret = {};
 	var start = false;
@@ -42,6 +44,7 @@ var extractFromName = function(name){
 		}
 	}
 
+	/*It's a Tv-show*/
 	if(ret.name){
 		var regName = /[.-]/g;
 		ret.name = ret.name.replace(regName, ' ');
@@ -52,34 +55,51 @@ var extractFromName = function(name){
 	return ret;
 };
 
-var handle = (file, req, cb) => {
-	var who = req.session.uuid;
-	lo.info('Saving new video', {byWho: who, file: file});
-	var obj = {
-		path: '/' + file.path,
-		name: file.originalname,
-		mime: file.mimetype,
-		size: file.size,
-		date: new Date(),
-		meta: extractFromName(file.originalname)
-	};
-	if(file.torrent && !!file.torrent)
-		obj.meta.torrent = true;
-	re.insert(tbl, obj)
-	.then((res)=>{
-		if(cb)
-			cb(true);
-	lo.info('Video saved', {byWho: who, file: file, res: res});
-	}).catch((error)=>{
-		lo.error('saving video in db', {error: error, byWho: who});
-		if(cb)
-			cb(false);
+var extractFromNameBis = (name, cb) => {
+	const exec = 'guessit --json "' + name + '"';
+	child_process.exec(exec, (err, out)=>{
+    if(err) cb(err, null)
+    else {
+      let jsonObj = JSON.parse(out)
+      jsonObj.name = jsonObj.title
+      if(jsonObj.type && jsonObj.type == 'episode')
+        jsonObj.type = 'tvshow'
+      cb(null, jsonObj)
+    }
 	});
 };
 
-var all = (req, res) =>{
+
+var handle = (file, req, cb) => {
 	var who = req.session.uuid;
-    var files = [];
+  extractFromNameBis(file.originalname, (err, infos)=>{
+    lo.info('Saving new video', {byWho: who, file: file});
+    var obj = {
+      path: '/' + file.path,
+      name: file.originalname,
+      mime: file.mimetype,
+      size: file.size,
+      date: new Date(),
+      meta: infos || {}
+    };
+    if(file.torrent && !!file.torrent)
+    obj.meta.torrent = true;
+    re.insert(tbl, obj)
+    .then((res)=>{
+      if(cb)
+      cb(true);
+      lo.info('Video saved', {byWho: who, file: file, res: res});
+    }).catch((error)=>{
+      lo.error('saving video in db', {error: error, byWho: who});
+      if(cb)
+      cb(false);
+    })
+  })
+};
+
+var all = (req, res) =>{
+	var who = req.session.uuid,
+    	files = [];
 	re.getAll(tbl).then((all)=>{
         files = all.sort((a, b)=>{ return (a.name > b.name) ? -1 : 1; });
 		res.json(files);
@@ -89,62 +109,9 @@ var all = (req, res) =>{
 	});
 };
 
-var newTorrent = (file, req, cb)=>{
-	var pathTorrent = global.appPath + '/' + file.path,
-		d = (new Date().toISOString().substring(0,10)),
-		pathFile = global.appPath +  conf.conf.cloudPath + '/' + d + '/';
-
-	ClientTorrent.add(fs.readFileSync(pathTorrent), {path: pathFile}, (torrent)=>{
-		var fileDL = torrent.files[0];
-		var now =  Date.now();
-		torrent.on('download', function () {
-			if( Date.now() - now > conf.conf.torrentTriggerSocket){
-				socket.send({
-					file: fileDL.name,
-					ratio: torrent.ratio,
-					progressDl: torrent.progress * 100,
-					dlSpeed: torrent.downloadSpeed,
-					upSpeed: ClientTorrent.uploadSpeed,
-					remain: torrent.timeRemaining
-				}, req.session.uuid, false, 'torrent');
-				now =  Date.now();
-			}
-		});
-		torrent.on('upload', function(){
-			if( Date.now() - now > conf.conf.torrentTriggerSocket){
-				socket.send({
-					file: fileDL.name,
-					ratio: torrent.ratio,
-					progressDl: torrent.progress * 100,
-					dlSpeed: torrent.downloadSpeed,
-					upSpeed: torrent.uploadSpeed,
-					remain: torrent.timeRemaining
-				}, req.session.uuid, false, 'torrent');
-				now =  Date.now();
-			}
-		});
-		torrent.on('done', ()=>{
-			/* TODO : Send socket to front.*/
-			torrent.files.forEach(function(f){
-				var fileInfos = {
-					originalname : f.name,
-					path: conf.conf.cloudDir + '/' + d + '/' + f.path,
-					size: f.length,
-					mime : mime.lookup(conf.conf.cloudDir + '/' + d + '/' + f.path),
-					torrent: true
-
-				};
-				lo.info('torrent finished downloading', {byWho: req.session.uuid, fileInfos});
-				if(fileInfos.mime.indexOf('video') !== -1)
-					handle(fileInfos, req);
-			});
-		});
-	});
-	cb(true);
-};
-
 module.exports = {
 	handle: handle,
 	all: all,
-	newTorrent: newTorrent
+  extractFromName: extractFromName,
+  extractFromNameBis: extractFromNameBis
 };

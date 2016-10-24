@@ -82,9 +82,10 @@ exports.Menu = React.createClass({
             <div className="WrapperMenu">
                 <ul className="links">
                     <li className="oneLink"><Link to="/notes">Notes</Link></li>
-                    <li className="oneLink"><Link to="/">Music</Link></li>
+                    <li className="oneLink"><Link to="/">Songs</Link></li>
                     {/*<li className="oneLink"><Link to="/rss">Rss</Link></li>*/}
-                    <li className="oneLink"><Link to="/cloud">Cloud</Link></li>
+                    <li className="oneLink"><Link to="/videos">Videos</Link></li>
+                    <li className="oneLink"><Link to="/torrents">Torrents</Link></li>
                 </ul>
                 <CurPlaylist
                     musics={this.props.musics}

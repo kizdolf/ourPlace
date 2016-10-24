@@ -1340,13 +1340,6 @@ hr{
     border: 1px solid red;
 }
 
-.oneTorrent{
-    width: 100%;
-    height: 150px;
-    background: #272822;
-    margin-bottom: 30px;
-}
-
 .torOpt{
     width: 100%;
     display: block;
@@ -1355,6 +1348,98 @@ hr{
     color: #dbd5c3;
 }
 
+.torrentBox{
+  position: absolute;
+  top: 0;
+  padding-left: 258px;
+  height: 100vh;
+  overflow: auto;
+  width: 100%;
+  padding-top: 120px;
+}
+
+.torrentFiles {
+  margin-top: 28px;
+}
+
+.torrentInfo{
+  color: white;
+  display: block;
+  float: left;
+}
+
+.torrentInfo.progressT {
+  background: #eab348;
+  width: 100%;
+  height: 18px;
+  display: flex;
+}
+
+.torrentInfo.progressT .background {
+  background: #57909b;
+  height: inherit;
+  position: absolute;
+  z-index: 0;
+}
+
+.torrentInfo.progressT .progressText {
+  color: black;
+  z-index: 1;
+  width: 20%;
+  text-align: center;
+}
+
+.torrentInfo.name {
+  width: 100%;
+  background: #272822;
+  font-size: 16px;
+  height: 30px;
+  overflow: hidden;
+}
+
+.torrentInfo.field {
+  width: auto;
+  margin-left: 10px;
+}
+.torrentInfo.field.cursor{
+  cursor: pointer;
+}
+.torrentFields{
+  height: 50px;
+  background: #5f6061;
+}
+.oneTorrent {
+  width: 98%;
+  /*height: 150px;*/
+  background: #272822;
+  margin-bottom: 30px;
+}
+.oneTorrent .hover{
+  display: none;
+}
+
+.torrentTarget{
+  color: white;
+  list-style-type: none;
+  border-top: 1px solid #57909b;
+  margin-top: 2px;
+  height: 22px;
+}
+
+.targetSize{
+  float: right;
+}
+
+.targetProgress{
+  background: rgba(95, 96, 97, 0.23);
+  position: absolute;
+  height: inherit;
+  z-index: 0;
+}
+
+.targetName{
+  z-index: 5;
+}
 /*
 
     color: #dbd5c9;

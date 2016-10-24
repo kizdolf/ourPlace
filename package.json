@@ -1,6 +1,6 @@
 {
   "name": "our_place",
-  "version": "0.5.1",
+  "version": "0.6",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,9 @@
   "dependencies": {
     "agentkeepalive": "^2.2.0",
     "autolinker": "^0.22.0",
+    "babel-cli": "^6.16.0",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.16.0",
     "body-parser": "^1.14.1",
     "bufferutil": "^1.2.1",
     "bugsnag": "^1.7.0",
@@ -32,7 +35,6 @@
     "is-directory": "^0.3.0",
     "jquery": "^2.2.1",
     "lowdb": "^0.10.2",
-    "lwip": "0.0.8",
     "mime": "^1.3.4",
     "moment": "^2.10.6",
     "multer": "^1.1.0",
@@ -55,17 +57,20 @@
     "rethinkdb": "^2.2.0",
     "rethinkdbdash": "^2.2.16",
     "session-rethinkdb": "^1.0.8",
+    "sharp": "^0.16.2",
     "simple-node-logger": "^0.92.21",
     "socket.io": "^1.3.7",
     "socket.io-express-session": "^0.1.3",
     "stream-transcoder": "0.0.5",
     "superagent": "^1.4.0",
     "utf-8-validate": "^1.2.1",
+    "uuid": "^2.0.3",
     "webtorrent": "^0.96.4",
     "ws": "^1.0.1"
   },
   "devDependencies": {
     "css-loader": "^0.23.0",
+    "eslint": "^3.8.1",
     "jsx-loader": "^0.13.2",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.6"
