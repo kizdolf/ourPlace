@@ -10,15 +10,15 @@ var Torrent = React.createClass({
     }
   },
   changeVisiTargets : function(){
-    let show = this.state.showTargets
-    let newShow = (show == 'none') ? 'block' : 'none'
+    var show = this.state.showTargets
+    var newShow = (show == 'none') ? 'block' : 'none'
     this.setState({showTargets : newShow})
   },
   render: function(){
-    let data = this.props.data;
-    let torrent = data.torrent
-    let targets = data.targets
-    let mountTorrentFiles = targets.map((target) => {
+    var data = this.props.data;
+    var torrent = data.torrent
+    var targets = data.targets
+    var mountTorrentFiles = targets.map((target) => {
       return(
         <li key={target.id} className="torrentTarget">
           <span className="targetProgress" style={{width:target.progress + '%'}}></span>
@@ -81,8 +81,8 @@ const TorrentBox = React.createClass({
   componentDidMount: function(){
     this.socket = io({secure: true});
     this.socket.on('torrent', function(torrent){
-      let torrents = this.state.torrents
-      let update = false
+      var torrents = this.state.torrents
+      var update = false
       torrents.forEach((stateTorrent, i) => {
         if(stateTorrent.id == torrent.id){
           torrents[i] = torrent
