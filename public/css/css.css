@@ -427,8 +427,12 @@ hr{
     }
 
     #player{
-        height: 100px;
-        background: white;
+      height: 100px;
+      width: 100vw;
+      background: white;
+      top: 85px;
+      position: fixed;
+      z-index: 9999;
     }
 
     #music ul{
@@ -623,10 +627,11 @@ hr{
         width: 100vw;
     }
     .inputBox{
-        position: relative !important;
-        /* height: 95px; */
-        margin: auto;
-        /* top: 159px; */
+      position: fixed !important;
+      top: 189px !important;
+      width: 69% !important;
+      margin: auto !important;
+      z-index: 9999 !important;
     }
     .form-control{
         width: 88 !important%;
