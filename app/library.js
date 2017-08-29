@@ -220,9 +220,7 @@ Retrieve a youTube song from url.
 Use the awesome youtube-dl (https://rg3.github.io/youtube-dl/) to handle the download and song extraction.
 Some modules exists do to the same, but honestly that's just better.
 Just one thing: if youtube-dl is not up do date it can crash sometimes, but the song is still here.
-So in case of error we nned to check if the download/extraction was killed or not.
-
-TO DO : RESIZE PIC!!!!
+So in case of error we need to check if the download/extraction was killed or not.
 */
 const fromYoutube = function(url, cb){
     var d = (new Date().toISOString().substring(0,10)),
@@ -238,8 +236,7 @@ const fromYoutube = function(url, cb){
 
     var destYt = ' -o \'' + dir + '/%(id)s.%(ext)s\'';
 
-    var exec = program + opts + url + destYt;
-    lo.info(' dowloading from youtube', {url: url});
+    const exec = program + opts + url + destYt;
     child_process.exec(exec, (err, out)=>{
         if(!err || err.killed === false){
             lo.info(' dowloaded from youtube', {url: url});

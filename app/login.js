@@ -183,11 +183,8 @@ var createUser = function(pseudo, password, email, session, cb){
 
                             // send mail with defined transport object
                             transporter.sendMail(mailOptions, function(e, info){
-                                if(e){
-                                    lo.error('unable to send mail:', {error: e, info: info, mail: email});
-                                }else{
-                                    lo.info('mail sent', {to: email, info: info});
-                                }
+                                if(e) lo.error('unable to send mail:', {error: e, info: info, mail: email});
+                                else lo.info('mail sent', {to: email, info: info});
                                 if(cb) cb(true);
                             });
 
@@ -255,11 +252,9 @@ var getWelcome = (req, res, next)=>{
                 req.session.welcomeUuid = resp.uuid;
                 req.session.welcomePseudo = resp.pseudo;
                 res.json({pseudo: resp.pseudo, token: token});
-            }else next();
-        }).catch((e)=>{
-            next();
-        });
-    }else next();
+            }else next()
+        }).catch((e)=>{ next() });
+    }else next()
 };
 
 module.exports = {

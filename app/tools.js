@@ -75,9 +75,7 @@ var resizePic = (fsPath, style, cb) =>{
   const imgSize = mainConf.imgMaxSize
   sharp(fsPath)
     .resize(imgSize.width, imgSize.height)
-    .max()
-    .toBuffer()
-    .then((buffer)=>{
+    .max().toBuffer().then((buffer)=>{
       fs.writeFile(fsPath, buffer, 'base64', (err)=>{
         if(err){
           lo().error('resizing image', {img: fsPath, error: err})
@@ -137,6 +135,40 @@ var getMetaData = (path, cb)=>{
     });
 };
 
+
+const multerStorageSwitch = (r, f, cb) => {
+
+  const mimeCase = (mime) => {
+    if (mime.indexOf('torrent') || mime.indexOf('srt')) return 'torrent'
+    else if (mime.indexOf('audio') !== -1) return 'audio'
+    else if (mime.indexOf('video') !== -1) return 'video'
+    else return 'unhandled'
+  };
+
+  var path
+  var datePath = '/' + new Date().toISOString().substring(0,10)
+  var type = mimeCase(f.mimetype)
+  lo().info('new upload to handle type is ' + type + '.', {file: f});
+  switch (type) {
+    case 'audio':
+      path = cnf.mediaDir + datePath;
+      break;
+    case 'video':
+      path = cnf.cloudDir + datePath;
+      break;
+    case 'torrent':
+      path = cnf.cloudDir + datePath;
+      break;
+    default:
+      lo().error('upload refused!', {file: f});
+      cb(false)
+  }
+  if (type !== 'unhandled') {
+    tools.mkdir(path);
+    cb(null, (path + '/'));
+  }
+}
+
 module.exports = {
     rm: rm,
     mkdir: mkdir,
@@ -144,5 +176,6 @@ module.exports = {
     lo: lo(),
     makeItHttps: makeItHttps,
     resizePic: resizePic,
-    getMetaData: getMetaData
+    getMetaData: getMetaData,
+    multerStorageSwitch: multerStorageSwitch
 };
